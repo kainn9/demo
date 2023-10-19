@@ -46,7 +46,7 @@ func NewGame() *game {
 
 func (g *game) Update() error {
 
-	activeScene := g.manager.GetActiveScene()
+	activeScene := g.manager.ActiveScene()
 
 	go activeScene.Load()
 
@@ -60,7 +60,7 @@ func (g *game) Update() error {
 
 func (g *game) Draw(screen *ebiten.Image) {
 
-	activeScene := g.manager.GetActiveScene()
+	activeScene := g.manager.ActiveScene()
 	activeScene.Draw(screen)
 
 }

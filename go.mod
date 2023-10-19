@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/hajimehoshi/ebiten/v2 v2.6.2
-	github.com/kainn9/coldBrew v0.0.0-20231015050037-f76fcd553a50
+	github.com/kainn9/coldBrew v0.0.0-20231019005616-dd0d3edd5dde
 	github.com/yohamta/donburi v1.3.9
 )
 

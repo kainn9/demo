@@ -20,7 +20,7 @@ func (LevelOneScene) Index() string {
 
 func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 
-	scene := coldBrew.NewScene(m, 640, 1618)
+	scene := coldBrew.NewScene(m, 1618, 640)
 
 	// Systems ----------------------------------------------------------------------------------
 	scene.AddSystem(loaderSystems.NewParallaxBackgroundLoader(scene))
