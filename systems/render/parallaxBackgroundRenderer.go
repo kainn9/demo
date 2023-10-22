@@ -27,9 +27,9 @@ func (sys *ParallaxBackgroundRendererSystem) Draw(screen *ebiten.Image, _ *donbu
 
 	camera := systemsUtil.GetCamera(world)
 
-	queries.ParallaxBackGroundLayerQuery.Each(world, func(entry *donburi.Entry) {
-		pLaxLayerConfig := assetComponents.ParallaxLayerConfigComponent.Get(entry)
-		sprite := assetComponents.SpriteComponent.Get(entry)
+	queries.ParallaxBackGroundLayerQuery.Each(world, func(entity *donburi.Entry) {
+		pLaxLayerConfig := assetComponents.ParallaxLayerConfigComponent.Get(entity)
+		sprite := assetComponents.SpriteComponent.Get(entity)
 
 		drawOptions := &ebiten.DrawImageOptions{}
 

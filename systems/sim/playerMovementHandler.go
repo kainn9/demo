@@ -4,17 +4,27 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kainn9/demo/components"
 
+	tBokiComponents "github.com/kainn9/tteokbokki/components"
+	tBokiMath "github.com/kainn9/tteokbokki/math"
+	tBokiVec "github.com/kainn9/tteokbokki/math/vec"
+	tBokiPhysics "github.com/kainn9/tteokbokki/physics"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/filter"
 )
 
-type PlayerMovementHandler struct{}
-
-func NewPlayerMovementHandler() *PlayerMovementHandler {
-	return &PlayerMovementHandler{}
+type PlayerMovementHandlerSystem struct {
+	maxVelX  float64
+	xVelUnit float64
 }
 
-func (*PlayerMovementHandler) Query() *donburi.Query {
+func NewPlayerMovementHandler() *PlayerMovementHandlerSystem {
+	return &PlayerMovementHandlerSystem{
+		maxVelX:  180,
+		xVelUnit: 18,
+	}
+}
+
+func (*PlayerMovementHandlerSystem) Query() *donburi.Query {
 	return donburi.NewQuery(
 		filter.And(
 			filter.Contains(components.InputBufferComponent),
@@ -23,20 +33,67 @@ func (*PlayerMovementHandler) Query() *donburi.Query {
 	)
 }
 
-func (sys *PlayerMovementHandler) Run(_ float64, entry *donburi.Entry) {
-	inputBuffer := components.InputBufferComponent.Get(entry)
-	playerBody := components.RigidBodyComponent.Get(entry)
+func (sys *PlayerMovementHandlerSystem) Run(dt float64, playerEntity *donburi.Entry) {
+	inputBuffer := components.InputBufferComponent.Get(playerEntity)
+	playerBody := components.RigidBodyComponent.Get(playerEntity)
 
-	switch {
+	sys.gravityHandler(playerBody)
+	sys.horizontalMovementHandler(inputBuffer, playerBody)
+	sys.clampVelocityX(playerBody)
 
-	case inputBuffer.ActiveInput == ebiten.KeyRight:
-		playerBody.X += 3
+	sys.IntegrateMovementForcesAndClearActiveInput(inputBuffer, playerBody, dt)
+}
 
-	case inputBuffer.ActiveInput == ebiten.KeyLeft:
-		playerBody.X -= 3
+func (sys *PlayerMovementHandlerSystem) gravityHandler(playerBody *tBokiComponents.RigidBody) {
+	weightForce, _ := tBokiPhysics.ForceFactory.NewWeightForce(playerBody.GetMass())
+	weightForce.Y = weightForce.Y / 1 // TEMP!
+	tBokiPhysics.Transformer.AddForce(playerBody, weightForce)
+}
 
+func (sys *PlayerMovementHandlerSystem) horizontalMovementHandler(inputBuffer *components.InputBuffer, playerBody *tBokiComponents.RigidBody) {
+
+	switch inputBuffer.ActiveInput {
+
+	case ebiten.KeyRight:
+		sys.handleKeyRight(playerBody)
+	case ebiten.KeyLeft:
+		sys.handleKeyLeft(playerBody)
+	case -1:
+		sys.haltPlayerMovement(playerBody)
+	}
+
+}
+
+func (sys *PlayerMovementHandlerSystem) handleKeyRight(playerBody *tBokiComponents.RigidBody) {
+	if playerBody.Vel.X < 0 {
+		sys.haltPlayerMovement(playerBody)
+	}
+
+	tBokiPhysics.Transformer.ApplyImpulseLinear(playerBody, tBokiVec.Vec2{X: sys.xVelUnit, Y: 0})
+}
+
+func (sys *PlayerMovementHandlerSystem) handleKeyLeft(playerBody *tBokiComponents.RigidBody) {
+	if playerBody.Vel.X > 0 {
+		sys.haltPlayerMovement(playerBody)
+	}
+
+	tBokiPhysics.Transformer.ApplyImpulseLinear(playerBody, tBokiVec.Vec2{X: -sys.xVelUnit, Y: 0})
+}
+
+func (sys *PlayerMovementHandlerSystem) haltPlayerMovement(playerBody *tBokiComponents.RigidBody) {
+	playerBody.Vel.X = 0
+}
+
+func (sys *PlayerMovementHandlerSystem) clampVelocityX(playerBody *tBokiComponents.RigidBody) {
+	playerBody.Vel.X = tBokiMath.Clamp(playerBody.Vel.X, -sys.maxVelX, sys.maxVelX)
+}
+
+func (sys *PlayerMovementHandlerSystem) IntegrateMovementForcesAndClearActiveInput(inputBuffer *components.InputBuffer, playerBody *tBokiComponents.RigidBody, dt float64) {
+	tBokiPhysics.Transformer.Integrate(playerBody, dt)
+
+	if playerBody.Polygon != nil {
+		playerBody.UpdateVertices()
 	}
 
 	inputBuffer.ActiveInput = -1
-
 }

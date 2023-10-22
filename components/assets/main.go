@@ -7,6 +7,7 @@ import (
 
 type AssetData struct {
 	Loaded bool
+	Name   string
 }
 
 type Sprite struct {
@@ -19,10 +20,13 @@ type Sound struct {
 }
 
 var SpriteComponent = donburi.NewComponentType[Sprite]()
+var SpriteComponents = donburi.NewComponentType[[]*Sprite]()
 
-func NewSprite() *Sprite {
+func NewSprite(name string) *Sprite {
 	return &Sprite{
-		Image:     &ebiten.Image{},
-		AssetData: &AssetData{},
+		Image: &ebiten.Image{},
+		AssetData: &AssetData{
+			Name: name,
+		},
 	}
 }

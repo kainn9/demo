@@ -19,7 +19,7 @@ func NewCameraPositionHandler(scene *coldBrew.Scene) *CameraPositionHandlerSyste
 	}
 }
 
-func (sys *CameraPositionHandlerSystem) Draw(screen *ebiten.Image, entry *donburi.Entry) {
+func (sys *CameraPositionHandlerSystem) Draw(screen *ebiten.Image, entity *donburi.Entry) {
 
 	world := sys.scene.World
 
@@ -27,7 +27,7 @@ func (sys *CameraPositionHandlerSystem) Draw(screen *ebiten.Image, entry *donbur
 
 	camera := systemsUtil.GetCamera(world)
 
-	x, y := systemsUtil.GetPlayerPos(world)
+	playerPos := systemsUtil.GetPlayerPos(world)
 
 	cameraUtil.Clear(camera)
 
@@ -38,9 +38,9 @@ func (sys *CameraPositionHandlerSystem) Draw(screen *ebiten.Image, entry *donbur
 
 	xBoundaryRight := float64(mapWidth - halfScreenInt)
 
-	playerInsideXBoundsLeft := x < xBoundaryLeft
+	playerInsideXBoundsLeft := playerPos.X < xBoundaryLeft
 
-	playerInsideXBoundsRight := x > xBoundaryRight
+	playerInsideXBoundsRight := playerPos.X > xBoundaryRight
 
 	if playerInsideXBoundsLeft {
 		cameraUtil.SetPosition(camera, 0, 0)
@@ -48,10 +48,10 @@ func (sys *CameraPositionHandlerSystem) Draw(screen *ebiten.Image, entry *donbur
 	}
 
 	if playerInsideXBoundsRight {
-		cameraUtil.SetPosition(camera, float64(mapWidth-constants.SCREEN_WIDTH), y)
+		cameraUtil.SetPosition(camera, float64(mapWidth-constants.SCREEN_WIDTH), 0)
 		return
 	}
 
-	cameraUtil.SetPosition(camera, x-halfScreen, y)
+	cameraUtil.SetPosition(camera, playerPos.X-halfScreen, 0)
 
 }

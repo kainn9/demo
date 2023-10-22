@@ -5,29 +5,44 @@ import (
 
 	"github.com/kainn9/demo/components"
 	"github.com/kainn9/demo/queries"
+	tBokiComponents "github.com/kainn9/tteokbokki/components"
+	tBokiVec "github.com/kainn9/tteokbokki/math/vec"
 	"github.com/yohamta/donburi"
 )
 
 func GetCamera(world donburi.World) *components.Camera {
 
-	entry, ok := queries.CameraQuery.FirstEntity(world)
+	entity, ok := queries.CameraQuery.FirstEntity(world)
 
 	if !ok {
 		log.Fatal("camera query failed.")
 	}
 
-	return components.CameraComponent.Get(entry)
+	return components.CameraComponent.Get(entity)
 }
 
-func GetPlayerPos(world donburi.World) (x, y float64) {
+func GetPlayerPos(world donburi.World) tBokiVec.Vec2 {
 
-	entry, ok := queries.PlayerQuery.FirstEntity(world)
+	entity, ok := queries.PlayerQuery.FirstEntity(world)
 
 	if !ok {
 		log.Fatal("playerQuery query failed.")
 	}
 
-	playerBody := components.RigidBodyComponent.Get(entry)
+	playerBody := components.RigidBodyComponent.Get(entity)
 
-	return playerBody.X, playerBody.Y
+	return playerBody.Pos
+}
+
+func GetPlayerRigidBody(world donburi.World) *tBokiComponents.RigidBody {
+
+	entity, ok := queries.PlayerQuery.FirstEntity(world)
+
+	if !ok {
+		log.Fatal("playerQuery query failed.")
+	}
+
+	playerBody := components.RigidBodyComponent.Get(entity)
+
+	return playerBody
 }

@@ -23,7 +23,7 @@ func LoadImage(path string, sprite *assetComponents.Sprite) {
 	// }
 
 	concatPath := constants.IMAGE_ASSET_DIR + path
-	img, _, err := ebitenutil.NewImageFromFile(concatPath)
+	img, _, err := ebitenutil.NewImageFromFile(concatPath + constants.IMAGE_EXTENSION)
 	if err != nil {
 		log.Fatal(err)
 	}

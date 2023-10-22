@@ -20,8 +20,8 @@ func (*InputTrackerSystem) Query() *donburi.Query {
 	)
 }
 
-func (sys *InputTrackerSystem) Sync(entry *donburi.Entry) {
-	inputBuffer := components.InputBufferComponent.Get(entry)
+func (sys *InputTrackerSystem) Sync(entity *donburi.Entry) {
+	inputBuffer := components.InputBufferComponent.Get(entity)
 	switch {
 
 	case ebiten.IsKeyPressed(ebiten.KeyRight):

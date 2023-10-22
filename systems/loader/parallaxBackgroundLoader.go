@@ -27,22 +27,21 @@ func (sys *ParallaxBackgroundLoaderSystem) Query() *donburi.Query {
 	return queries.ParallaxBackGroundLayerQuery
 }
 
-func (sys *ParallaxBackgroundLoaderSystem) Load(entry *donburi.Entry) {
+func (sys *ParallaxBackgroundLoaderSystem) Load(entity *donburi.Entry) {
 
-	sprite := assetComponents.SpriteComponent.Get(entry)
+	sprite := assetComponents.SpriteComponent.Get(entity)
 
-	pLaxLayerConfig := assetComponents.ParallaxLayerConfigComponent.Get(entry)
+	pLaxLayerConfig := assetComponents.ParallaxLayerConfigComponent.Get(entity)
 
 	path := constants.SCENE_SUB_DIR
 	path += pLaxLayerConfig.SubPath
 	path += strconv.Itoa(pLaxLayerConfig.ZIndex)
-	path += constants.IMAGE_EXTENSION
 
 	LoadImage(path, sprite)
 
 	// A temp hack since there is so little load time
 	// but we want to see the load screen for testing...
 	time.Sleep(50 * time.Millisecond)
-	log.Println("Loading layer", strconv.Itoa(pLaxLayerConfig.ZIndex))
+	log.Println("Loading layer", strconv.Itoa(pLaxLayerConfig.ZIndex), ".")
 
 }

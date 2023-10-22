@@ -1,17 +1,8 @@
 package components
 
-import "github.com/yohamta/donburi"
+import (
+	tBokiComponents "github.com/kainn9/tteokbokki/components"
+	"github.com/yohamta/donburi"
+)
 
-type RigidBody struct {
-	X float64
-	Y float64
-}
-
-var RigidBodyComponent = donburi.NewComponentType[RigidBody]()
-
-func NewRigidBody(x, y float64) *RigidBody {
-	return &RigidBody{
-		X: x,
-		Y: y,
-	}
-}
+var RigidBodyComponent = donburi.NewComponentType[tBokiComponents.RigidBody]()

@@ -26,3 +26,11 @@ var ParallaxBackGroundLayerQuery = donburi.NewQuery(
 		filter.Contains(assetComponents.ParallaxLayerConfigComponent),
 	),
 )
+
+var Block = donburi.NewQuery(
+	filter.And(
+		filter.Contains(tags.StandardCollisionTag),
+		filter.Not(filter.Contains(tags.PlayerTag)),
+		filter.Contains(components.RigidBodyComponent),
+	),
+)
