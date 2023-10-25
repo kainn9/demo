@@ -5,8 +5,8 @@ github.com/hajimehoshi/ebiten/v2 v2.6.2 h1:tVa3ZJbp4Uz/VSjmpgtQIOvwd7aQH290XehHB
 github.com/hajimehoshi/ebiten/v2 v2.6.2/go.mod h1:TZtorL713an00UW4LyvMeKD8uXWnuIuCPtlH11b0pgI=
 github.com/jezek/xgb v1.1.0 h1:wnpxJzP1+rkbGclEkmwpVFQWpuE2PUGNUzP8SbfFobk=
 github.com/jezek/xgb v1.1.0/go.mod h1:nrhwO0FX/enq75I7Y7G8iN1ubpSGZEiA3v9e9GyRFlk=
-github.com/kainn9/coldBrew v0.0.0-20231021221717-5a06f15d3b64 h1:3rXHepM3oM+arlAVK1aVb+aU0u/ZEISgIdzniCYUN0c=
-github.com/kainn9/coldBrew v0.0.0-20231021221717-5a06f15d3b64/go.mod h1:/G1M+oB0afg9CbJpFD1+oUx5Gy5CMBh8ExZNX7UCnkw=
+github.com/kainn9/coldBrew v0.0.0-20231025183723-4a5d3806c4c3 h1:TDiTmv1mYOxSQGojNANYwjy5V8M4Xp481oMmnXiw9So=
+github.com/kainn9/coldBrew v0.0.0-20231025183723-4a5d3806c4c3/go.mod h1:/G1M+oB0afg9CbJpFD1+oUx5Gy5CMBh8ExZNX7UCnkw=
 github.com/kainn9/tteokbokki v0.0.0-20231021030641-fa37eeb76645 h1:pNzaG/eK/y81KC0bR5N6tNDEAqp9opz134Hx+gS0qMo=
 github.com/kainn9/tteokbokki v0.0.0-20231021030641-fa37eeb76645/go.mod h1:whPqxT0SXC3CY9ylKq6btzfcO3ysuFtDM6fimTbzK/U=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

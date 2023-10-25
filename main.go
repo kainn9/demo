@@ -24,7 +24,7 @@ func NewGame() *game {
 	loaderImage := ebiten.NewImage(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
 	loaderImage.Fill(color.RGBA{B: 255})
 
-	manager := coldBrew.NewManager(constants.SCENE_CACHE_LIMIT, loaderImage)
+	manager := coldBrew.NewManager(constants.SCENE_CACHE_LIMIT, constants.MAX_TICKS, loaderImage)
 
 	firstScene := scenes.Intro.LevelOneScene
 	manager.LoadScene(firstScene)
@@ -63,6 +63,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	activeScene := g.manager.ActiveScene()
 	activeScene.Draw(screen)
 
+	g.manager.TickHandler.IncrementTick()
 }
 
 func (g *game) Layout(w, h int) (int, int) {

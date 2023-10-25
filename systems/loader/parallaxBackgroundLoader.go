@@ -42,6 +42,6 @@ func (sys *ParallaxBackgroundLoaderSystem) Load(entity *donburi.Entry) {
 	// A temp hack since there is so little load time
 	// but we want to see the load screen for testing...
 	time.Sleep(50 * time.Millisecond)
-	log.Println("Loading layer", strconv.Itoa(pLaxLayerConfig.ZIndex), ".")
+	log.Println("Loading background layer", strconv.Itoa(pLaxLayerConfig.ZIndex)+".")
 
 }

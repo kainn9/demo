@@ -1,12 +1,55 @@
 package constants
 
+// Client Constants.
 const (
-	SCREEN_HEIGHT     = 360
-	SCREEN_WIDTH      = 640
-	SCENE_CACHE_LIMIT = 5
+	SCREEN_HEIGHT             = 360
+	SCREEN_WIDTH              = 640
+	MAX_TICKS                 = 1200000
+	SCENE_CACHE_LIMIT         = 5
+	TICKS_PER_ANIMATION_FRAME = 5
 
 	PLAYER_SPRITE_PATH = "characters/player/"
 	SCENE_SUB_DIR      = "scenes/"
 	IMAGE_EXTENSION    = ".png"
 	IMAGE_ASSET_DIR    = "./assets/images/"
+)
+
+// Player State Constants.
+const (
+	PLAYER_ANIM_STATE_IDLE = "idle"
+	PLAYER_ANIM_STATE_RUN  = "run"
+	PLAYER_ANIM_STATE_JUMP = "jump"
+	PLAYER_ANIM_STATE_FALL = "fall"
+)
+
+// Camera Constants.
+const (
+	CAMERA_MIN_SPEED = 2.5
+	CAMERA_MAX_SPEED = 3.5
+	CAMERA_EPSILON   = SCREEN_WIDTH/2 - 270
+)
+
+// Player Constants.
+// Todo: Move this somewhere else?
+// Maybe YAML or JSON?
+const (
+	// RIGID BODY.
+	PLAYER_WIDTH           = 18
+	PLAYER_HEIGHT          = 55
+	PLAYER_SPRITE_OFFSET_X = 70
+	PLAYER_SPRITE_OFFSET_Y = 100
+
+	// ANIMATIONS.
+	PLAYER_IDLE_ANIM_SPEED = 20
+	PLAYER_RUN_ANIM_SPEED  = 12
+	PLAYER_JUMP_ANIM_SPEED = 8
+	PLAYER_FALL_ANIM_SPEED = 12
+
+	PLAYER_IDLE_FRAME_COUNT = 7
+	PLAYER_RUN_FRAME_COUNT  = 8
+	PLAYER_JUMP_FRAME_COUNT = 5
+	PLAYER_FALL_FRAME_COUNT = 2
+
+	PLAYER_ANIMATIONS_SPRITE_WIDTH  = 144
+	PLAYER_ANIMATIONS_SPRITE_HEIGHT = 126
 )

@@ -46,3 +46,16 @@ func GetPlayerRigidBody(world donburi.World) *tBokiComponents.RigidBody {
 
 	return playerBody
 }
+
+func GetPlayerState(world donburi.World) *components.PlayerState {
+
+	entity, ok := queries.PlayerQuery.FirstEntity(world)
+
+	if !ok {
+		log.Fatal("playerQuery query failed.")
+	}
+
+	state := components.PlayerStateComponent.Get(entity)
+
+	return state
+}

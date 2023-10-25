@@ -39,17 +39,17 @@ func (sys *DebugRigidBodyRendererSystem) Draw(screen *ebiten.Image, entity *donb
 	blue := color.RGBA{R: 0, G: 0, B: 255, A: 255}
 
 	if body.Circle != nil {
-		sys.drawCircleBody(screen, camera, *body, red)
+		drawCircleBody(screen, camera, *body, red)
 	}
 
 	if body.Polygon != nil {
-		sys.drawPolygonBody(screen, camera, *body, red)
+		drawPolygonBody(screen, camera, *body, red)
 	}
 
-	sys.drawBroadPhaseSkin(screen, camera, *body, blue)
+	drawBroadPhaseSkin(screen, camera, *body, blue)
 }
 
-func (sys *DebugRigidBodyRendererSystem) drawCircleBody(screen *ebiten.Image, camera *components.Camera, rb tBokiComponents.RigidBody, color color.RGBA) {
+func drawCircleBody(screen *ebiten.Image, camera *components.Camera, rb tBokiComponents.RigidBody, color color.RGBA) {
 	x := -camera.X + rb.Pos.X
 	y := -camera.Y + rb.Pos.Y
 
@@ -65,7 +65,7 @@ func (sys *DebugRigidBodyRendererSystem) drawCircleBody(screen *ebiten.Image, ca
 	vector.StrokeLine(screen, float32(x), float32(y), float32(endpoint.X), float32(endpoint.Y), 1.0, color, false)
 }
 
-func (sys *DebugRigidBodyRendererSystem) drawPolygonBody(screen *ebiten.Image, camera *components.Camera, rb tBokiComponents.RigidBody, color color.RGBA) {
+func drawPolygonBody(screen *ebiten.Image, camera *components.Camera, rb tBokiComponents.RigidBody, color color.RGBA) {
 
 	length := len(rb.Polygon.WorldVertices)
 
@@ -92,7 +92,7 @@ func (sys *DebugRigidBodyRendererSystem) drawPolygonBody(screen *ebiten.Image, c
 
 }
 
-func (sys *DebugRigidBodyRendererSystem) drawBroadPhaseSkin(screen *ebiten.Image, camera *components.Camera, rb tBokiComponents.RigidBody, color color.RGBA) {
+func drawBroadPhaseSkin(screen *ebiten.Image, camera *components.Camera, rb tBokiComponents.RigidBody, color color.RGBA) {
 	x := -camera.X + rb.Pos.X
 	y := -camera.Y + rb.Pos.Y
 

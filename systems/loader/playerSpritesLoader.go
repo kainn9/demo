@@ -10,7 +10,6 @@ import (
 	"github.com/yohamta/donburi"
 )
 
-// Todo: add some kind of sorting based on ZIndex.
 type PlayerSpritesLoaderSystem struct {
 	scene *coldBrew.Scene
 }
@@ -27,17 +26,17 @@ func (sys *PlayerSpritesLoaderSystem) Query() *donburi.Query {
 
 func (sys *PlayerSpritesLoaderSystem) Load(entity *donburi.Entry) {
 
-	sprites := assetComponents.SpriteComponents.Get(entity)
+	spritesMap := assetComponents.SpritesMapComponent.Get(entity)
 
-	for _, sprite := range *sprites {
+	for nameKey, sprite := range *spritesMap {
 		if sprite.AssetData.Loaded {
 			continue
 		}
 
-		path := constants.PLAYER_SPRITE_PATH + sprite.AssetData.Name
+		log.Println("Loading Player Sprite: " + nameKey + ".")
+
+		path := constants.PLAYER_SPRITE_PATH + nameKey
 		LoadImage(path, sprite)
 	}
-
-	log.Println("Loading Player Sprites.")
 
 }

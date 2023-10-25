@@ -26,9 +26,14 @@ func (sys PlayerBlockCollisionHandlerSystem) Query() *donburi.Query {
 func (sys PlayerBlockCollisionHandlerSystem) Run(dt float64, blockEntity *donburi.Entry) {
 
 	player := systemsUtil.GetPlayerRigidBody(sys.scene.World)
+	playerState := systemsUtil.GetPlayerState(sys.scene.World)
 	blockBody := components.RigidBodyComponent.Get(blockEntity)
 
 	if isColliding, contacts := tBokiPhysics.Detector.Detect(player, blockBody, true); isColliding {
 		tBokiPhysics.Resolver.Resolve(player, blockBody, contacts[0])
+		playerState.OnGround = true
+	} else {
+		playerState.OnGround = false
 	}
+
 }
