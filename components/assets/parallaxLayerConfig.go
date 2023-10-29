@@ -5,7 +5,7 @@ import "github.com/yohamta/donburi"
 var ParallaxLayerConfigComponent = donburi.NewComponentType[ParallaxLayerConfig]()
 
 type ParallaxLayerConfig struct {
-	SubPath string // "<sceneCollection>/<sceneName>/" e.g., "intro/levelOne/"
+	SceneAssetsPath string // "<sceneCollection>/<sceneName>/" e.g., "intro/levelOne/"
 
 	// Slide speed for the layer.
 	// 0 means no sliding.
@@ -20,13 +20,13 @@ type ParallaxLayerConfig struct {
 	AlwaysVisible bool
 }
 
-func NewParallaxLayerConfig(subPath string, zIndex int, coefficientX, coefficientY float64, alwaysVisible bool) *ParallaxLayerConfig {
+func NewParallaxLayerConfig(sceneAssetsPath string, zIndex int, coefficientX, coefficientY float64, alwaysVisible bool) *ParallaxLayerConfig {
 
 	return &ParallaxLayerConfig{
-		SubPath:       subPath,
-		CoefficientX:  coefficientX,
-		CoefficientY:  coefficientY,
-		ZIndex:        zIndex,
-		AlwaysVisible: alwaysVisible,
+		SceneAssetsPath: sceneAssetsPath,
+		CoefficientX:    coefficientX,
+		CoefficientY:    coefficientY,
+		ZIndex:          zIndex,
+		AlwaysVisible:   alwaysVisible,
 	}
 }

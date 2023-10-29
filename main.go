@@ -2,8 +2,10 @@ package main
 
 import (
 	"image/color"
+	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/constants"
 	"github.com/kainn9/demo/scenes"
@@ -46,6 +48,23 @@ func NewGame() *game {
 
 func (g *game) Update() error {
 
+	// Temp hack/test. ------------------------
+
+	if inpututil.IsKeyJustPressed(ebiten.Key1) {
+		err := g.manager.LoadScene(scenes.Intro.LevelOneScene)
+		if err != nil {
+			log.Println("Yo!", err)
+		}
+	}
+
+	if inpututil.IsKeyJustPressed(ebiten.Key2) {
+		err := g.manager.LoadScene(scenes.Intro.LevelTwoScene)
+		if err != nil {
+			log.Println("Yo!", err)
+		}
+	}
+
+	// end of hack/test. ----------------------
 	activeScene := g.manager.ActiveScene()
 
 	go activeScene.Load()

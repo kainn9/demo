@@ -13,20 +13,20 @@ import (
 )
 
 type PlayerMovementHandlerSystem struct {
-	Scene *coldBrew.Scene
+	scene *coldBrew.Scene
 }
 
 var (
 	minVelocity = 3.0    // The minimum velocity to consider the player moving.
 	maxVelX     = 180.0  // Max speed left or right.
 	xVelUnit    = 18.0   // Left or right.
-	yVelUnit    = -275.0 // Jump.
+	yVelUnit    = -775.0 // Jump.
 	jumpDelay   = 15     // The amount of ticks to wait before jumping.
 )
 
 func NewPlayerMovementHandler(scene *coldBrew.Scene) *PlayerMovementHandlerSystem {
 	return &PlayerMovementHandlerSystem{
-		Scene: scene,
+		scene: scene,
 	}
 }
 
@@ -40,7 +40,7 @@ func (*PlayerMovementHandlerSystem) Query() *donburi.Query {
 }
 
 func (sys *PlayerMovementHandlerSystem) Run(dt float64, playerEntity *donburi.Entry) {
-	manager := sys.Scene.Manager
+	manager := sys.scene.Manager
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 

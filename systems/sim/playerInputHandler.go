@@ -11,12 +11,12 @@ import (
 )
 
 type PlayerInputHandlerSystem struct {
-	Scene *coldBrew.Scene
+	scene *coldBrew.Scene
 }
 
 func NewPlayerInputHandler(scene *coldBrew.Scene) *PlayerInputHandlerSystem {
 	return &PlayerInputHandlerSystem{
-		Scene: scene,
+		scene: scene,
 	}
 }
 
@@ -49,7 +49,7 @@ func (sys *PlayerInputHandlerSystem) Run(dt float64, playerEntity *donburi.Entry
 	}
 
 	if activeInput == ebiten.KeySpace {
-		handleKeySpace(playerState, sys.Scene.Manager)
+		handleKeySpace(playerState, sys.scene.Manager)
 	}
 
 	if activeInput == -1 {

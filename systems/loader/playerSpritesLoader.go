@@ -10,14 +10,10 @@ import (
 	"github.com/yohamta/donburi"
 )
 
-type PlayerSpritesLoaderSystem struct {
-	scene *coldBrew.Scene
-}
+type PlayerSpritesLoaderSystem struct{}
 
 func NewPlayerSpritesLoader(scene *coldBrew.Scene) *PlayerSpritesLoaderSystem {
-	return &PlayerSpritesLoaderSystem{
-		scene: scene,
-	}
+	return &PlayerSpritesLoaderSystem{}
 }
 
 func (sys *PlayerSpritesLoaderSystem) Query() *donburi.Query {
@@ -35,7 +31,7 @@ func (sys *PlayerSpritesLoaderSystem) Load(entity *donburi.Entry) {
 
 		log.Println("Loading Player Sprite: " + nameKey + ".")
 
-		path := constants.PLAYER_SPRITE_PATH + nameKey
+		path := constants.PLAYER_ASSETS_SUB_PATH + nameKey
 		LoadImage(path, sprite)
 	}
 

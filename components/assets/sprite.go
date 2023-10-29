@@ -16,6 +16,10 @@ type Sprite struct {
 
 var SpriteComponent = donburi.NewComponentType[Sprite]()
 var SpritesMapComponent = donburi.NewComponentType[map[string]*Sprite]()
+var SpritesSliceComponent = donburi.NewComponentType[[]*Sprite]()
+
+// This should work, but its not needed for now.
+// var MultipleSpritesSliceComponent = donburi.NewComponentType[map[string][]*Sprite]()
 
 func NewSprite(offX, offY float64) *Sprite {
 	return &Sprite{

@@ -2,8 +2,9 @@ package simSystems
 
 import (
 	"github.com/kainn9/coldBrew"
+	"github.com/kainn9/demo/components"
 	"github.com/kainn9/demo/constants"
-	cameraUtil "github.com/kainn9/demo/systems/render/util"
+	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	"github.com/yohamta/donburi"
 )
@@ -27,9 +28,14 @@ func NewCameraPositionHandler(scene *coldBrew.Scene) *CameraPositionHandlerSyste
 func (sys *CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 	world := sys.scene.World
 	mapWidth := sys.scene.Width
-	mapHeight := sys.scene.Height // Add map height
-	camera := systemsUtil.GetCamera(world)
-	playerPos := systemsUtil.GetPlayerPos(world)
+	mapHeight := sys.scene.Height
+
+	cameraEntity := systemsUtil.GetCameraEntity(world)
+	camera := components.CameraComponent.Get(cameraEntity)
+
+	playerEntity := systemsUtil.GetPlayerEntity(world)
+
+	playerBody := components.RigidBodyComponent.Get(playerEntity)
 
 	halfScreenWidthInt := constants.SCREEN_WIDTH / 2
 	halfScreenHeightInt := constants.SCREEN_HEIGHT / 2 // Half of the screen height
@@ -43,10 +49,10 @@ func (sys *CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 	yBoundaryTop := halfScreenHeight
 	yBoundaryBottom := float64(mapHeight - halfScreenHeightInt) // Calculate bottom Y boundary
 
-	playerInsideXBoundsLeft := playerPos.X < xBoundaryLeft
-	playerInsideXBoundsRight := playerPos.X > xBoundaryRight
-	playerInsideYBoundsTop := playerPos.Y < yBoundaryTop
-	playerInsideYBoundsBottom := playerPos.Y > yBoundaryBottom
+	playerInsideXBoundsLeft := playerBody.Pos.X < xBoundaryLeft
+	playerInsideXBoundsRight := playerBody.Pos.X > xBoundaryRight
+	playerInsideYBoundsTop := playerBody.Pos.Y < yBoundaryTop
+	playerInsideYBoundsBottom := playerBody.Pos.Y > yBoundaryBottom
 
 	// Handle X-axis
 	if playerInsideXBoundsLeft {
@@ -54,7 +60,7 @@ func (sys *CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 	} else if playerInsideXBoundsRight {
 		cameraUtil.SetPosition(camera, float64(mapWidth-constants.SCREEN_WIDTH), camera.Y, true)
 	} else {
-		cameraUtil.SetPosition(camera, playerPos.X-halfScreenWidth, camera.Y, true)
+		cameraUtil.SetPosition(camera, playerBody.Pos.X-halfScreenWidth, camera.Y, true)
 	}
 
 	// Handle Y-axis
@@ -63,6 +69,6 @@ func (sys *CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 	} else if playerInsideYBoundsBottom {
 		cameraUtil.SetPosition(camera, camera.X, float64(mapHeight-constants.SCREEN_HEIGHT), true)
 	} else {
-		cameraUtil.SetPosition(camera, camera.X, playerPos.Y-halfScreenHeight, true)
+		cameraUtil.SetPosition(camera, camera.X, playerBody.Pos.Y-halfScreenHeight, true)
 	}
 }

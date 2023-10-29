@@ -3,59 +3,47 @@ package systemsUtil
 import (
 	"log"
 
-	"github.com/kainn9/demo/components"
 	"github.com/kainn9/demo/queries"
-	tBokiComponents "github.com/kainn9/tteokbokki/components"
-	tBokiVec "github.com/kainn9/tteokbokki/math/vec"
 	"github.com/yohamta/donburi"
 )
 
-func GetCamera(world donburi.World) *components.Camera {
+func GetCameraEntity(world donburi.World) *donburi.Entry {
 
-	entity, ok := queries.CameraQuery.FirstEntity(world)
+	entity, ok := queries.CameraQuery.First(world)
 
 	if !ok {
 		log.Fatal("camera query failed.")
 	}
 
-	return components.CameraComponent.Get(entity)
+	return entity
 }
 
-func GetPlayerPos(world donburi.World) tBokiVec.Vec2 {
+func GetPlayerEntity(world donburi.World) *donburi.Entry {
 
-	entity, ok := queries.PlayerQuery.FirstEntity(world)
+	entity, ok := queries.PlayerQuery.First(world)
 
 	if !ok {
 		log.Fatal("playerQuery query failed.")
 	}
-
-	playerBody := components.RigidBodyComponent.Get(entity)
-
-	return playerBody.Pos
+	return entity
 }
 
-func GetPlayerRigidBody(world donburi.World) *tBokiComponents.RigidBody {
-
-	entity, ok := queries.PlayerQuery.FirstEntity(world)
+func GetChatPopUpEntity(world donburi.World) *donburi.Entry {
+	entity, ok := queries.ChatPopUpEntityQuery.First(world)
 
 	if !ok {
-		log.Fatal("playerQuery query failed.")
+		log.Fatal("chatPopUpEntity query failed.")
 	}
 
-	playerBody := components.RigidBodyComponent.Get(entity)
-
-	return playerBody
+	return entity
 }
 
-func GetPlayerState(world donburi.World) *components.PlayerState {
-
-	entity, ok := queries.PlayerQuery.FirstEntity(world)
+func GetChatPopDownEntity(world donburi.World) *donburi.Entry {
+	entity, ok := queries.ChatPopDownEntityQuery.First(world)
 
 	if !ok {
-		log.Fatal("playerQuery query failed.")
+		log.Fatal("chatPopDownEntity query failed.")
 	}
 
-	state := components.PlayerStateComponent.Get(entity)
-
-	return state
+	return entity
 }

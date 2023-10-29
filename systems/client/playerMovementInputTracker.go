@@ -9,19 +9,25 @@ import (
 	"github.com/yohamta/donburi/filter"
 )
 
-type InputTrackerSystem struct{}
+type PlayerMovementInputTrackerSystem struct{}
 
-func NewInputTracker() *InputTrackerSystem {
-	return &InputTrackerSystem{}
+func NewPlayerMovementInputTracker() *PlayerMovementInputTrackerSystem {
+	return &PlayerMovementInputTrackerSystem{}
 }
 
-func (*InputTrackerSystem) Query() *donburi.Query {
+func (*PlayerMovementInputTrackerSystem) Query() *donburi.Query {
 	return donburi.NewQuery(
 		filter.Contains(components.InputsComponent),
 	)
 }
 
-func (sys *InputTrackerSystem) Sync(entity *donburi.Entry) {
+func (sys *PlayerMovementInputTrackerSystem) Sync(entity *donburi.Entry) {
+
+	// Block movement inputs unless chat is not active.
+	if chatIsActive(entity) {
+		return
+	}
+
 	inputs := components.InputsComponent.Get(entity)
 
 	// Its better to use else if for the horizontal
@@ -41,6 +47,29 @@ func (sys *InputTrackerSystem) Sync(entity *donburi.Entry) {
 		addUniqueKey(&inputs.Queue, ebiten.KeySpace)
 	}
 
+}
+
+func chatIsActive(inputEntity *donburi.Entry) bool {
+	// A bit of a hacky way to do this, but it works.
+	// Could also just use the scene to get the world(like we do in other systems)...
+	// Not sure which I like better yet.
+	world := inputEntity.World
+
+	var isChatActive bool
+
+	query := donburi.NewQuery(
+		filter.Contains(components.ChatStateComponent),
+	)
+
+	query.Each(world, func(chatEntity *donburi.Entry) {
+
+		config := components.ChatStateComponent.Get(chatEntity)
+		if config.Active {
+			isChatActive = true
+		}
+	})
+
+	return isChatActive
 }
 
 func addUniqueKey(slice *[]ebiten.Key, element ebiten.Key) bool {

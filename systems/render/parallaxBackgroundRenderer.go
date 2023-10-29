@@ -5,9 +5,10 @@ import (
 	"github.com/yohamta/donburi"
 
 	"github.com/kainn9/coldBrew"
+	"github.com/kainn9/demo/components"
 	assetComponents "github.com/kainn9/demo/components/assets"
 	"github.com/kainn9/demo/queries"
-	cameraUtil "github.com/kainn9/demo/systems/render/util"
+	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 )
 
@@ -24,8 +25,12 @@ func NewParallaxBackgroundRenderer(scene *coldBrew.Scene) *ParallaxBackgroundRen
 func (sys *ParallaxBackgroundRendererSystem) Draw(screen *ebiten.Image, _ *donburi.Entry) {
 
 	world := sys.scene.World
+	cameraEntity := systemsUtil.GetCameraEntity(world)
+	camera := components.CameraComponent.Get(cameraEntity)
 
-	camera := systemsUtil.GetCamera(world)
+	// Since this is the first Render System, we clear the camera here.
+	// This may get moved to a separate system in the future.
+	cameraUtil.Clear(camera)
 
 	queries.ParallaxBackGroundLayerQuery.Each(world, func(entity *donburi.Entry) {
 		pLaxLayerConfig := assetComponents.ParallaxLayerConfigComponent.Get(entity)

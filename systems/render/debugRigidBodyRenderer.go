@@ -33,7 +33,8 @@ func (*DebugRigidBodyRendererSystem) Query() *donburi.Query {
 
 func (sys *DebugRigidBodyRendererSystem) Draw(screen *ebiten.Image, entity *donburi.Entry) {
 	body := components.RigidBodyComponent.Get(entity)
-	camera := systemsUtil.GetCamera(sys.scene.World)
+	cameraEntity := systemsUtil.GetCameraEntity(sys.scene.World)
+	camera := components.CameraComponent.Get(cameraEntity)
 
 	red := color.RGBA{R: 255, G: 0, B: 0, A: 255}
 	blue := color.RGBA{R: 0, G: 0, B: 255, A: 255}

@@ -22,7 +22,7 @@ func LoadImage(path string, sprite *assetComponents.Sprite) {
 	// 	path = strings.ReplaceAll(path, "./", "/")
 	// }
 
-	concatPath := constants.IMAGE_ASSET_DIR + path
+	concatPath := constants.ASSET_ROOT_PATH + path
 	img, _, err := ebitenutil.NewImageFromFile(concatPath + constants.IMAGE_EXTENSION)
 	if err != nil {
 		log.Fatal(err)

@@ -1,8 +1,6 @@
 package renderSystems
 
 import (
-	"image"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 
@@ -11,7 +9,8 @@ import (
 	assetComponents "github.com/kainn9/demo/components/assets"
 	"github.com/kainn9/demo/constants"
 	"github.com/kainn9/demo/queries"
-	cameraUtil "github.com/kainn9/demo/systems/render/util"
+	"github.com/kainn9/demo/systems/render/util/animUtil"
+	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 )
 
@@ -39,14 +38,15 @@ func (sys *PlayerRendererSystem) Draw(screen *ebiten.Image, playerEntity *donbur
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 	opts := &ebiten.DrawImageOptions{}
 
-	camera := systemsUtil.GetCamera(world)
+	cameraEntity := systemsUtil.GetCameraEntity(world)
+	camera := components.CameraComponent.Get(cameraEntity)
 
 	// Clearing old animation data if animation state has changed.
 	prevAnimationState := playerState.AnimationState
 	currentAnimationState := determinePlayerAnimationState(playerState)
 
 	if prevAnimationState != currentAnimationState {
-		resetAnimationData((*sprites)[prevAnimationState])
+		animUtil.ResetAnimationData((*sprites)[prevAnimationState])
 	}
 
 	// Setting current animation state(selecting matching sprite/sheet).
@@ -71,10 +71,13 @@ func (sys *PlayerRendererSystem) Draw(screen *ebiten.Image, playerEntity *donbur
 	cameraUtil.Translate(camera, opts, xPos, yPos)
 
 	// Selecting correct sprite frame to render.
-	spriteAtFrameIndex := AnimUtil(sys.scene.Manager, currentSpriteSheet)
+	spriteAtFrameIndex := animUtil.GetFrame(sys.scene.Manager, currentSpriteSheet)
 
 	// Adding sprite frame to camera.
 	cameraUtil.AddImage(camera, spriteAtFrameIndex, opts)
+
+	// Since this is the last Render System, we render the camera here.
+	// This may get moved to a separate system in the future.
 	cameraUtil.Render(camera, screen)
 
 }
@@ -86,6 +89,7 @@ func determinePlayerAnimationState(playerState *components.PlayerState) string {
 	}
 
 	if !playerState.Jumping && !playerState.OnGround {
+
 		return constants.PLAYER_ANIM_STATE_FALL
 	}
 
@@ -94,46 +98,4 @@ func determinePlayerAnimationState(playerState *components.PlayerState) string {
 	}
 
 	return constants.PLAYER_ANIM_STATE_IDLE
-}
-
-// TODO: Move these(below) to a more appropriate place,
-// once we have animations outside the scope of the player.
-func resetAnimationData(spriteSheet *assetComponents.Sprite) {
-	if spriteSheet == nil {
-		return
-	}
-
-	spriteSheet.AnimationData.StartTick = 0
-}
-
-func AnimUtil(m *coldBrew.Manager, spriteSheet *assetComponents.Sprite) *ebiten.Image {
-	currentTick := m.TickHandler.CurrentTick()
-
-	animData := spriteSheet.AnimationData
-
-	// Anim has just started playing.
-	if animData.StartTick == 0 {
-		animData.StartTick = currentTick
-	}
-
-	// Anim has been played before, but has finished.
-	totalAnimationTicks := animData.FrameCount * animData.AnimationFramesPerTick
-	ticksSinceAnimationStart := m.TickHandler.TicksSinceNTicks(animData.StartTick)
-
-	// If animation has finished, and does not have freeze bool,
-	// allow the animation to loop.
-	var frameIndex int
-	animationFinished := ticksSinceAnimationStart >= totalAnimationTicks
-
-	if animationFinished && animData.Freeze {
-		frameIndex = animData.FrameCount - 1
-	} else {
-		frameIndex = (ticksSinceAnimationStart / animData.AnimationFramesPerTick) % animData.FrameCount
-	}
-
-	sx, sy := (0)+frameIndex*(animData.FrameWidth), (0)
-
-	rect := image.Rect(sx, sy, sx+(animData.FrameWidth), animData.FrameHeight)
-
-	return spriteSheet.SubImage(rect).(*ebiten.Image)
 }

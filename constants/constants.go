@@ -2,36 +2,24 @@ package constants
 
 // Client Constants.
 const (
-	SCREEN_HEIGHT             = 360
-	SCREEN_WIDTH              = 640
-	MAX_TICKS                 = 1200000
-	SCENE_CACHE_LIMIT         = 5
-	TICKS_PER_ANIMATION_FRAME = 5
+	SCREEN_HEIGHT     = 360
+	SCREEN_WIDTH      = 640
+	MAX_TICKS         = 1200000
+	SCENE_CACHE_LIMIT = 5
 
-	PLAYER_SPRITE_PATH = "characters/player/"
-	SCENE_SUB_DIR      = "scenes/"
-	IMAGE_EXTENSION    = ".png"
-	IMAGE_ASSET_DIR    = "./assets/images/"
+	IMAGE_EXTENSION = ".png"
+	ASSET_ROOT_PATH = "./assets/"
+
+	SCENE_ASSETS_SUB_PATH     = "scenes/"     // ./assets/scenes/
+	UI_ASSETS_SUB_PATH        = "UI/"         // ./assets/UI/
+	CHARACTER_ASSETS_SUB_PATH = "characters/" // ./assets/characters/
+
+	PLAYER_ASSETS_SUB_PATH     = CHARACTER_ASSETS_SUB_PATH + "player/" // ./assets/characters/player/
+	CHAT_SCENE_ASSETS_SUB_PATH = "chats/"                              // ./assets/scenes/SCENE_SECTION/SCENE_NAME/chat/
 )
 
-// Player State Constants.
-const (
-	PLAYER_ANIM_STATE_IDLE = "idle"
-	PLAYER_ANIM_STATE_RUN  = "run"
-	PLAYER_ANIM_STATE_JUMP = "jump"
-	PLAYER_ANIM_STATE_FALL = "fall"
-)
+// Player  Constants.
 
-// Camera Constants.
-const (
-	CAMERA_MIN_SPEED = 2.5
-	CAMERA_MAX_SPEED = 3.5
-	CAMERA_EPSILON   = SCREEN_WIDTH/2 - 270
-)
-
-// Player Constants.
-// Todo: Move this somewhere else?
-// Maybe YAML or JSON?
 const (
 	// RIGID BODY.
 	PLAYER_WIDTH           = 18
@@ -52,4 +40,30 @@ const (
 
 	PLAYER_ANIMATIONS_SPRITE_WIDTH  = 144
 	PLAYER_ANIMATIONS_SPRITE_HEIGHT = 126
+
+	// ANIM STATES.
+	PLAYER_ANIM_STATE_IDLE = "idle"
+	PLAYER_ANIM_STATE_RUN  = "run"
+	PLAYER_ANIM_STATE_JUMP = "jump"
+	PLAYER_ANIM_STATE_FALL = "fall"
+)
+
+// Camera Constants.
+const (
+	CAMERA_MIN_SPEED = 2.5
+	CAMERA_MAX_SPEED = 3.5
+	CAMERA_EPSILON   = SCREEN_WIDTH/2 - 270
+)
+
+// Chat Constants.
+const (
+	CHAT_FRAME_WIDTH       = SCREEN_WIDTH - 21
+	CHAT_ANIM_POP_UP_SPEED = 12
+	CHAT_ANIM_TEXT_SPEED   = 12
+	CHAT_POP_UP_TICKS      = 2 * CHAT_ANIM_POP_UP_SPEED
+	CHAT_MAP_SLIDES_KEY    = "slides"
+	CHAT_MAP_PORTRAITS_KEY = "portraits"
+
+	CHAT_STATE_POP_UP   = "chatPopUp"
+	CHAT_STATE_POP_DOWN = "chatPopDown"
 )

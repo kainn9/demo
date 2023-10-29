@@ -34,3 +34,11 @@ var Block = donburi.NewQuery(
 		filter.Contains(components.RigidBodyComponent),
 	),
 )
+
+var ChatPopUpEntityQuery = donburi.NewQuery(
+	filter.Contains(tags.ChatPopUpSpriteTag),
+)
+
+var ChatPopDownEntityQuery = donburi.NewQuery(
+	filter.Contains(tags.ChatPopDownSpriteTag),
+)

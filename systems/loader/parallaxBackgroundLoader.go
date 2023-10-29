@@ -33,8 +33,8 @@ func (sys *ParallaxBackgroundLoaderSystem) Load(entity *donburi.Entry) {
 
 	pLaxLayerConfig := assetComponents.ParallaxLayerConfigComponent.Get(entity)
 
-	path := constants.SCENE_SUB_DIR
-	path += pLaxLayerConfig.SubPath
+	path := constants.SCENE_ASSETS_SUB_PATH
+	path += pLaxLayerConfig.SceneAssetsPath
 	path += strconv.Itoa(pLaxLayerConfig.ZIndex)
 
 	LoadImage(path, sprite)
@@ -42,6 +42,6 @@ func (sys *ParallaxBackgroundLoaderSystem) Load(entity *donburi.Entry) {
 	// A temp hack since there is so little load time
 	// but we want to see the load screen for testing...
 	time.Sleep(50 * time.Millisecond)
-	log.Println("Loading background layer", strconv.Itoa(pLaxLayerConfig.ZIndex)+".")
+	log.Println("Loading background layer for ", pLaxLayerConfig.SceneAssetsPath, strconv.Itoa(pLaxLayerConfig.ZIndex)+".")
 
 }
