@@ -60,7 +60,16 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scenesUtil.AddPlayerEntity(scene, 100, 600)
 	scenesUtil.AddCameraEntity(scene, 0, 262)
 
+	// Floor.
 	scenesUtil.AddFloorEntity(scene, float64(scene.Width/2), float64(scene.Height-40), float64(scene.Width), 20, -0.04)
+
+	// Platforms.
+	scenesUtil.AddPlatformEntity(scene, 160, 121, float64(scene.Width), 10)                      // Left.
+	scenesUtil.AddPlatformEntity(scene, float64(scene.Width)+340, 121, float64(scene.Width), 10) // Right.
+
+	// Ladder.
+	scenesUtil.AddFloorEntity(scene, 1875, 326, 35, 420, 0)
+
 	scenesUtil.AddChatEntity(
 		scene,
 		3,

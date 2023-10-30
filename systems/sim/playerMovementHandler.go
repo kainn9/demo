@@ -18,6 +18,7 @@ type PlayerMovementHandlerSystem struct {
 
 var (
 	minVelocity = 3.0    // The minimum velocity to consider the player moving.
+	maxVelY     = 750.0  // Max speed up or down.
 	maxVelX     = 180.0  // Max speed left or right.
 	xVelUnit    = 18.0   // Left or right.
 	yVelUnit    = -775.0 // Jump.
@@ -48,7 +49,7 @@ func (sys *PlayerMovementHandlerSystem) Run(dt float64, playerEntity *donburi.En
 	gravityHandler(playerBody, playerState)
 	horizontalMovementHandler(playerState, playerBody)
 	jumpHandler(playerBody, playerState, manager)
-	clampToMaxVelocityX(playerBody)
+	clampToMaxVelocity(playerBody)
 	IntegrateMovementForces(playerBody, dt)
 
 }
@@ -123,11 +124,11 @@ func jumpHandler(playerBody *tBokiComponents.RigidBody, playerState *components.
 		return
 	}
 
-	// If player is on the ground, and is preparing to jump,
-	// and the jump windup has finished(guarded above),
+	// If player is preparing to jump and the jump
+	// windup has finished(guarded above),
 	// apply the jump impulse.
 	playerPreparingToJump := playerState.JumpWindupStart != 0
-	if playerState.OnGround && playerPreparingToJump {
+	if playerPreparingToJump {
 		playerState.Jumping = true
 		playerState.JumpWindupStart = 0
 		tBokiPhysics.Transformer.ApplyImpulseLinear(playerBody, tBokiVec.Vec2{X: 0, Y: yVelUnit})
@@ -139,8 +140,10 @@ func jumpHandler(playerBody *tBokiComponents.RigidBody, playerState *components.
 
 }
 
-func clampToMaxVelocityX(playerBody *tBokiComponents.RigidBody) {
+func clampToMaxVelocity(playerBody *tBokiComponents.RigidBody) {
 	playerBody.Vel.X = tBokiMath.Clamp(playerBody.Vel.X, -maxVelX, maxVelX)
+	playerBody.Vel.Y = tBokiMath.Clamp(playerBody.Vel.Y, -maxVelY, maxVelY)
+
 }
 
 func IntegrateMovementForces(playerBody *tBokiComponents.RigidBody, dt float64) {

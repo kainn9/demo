@@ -47,8 +47,8 @@ func loadChatPreReqAssets(scene *coldBrew.Scene) {
 	world := scene.World
 
 	chatAnimationStateQueries := []*donburi.Query{
-		queries.ChatPopUpEntityQuery,
-		queries.ChatPopDownEntityQuery,
+		queries.ChatPopUpAnimQuery,
+		queries.ChatPopDownAnimQuery,
 	}
 
 	chatTags := []*donburi.ComponentType[struct{}]{

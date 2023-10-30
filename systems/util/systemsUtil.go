@@ -29,7 +29,7 @@ func GetPlayerEntity(world donburi.World) *donburi.Entry {
 }
 
 func GetChatPopUpEntity(world donburi.World) *donburi.Entry {
-	entity, ok := queries.ChatPopUpEntityQuery.First(world)
+	entity, ok := queries.ChatPopUpAnimQuery.First(world)
 
 	if !ok {
 		log.Fatal("chatPopUpEntity query failed.")
@@ -39,7 +39,7 @@ func GetChatPopUpEntity(world donburi.World) *donburi.Entry {
 }
 
 func GetChatPopDownEntity(world donburi.World) *donburi.Entry {
-	entity, ok := queries.ChatPopDownEntityQuery.First(world)
+	entity, ok := queries.ChatPopDownAnimQuery.First(world)
 
 	if !ok {
 		log.Fatal("chatPopDownEntity query failed.")

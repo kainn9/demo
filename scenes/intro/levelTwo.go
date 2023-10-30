@@ -36,10 +36,10 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scenesUtil.AddPlayerEntity(scene, 100, 0)
 	scenesUtil.AddCameraEntity(scene, 0, 0)
 
-	// Top(Todo: replace with platform).
-	scenesUtil.AddFloorEntity(scene, float64(scene.Width/2), float64(scene.Height-528), float64(scene.Width), 15, 0)
+	// Platform.
+	scenesUtil.AddPlatformEntity(scene, float64(scene.Width/2), float64(scene.Height-528), float64(scene.Width), 15)
 
-	// Bottom.
+	// Floor.
 	scenesUtil.AddFloorEntity(scene, float64(scene.Width/2), float64(scene.Height-20), float64(scene.Width), 20, 0)
 
 	return scene

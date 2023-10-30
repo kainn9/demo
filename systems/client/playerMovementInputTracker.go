@@ -4,6 +4,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kainn9/demo/components"
+	"github.com/kainn9/demo/constants"
 
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/filter"
@@ -30,29 +31,48 @@ func (sys *PlayerMovementInputTrackerSystem) Sync(entity *donburi.Entry) {
 
 	inputs := components.InputsComponent.Get(entity)
 
-	// Its better to use else if for the horizontal
-	// movement keys to avoid weird behavior when players
-	// are pressing left/right inputs at the same time.
-	// We could also make left/right considered not unique to
-	// each other, but this honestly works fine and is simple.
-	if ebiten.IsKeyPressed(ebiten.KeyRight) {
-		addUniqueKey(&inputs.Queue, ebiten.KeyRight)
-	} else if ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		addUniqueKey(&inputs.Queue, ebiten.KeyLeft)
+	left, right, jump, up, down, interact := constants.AllBinds()
+
+	// Left/Right movement.
+	// Else if, is intentional here.
+	if ebiten.IsKeyPressed(left) {
+		addUniqueKey(&inputs.Queue, left)
+	} else if ebiten.IsKeyPressed(right) {
+		addUniqueKey(&inputs.Queue, right)
 	}
 
-	// For the space key, we want to add it to the queue
-	// regardless of the horizontal movement keys.
-	if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
-		addUniqueKey(&inputs.Queue, ebiten.KeySpace)
+	if !ebiten.IsKeyPressed(left) && !ebiten.IsKeyPressed(right) {
+		addUniqueKey(&inputs.Queue, constants.RELEASED_HORIZONTAL)
+	}
+
+	// Jump.
+	if inpututil.IsKeyJustPressed(jump) && !ebiten.IsKeyPressed(down) {
+		addUniqueKey(&inputs.Queue, jump)
+	}
+
+	// Phase through platforms.
+	if inpututil.IsKeyJustPressed(jump) && ebiten.IsKeyPressed(down) {
+		addUniqueKey(&inputs.Queue, constants.COMBO_DOWN_SPACE)
+	}
+
+	// Climb up.
+	if ebiten.IsKeyPressed(up) {
+		addUniqueKey(&inputs.Queue, up)
+	}
+
+	// Climb down.
+	if ebiten.IsKeyPressed(down) {
+		addUniqueKey(&inputs.Queue, down)
+	}
+
+	// Interact.
+	if inpututil.IsKeyJustPressed(interact) {
+		addUniqueKey(&inputs.Queue, interact)
 	}
 
 }
 
 func chatIsActive(inputEntity *donburi.Entry) bool {
-	// A bit of a hacky way to do this, but it works.
-	// Could also just use the scene to get the world(like we do in other systems)...
-	// Not sure which I like better yet.
 	world := inputEntity.World
 
 	var isChatActive bool

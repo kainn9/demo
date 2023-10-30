@@ -6,11 +6,16 @@ import (
 
 type PlayerState struct {
 	direction               float64
-	JumpWindupStart         int // tick when jump windup started.
+	JumpWindupStart         int // Tick.
 	BasicHorizontalMovement bool
+	Up                      bool
+	Down                    bool
+	Interact                bool
 	OnGround                bool
 	Jumping                 bool
-	AnimationState          string
+	PhaseThroughPlatforms   bool
+
+	AnimationState string
 }
 
 var PlayerStateComponent = donburi.NewComponentType[PlayerState]()

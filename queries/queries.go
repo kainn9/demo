@@ -34,18 +34,18 @@ var FrontLayerQuery = donburi.NewQuery(
 	),
 )
 
-var Block = donburi.NewQuery(
-	filter.And(
-		filter.Contains(tags.StandardCollisionTag),
-		filter.Not(filter.Contains(tags.PlayerTag)),
-		filter.Contains(components.RigidBodyComponent),
-	),
+var FloorQuery = donburi.NewQuery(
+	filter.Contains(tags.FloorTag),
 )
 
-var ChatPopUpEntityQuery = donburi.NewQuery(
+var PlatformQuery = donburi.NewQuery(
+	filter.Contains(tags.PlatformTag),
+)
+
+var ChatPopUpAnimQuery = donburi.NewQuery(
 	filter.Contains(tags.ChatPopUpSpriteTag),
 )
 
-var ChatPopDownEntityQuery = donburi.NewQuery(
+var ChatPopDownAnimQuery = donburi.NewQuery(
 	filter.Contains(tags.ChatPopDownSpriteTag),
 )

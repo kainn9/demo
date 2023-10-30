@@ -52,7 +52,6 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 		components.PlayerStateComponent,
 		assetComponents.SpritesMapComponent,
 		tags.PlayerTag,
-		tags.StandardCollisionTag,
 	)
 
 	// RigidBody.
@@ -147,19 +146,37 @@ func AddCameraEntity(scene *coldBrew.Scene, x, y float64) {
 
 func AddFloorEntity(scene *coldBrew.Scene, x, y, w, h, rotation float64) {
 
-	boundsEntity := scene.AddEntity(
+	floorEntity := scene.AddEntity(
 		components.RigidBodyComponent,
-		tags.StandardCollisionTag,
+		tags.FloorTag,
 	)
 
-	boundsBody := tBokiComponents.NewRigidBodyBox(x, y, w, h, 0, true)
-	boundsBody.Elasticity = 0
-	boundsBody.Rotation = rotation
-	boundsBody.UpdateVertices()
+	floorBody := tBokiComponents.NewRigidBodyBox(x, y, w, h, 0, true)
+	floorBody.Elasticity = 0
+	floorBody.Rotation = rotation
+	floorBody.UpdateVertices()
 
 	components.RigidBodyComponent.SetValue(
-		boundsEntity,
-		*boundsBody,
+		floorEntity,
+		*floorBody,
+	)
+}
+
+// Note: Platforms do not support rotation.
+func AddPlatformEntity(scene *coldBrew.Scene, x, y, w, h float64) {
+
+	platformEntity := scene.AddEntity(
+		components.RigidBodyComponent,
+		tags.PlatformTag,
+	)
+
+	platformBody := tBokiComponents.NewRigidBodyBox(x, y, w, h, 0, true)
+	platformBody.Elasticity = 0
+	platformBody.UpdateVertices()
+
+	components.RigidBodyComponent.SetValue(
+		platformEntity,
+		*platformBody,
 	)
 }
 

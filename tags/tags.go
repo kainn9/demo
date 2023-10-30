@@ -4,7 +4,9 @@ import "github.com/yohamta/donburi"
 
 var PlayerTag = donburi.NewTag()
 
-var StandardCollisionTag = donburi.NewTag()
+var FloorTag = donburi.NewTag()
+
+var PlatformTag = donburi.NewTag()
 
 var ChatPopUpSpriteTag = donburi.NewTag()
 
