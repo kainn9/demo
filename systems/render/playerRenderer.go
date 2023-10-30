@@ -46,7 +46,7 @@ func (sys *PlayerRendererSystem) Draw(screen *ebiten.Image, playerEntity *donbur
 	currentAnimationState := determinePlayerAnimationState(playerState)
 
 	if prevAnimationState != currentAnimationState {
-		animUtil.ResetAnimationData((*sprites)[prevAnimationState])
+		animUtil.ResetAnimationConfig((*sprites)[prevAnimationState])
 	}
 
 	// Setting current animation state(selecting matching sprite/sheet).
@@ -75,10 +75,6 @@ func (sys *PlayerRendererSystem) Draw(screen *ebiten.Image, playerEntity *donbur
 
 	// Adding sprite frame to camera.
 	cameraUtil.AddImage(camera, spriteAtFrameIndex, opts)
-
-	// Since this is the last Render System, we render the camera here.
-	// This may get moved to a separate system in the future.
-	cameraUtil.Render(camera, screen)
 
 }
 

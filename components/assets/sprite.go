@@ -11,7 +11,7 @@ type Sprite struct {
 	*AssetData
 
 	// This is optional, only needed for sprites that are animated(aka spriteSheets).
-	*AnimationData
+	*AnimationConfig
 }
 
 var SpriteComponent = donburi.NewComponentType[Sprite]()

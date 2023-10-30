@@ -8,43 +8,43 @@ import (
 	assetComponents "github.com/kainn9/demo/components/assets"
 )
 
-func ResetAnimationData(spriteSheet *assetComponents.Sprite) {
+func ResetAnimationConfig(spriteSheet *assetComponents.Sprite) {
 	if spriteSheet == nil {
 		return
 	}
 
-	spriteSheet.AnimationData.StartTick = 0
+	spriteSheet.AnimationConfig.StartTick = 0
 }
 
 func GetFrame(m *coldBrew.Manager, spriteSheet *assetComponents.Sprite) *ebiten.Image {
 	currentTick := m.TickHandler.CurrentTick()
 
-	animData := spriteSheet.AnimationData
+	animConfig := spriteSheet.AnimationConfig
 
 	// Anim has just started playing.
-	if animData.StartTick == 0 {
+	if animConfig.StartTick == 0 {
 
-		animData.StartTick = currentTick
+		animConfig.StartTick = currentTick
 	}
 
 	// Anim has been played before, but has finished.
-	totalAnimationTicks := animData.FrameCount * animData.AnimationFramesPerTick
-	ticksSinceAnimationStart := m.TickHandler.TicksSinceNTicks(animData.StartTick)
+	totalAnimationTicks := animConfig.FrameCount * animConfig.AnimationFramesPerTick
+	ticksSinceAnimationStart := m.TickHandler.TicksSinceNTicks(animConfig.StartTick)
 
 	// If animation has finished, and does not have freeze bool,
 	// allow the animation to loop.
 	var frameIndex int
 	animationFinished := ticksSinceAnimationStart >= totalAnimationTicks
 
-	if animationFinished && animData.Freeze {
-		frameIndex = animData.FrameCount - 1
+	if animationFinished && animConfig.Freeze {
+		frameIndex = animConfig.FrameCount - 1
 	} else {
-		frameIndex = (ticksSinceAnimationStart / animData.AnimationFramesPerTick) % animData.FrameCount
+		frameIndex = (ticksSinceAnimationStart / animConfig.AnimationFramesPerTick) % animConfig.FrameCount
 	}
 
-	sx, sy := (0)+frameIndex*(animData.FrameWidth), (0)
+	sx, sy := (0)+frameIndex*(animConfig.FrameWidth), (0)
 
-	rect := image.Rect(sx, sy, sx+(animData.FrameWidth), animData.FrameHeight)
+	rect := image.Rect(sx, sy, sx+(animConfig.FrameWidth), animConfig.FrameHeight)
 
 	return spriteSheet.SubImage(rect).(*ebiten.Image)
 }

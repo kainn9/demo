@@ -83,6 +83,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	activeScene.Draw(screen)
 
 	g.manager.TickHandler.IncrementTick()
+
 }
 
 func (g *game) Layout(w, h int) (int, int) {

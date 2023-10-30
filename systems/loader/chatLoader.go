@@ -93,7 +93,7 @@ func loadChatPreReqAssets(scene *coldBrew.Scene) {
 
 		// Now we can create the animation data.
 		frameWidth, frameHeight, frameCount := getAnimData(spriteComponent)
-		spriteComponent.AnimationData = assetComponents.NewAnimationData(frameWidth, frameHeight, frameCount, constants.CHAT_ANIM_POP_UP_SPEED, true)
+		spriteComponent.AnimationConfig = assetComponents.NewAnimationConfig(frameWidth, frameHeight, frameCount, constants.CHAT_ANIM_POP_UP_SPEED, true)
 	}
 
 }
@@ -128,7 +128,7 @@ func loadChatSprites(config *components.ChatState, spritesSlice []*assetComponen
 
 		// Now we can create the animation data from the loaded asset data.
 		frameWidth, frameHeight, frameCount := getAnimData(slideSprite)
-		slideSprite.AnimationData = assetComponents.NewAnimationData(frameWidth, frameHeight, frameCount, constants.CHAT_ANIM_TEXT_SPEED, true)
+		slideSprite.AnimationConfig = assetComponents.NewAnimationConfig(frameWidth, frameHeight, frameCount, constants.CHAT_ANIM_TEXT_SPEED, true)
 	}
 }
 

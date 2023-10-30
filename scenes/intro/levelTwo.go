@@ -29,13 +29,10 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 
 	// Entities ----------------------------------------------------------------------------------
 	scenesUtil.AddParallaxBackgroundEntity(scene, []*assetComponents.ParallaxLayerConfig{
-		// Background.
 		assetComponents.NewParallaxLayerConfig(LEVEL_TWO_SCENE_ASSET_PATH, 0, 8, 0, false),
-
-		// Front.
 		assetComponents.NewParallaxLayerConfig(LEVEL_TWO_SCENE_ASSET_PATH, 1, 0, 0, false),
 	})
-
+	scenesUtil.AddFrontLayerEntity(scene, LEVEL_TWO_SCENE_ASSET_PATH)
 	scenesUtil.AddPlayerEntity(scene, 100, 0)
 	scenesUtil.AddCameraEntity(scene, 0, 0)
 

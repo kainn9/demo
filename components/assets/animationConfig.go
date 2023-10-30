@@ -1,6 +1,6 @@
 package assetComponents
 
-type AnimationData struct {
+type AnimationConfig struct {
 	FrameWidth,
 	FrameHeight,
 	FrameCount,
@@ -9,16 +9,16 @@ type AnimationData struct {
 	Freeze bool
 }
 
-func NewAnimationData(
+func NewAnimationConfig(
 	frameWidth,
 	frameHeight,
 	frameCount,
 	animationFramesPerTick int,
 	freeze bool,
 
-) *AnimationData {
+) *AnimationConfig {
 
-	return &AnimationData{
+	return &AnimationConfig{
 		FrameWidth:             frameWidth,
 		FrameHeight:            frameHeight,
 		FrameCount:             frameCount,

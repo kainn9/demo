@@ -29,6 +29,20 @@ func AddParallaxBackgroundEntity(scene *coldBrew.Scene, layers []*assetComponent
 
 }
 
+func AddFrontLayerEntity(scene *coldBrew.Scene, sceneAssetPath string) {
+	frontLayerBackgroundEntity := scene.AddEntity(assetComponents.FrontLayerComponent, assetComponents.SpriteComponent)
+
+	assetComponents.FrontLayerComponent.SetValue(
+		frontLayerBackgroundEntity,
+		*assetComponents.NewFrontLayerConfig(sceneAssetPath),
+	)
+
+	assetComponents.SpriteComponent.SetValue(
+		frontLayerBackgroundEntity,
+		*assetComponents.NewSprite(0, 0),
+	)
+}
+
 func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidBody {
 
 	// Entity Initialization.
@@ -63,7 +77,7 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 		constants.PLAYER_SPRITE_OFFSET_Y,
 	)
 
-	playerSprites[constants.PLAYER_ANIM_STATE_IDLE].AnimationData = assetComponents.NewAnimationData(
+	playerSprites[constants.PLAYER_ANIM_STATE_IDLE].AnimationConfig = assetComponents.NewAnimationConfig(
 		constants.PLAYER_ANIMATIONS_SPRITE_WIDTH,
 		constants.PLAYER_ANIMATIONS_SPRITE_HEIGHT,
 		constants.PLAYER_IDLE_FRAME_COUNT,
@@ -77,7 +91,7 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 		constants.PLAYER_SPRITE_OFFSET_Y,
 	)
 
-	playerSprites[constants.PLAYER_ANIM_STATE_RUN].AnimationData = assetComponents.NewAnimationData(
+	playerSprites[constants.PLAYER_ANIM_STATE_RUN].AnimationConfig = assetComponents.NewAnimationConfig(
 		constants.PLAYER_ANIMATIONS_SPRITE_WIDTH,
 		constants.PLAYER_ANIMATIONS_SPRITE_HEIGHT,
 		constants.PLAYER_RUN_FRAME_COUNT,
@@ -91,7 +105,7 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 		constants.PLAYER_SPRITE_OFFSET_Y,
 	)
 
-	playerSprites[constants.PLAYER_ANIM_STATE_JUMP].AnimationData = assetComponents.NewAnimationData(
+	playerSprites[constants.PLAYER_ANIM_STATE_JUMP].AnimationConfig = assetComponents.NewAnimationConfig(
 		constants.PLAYER_ANIMATIONS_SPRITE_WIDTH,
 		constants.PLAYER_ANIMATIONS_SPRITE_HEIGHT,
 		constants.PLAYER_JUMP_FRAME_COUNT,
@@ -105,7 +119,7 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 		constants.PLAYER_SPRITE_OFFSET_Y,
 	)
 
-	playerSprites[constants.PLAYER_ANIM_STATE_FALL].AnimationData = assetComponents.NewAnimationData(
+	playerSprites[constants.PLAYER_ANIM_STATE_FALL].AnimationConfig = assetComponents.NewAnimationConfig(
 		constants.PLAYER_ANIMATIONS_SPRITE_WIDTH,
 		constants.PLAYER_ANIMATIONS_SPRITE_HEIGHT,
 		constants.PLAYER_FALL_FRAME_COUNT,

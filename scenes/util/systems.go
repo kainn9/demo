@@ -11,7 +11,7 @@ import (
 func InitStandardSystems(scene *coldBrew.Scene) {
 	// Loader Systems.
 	scene.AddSystem(loaderSystems.NewPlayerSpritesLoader(scene))
-	scene.AddSystem(loaderSystems.NewParallaxBackgroundLoader(scene))
+	scene.AddSystem(loaderSystems.NewBackgroundLoader(scene))
 	scene.AddSystem(loaderSystems.NewChatLoader(scene))
 
 	// Client Systems.
@@ -29,4 +29,8 @@ func InitStandardSystems(scene *coldBrew.Scene) {
 	scene.AddSystem(renderSystems.NewChatSlidesRenderer(scene))
 	scene.AddSystem(renderSystems.NewPlayerRenderer(scene))
 	scene.AddSystem(renderSystems.NewDebugRigidBodyRenderer(scene))
+	scene.AddSystem(renderSystems.NewFrontLayerRenderer(scene))
+
+	// This must be the last system to be added for now.
+	scene.AddSystem(renderSystems.NewCameraRendererRenderer(scene))
 }

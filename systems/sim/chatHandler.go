@@ -37,11 +37,11 @@ func (sys *ChatHandlerSystem) Run(dt float64, chatEntity *donburi.Entry) {
 
 		popUpEntity := systemsUtil.GetChatPopUpEntity(sys.scene.World)
 		popUpSprite := assetComponents.SpriteComponent.Get(popUpEntity)
-		animUtil.ResetAnimationData(popUpSprite)
+		animUtil.ResetAnimationConfig(popUpSprite)
 
 		popDownEntity := systemsUtil.GetChatPopDownEntity(sys.scene.World)
 		popDownSprite := assetComponents.SpriteComponent.Get(popDownEntity)
-		animUtil.ResetAnimationData(popDownSprite)
+		animUtil.ResetAnimationConfig(popDownSprite)
 
 		config.CurrentSlideIndex++
 	}

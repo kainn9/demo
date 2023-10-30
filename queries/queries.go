@@ -27,6 +27,13 @@ var ParallaxBackGroundLayerQuery = donburi.NewQuery(
 	),
 )
 
+var FrontLayerQuery = donburi.NewQuery(
+	filter.And(
+		filter.Contains(assetComponents.SpriteComponent),
+		filter.Contains(assetComponents.FrontLayerComponent),
+	),
+)
+
 var Block = donburi.NewQuery(
 	filter.And(
 		filter.Contains(tags.StandardCollisionTag),
