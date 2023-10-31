@@ -4,10 +4,10 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	"github.com/kainn9/demo/constants"
 
-	assetComponents "github.com/kainn9/demo/components/assets"
-	"github.com/kainn9/demo/systems/render/util/animUtil"
+	UIConstants "github.com/kainn9/demo/constants/UI"
+	inputConstants "github.com/kainn9/demo/constants/input"
+	animUtil "github.com/kainn9/demo/systems/render/util/anim"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/filter"
@@ -23,28 +23,49 @@ func NewChatHandler(scene *coldBrew.Scene) *ChatHandlerSystem {
 	}
 }
 
-func (*ChatHandlerSystem) Query() *donburi.Query {
+func (ChatHandlerSystem) Query() *donburi.Query {
 	return donburi.NewQuery(
 		filter.Contains(components.ChatStateComponent),
 	)
 }
 
-func (sys *ChatHandlerSystem) Run(dt float64, chatEntity *donburi.Entry) {
+func (sys ChatHandlerSystem) Run(dt float64, chatEntity *donburi.Entry) {
 	config := components.ChatStateComponent.Get(chatEntity)
+	interact := inputConstants.KEY_BINDS[inputConstants.KEY_BIND_INTERACT]
 
-	interact := constants.KEY_BINDS[constants.KEY_BIND_INTERACT]
+	popDownSprite := systemsUtil.GetChatPopDownSprite(sys.scene.World)
+	popUpSprite := systemsUtil.GetChatPopUpSprite(sys.scene.World)
 
 	if inpututil.IsKeyJustPressed(interact) && config.Active {
-		config.PopDownMode = true
 
-		popUpEntity := systemsUtil.GetChatPopUpEntity(sys.scene.World)
-		popUpSprite := assetComponents.SpriteComponent.Get(popUpEntity)
+		// Switch to the PopDown animation.
+		config.PopDownMode = true
+		popDownSprite.StartTick = sys.scene.Manager.TickHandler.CurrentTick()
+
+		// Reset the pop up animation(since it will play after popDown finishes).
 		animUtil.ResetAnimationConfig(popUpSprite)
 
-		popDownEntity := systemsUtil.GetChatPopDownEntity(sys.scene.World)
-		popDownSprite := assetComponents.SpriteComponent.Get(popDownEntity)
-		animUtil.ResetAnimationConfig(popDownSprite)
+		// Reset the text counter, since it will be incremented in the popUp animation.
+		config.TextAnimStartTick = 0
+		config.CurrentSlideIndex++ // Increment the slide index.
 
-		config.CurrentSlideIndex++
 	}
+
+	// Once the pop down animation is finished, switch to the pop up animation.
+	popDownFinished := sys.scene.Manager.TickHandler.TicksSinceNTicks(popDownSprite.StartTick) > UIConstants.CHAT_BOX_ANIM_SPEED*2
+	if popDownFinished {
+		config.PopDownMode = false
+		config.PopUpMode = true
+	}
+
+	// If we are out of chat slides, time to close the chat box and
+	// reset the state(incase we ever want to re-open it).
+	chatFinished := config.CurrentSlideIndex > len(config.SlidesContent)-1
+	if chatFinished {
+		config.Active = false
+		config.CurrentSlideIndex = 0
+		animUtil.ResetAnimationConfig(popDownSprite)
+		animUtil.ResetAnimationConfig(popUpSprite)
+	}
+
 }

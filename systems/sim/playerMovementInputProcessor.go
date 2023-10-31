@@ -4,7 +4,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	"github.com/kainn9/demo/constants"
+	inputConstants "github.com/kainn9/demo/constants/input"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 
 	"github.com/yohamta/donburi"
@@ -21,7 +21,7 @@ func NewPlayerMovementInputProcessor(scene *coldBrew.Scene) *PlayerMovementInput
 	}
 }
 
-func (*PlayerMovementInputProcessorSystem) Query() *donburi.Query {
+func (PlayerMovementInputProcessorSystem) Query() *donburi.Query {
 	return donburi.NewQuery(
 		filter.And(
 			filter.Contains(components.PlayerStateComponent),
@@ -30,37 +30,37 @@ func (*PlayerMovementInputProcessorSystem) Query() *donburi.Query {
 	)
 }
 
-func (sys *PlayerMovementInputProcessorSystem) Run(dt float64, playerEntity *donburi.Entry) {
+func (sys PlayerMovementInputProcessorSystem) Run(dt float64, playerEntity *donburi.Entry) {
 	inputs := components.InputsComponent.Get(playerEntity)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 
-	activeInput := inputShift(&inputs.Queue)
+	activeInput := sys.inputShift(&inputs.Queue)
 
 	if systemsUtil.PlayerStateHelper.PlayerCannotAcceptInputs(playerState) {
 		return
 	}
 
-	left, right, jump, up, down, interact := constants.AllBinds()
+	left, right, jump, up, down, interact := inputConstants.ALL_BINDS()
 
 	// Left/Right movement.
 	if activeInput == left {
-		handleKeyRightLeft(playerState, false)
+		sys.handleKeyRightLeft(playerState, false)
 	}
 
 	if activeInput == right {
-		handleKeyRightLeft(playerState, true)
+		sys.handleKeyRightLeft(playerState, true)
 	}
 
-	if activeInput == constants.RELEASED_HORIZONTAL {
+	if activeInput == inputConstants.RELEASED_HORIZONTAL {
 		playerState.BasicHorizontalMovement = false
 	}
 
 	// Jumping or descending platform.
 	if activeInput == jump {
-		handleKeySpace(playerState, sys.scene.Manager)
+		sys.handleKeySpace(playerState, sys.scene.Manager)
 	}
 
-	if activeInput == constants.COMBO_DOWN_SPACE && playerState.OnGround {
+	if activeInput == inputConstants.COMBO_DOWN_SPACE && playerState.OnGround {
 		playerState.PhaseThroughPlatforms = true
 	}
 
@@ -72,7 +72,7 @@ func (sys *PlayerMovementInputProcessorSystem) Run(dt float64, playerEntity *don
 		playerState.Down = true
 	}
 
-	if activeInput == constants.RELEASED_VERTICAL {
+	if activeInput == inputConstants.RELEASED_VERTICAL {
 		playerState.Up = false
 		playerState.Down = false
 	}
@@ -83,7 +83,7 @@ func (sys *PlayerMovementInputProcessorSystem) Run(dt float64, playerEntity *don
 
 }
 
-func handleKeyRightLeft(playerState *components.PlayerState, right bool) {
+func (sys PlayerMovementInputProcessorSystem) handleKeyRightLeft(playerState *components.PlayerState, right bool) {
 
 	playerState.BasicHorizontalMovement = true
 
@@ -95,7 +95,7 @@ func handleKeyRightLeft(playerState *components.PlayerState, right bool) {
 	}
 }
 
-func handleKeySpace(playerState *components.PlayerState, m *coldBrew.Manager) {
+func (sys PlayerMovementInputProcessorSystem) handleKeySpace(playerState *components.PlayerState, m *coldBrew.Manager) {
 	tickHandler := m.TickHandler
 
 	playerPreparingToJump := playerState.JumpWindupStart != 0
@@ -108,9 +108,9 @@ func handleKeySpace(playerState *components.PlayerState, m *coldBrew.Manager) {
 
 }
 
-func inputPop(inputQueue *[]ebiten.Key) ebiten.Key {
+func (sys PlayerMovementInputProcessorSystem) inputPop(inputQueue *[]ebiten.Key) ebiten.Key {
 	if len(*inputQueue) == 0 {
-		return constants.NO_INPUT
+		return inputConstants.NO_INPUT
 	}
 
 	popped := (*inputQueue)[len(*inputQueue)-1]
@@ -118,9 +118,9 @@ func inputPop(inputQueue *[]ebiten.Key) ebiten.Key {
 	return popped
 }
 
-func inputShift(inputQueue *[]ebiten.Key) ebiten.Key {
+func (sys PlayerMovementInputProcessorSystem) inputShift(inputQueue *[]ebiten.Key) ebiten.Key {
 	if len(*inputQueue) == 0 {
-		return constants.NO_INPUT
+		return inputConstants.NO_INPUT
 	}
 
 	popped := (*inputQueue)[0]

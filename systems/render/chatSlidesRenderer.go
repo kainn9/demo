@@ -8,9 +8,10 @@ import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	assetComponents "github.com/kainn9/demo/components/assets"
-	"github.com/kainn9/demo/constants"
-	"github.com/kainn9/demo/systems/render/util/animUtil"
+	UIConstants "github.com/kainn9/demo/constants/UI"
+	animUtil "github.com/kainn9/demo/systems/render/util/anim"
 	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
+	textUtil "github.com/kainn9/demo/systems/render/util/text"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 )
 
@@ -24,95 +25,104 @@ func NewChatSlidesRenderer(scene *coldBrew.Scene) *ChatSlidesRendererSystem {
 	}
 }
 
-func (*ChatSlidesRendererSystem) Query() *donburi.Query {
+func (ChatSlidesRendererSystem) Query() *donburi.Query {
 	return donburi.NewQuery(
 		filter.Contains(components.ChatStateComponent),
 	)
 }
 
-func (sys *ChatSlidesRendererSystem) Draw(screen *ebiten.Image, chatEntity *donburi.Entry) {
+func (sys ChatSlidesRendererSystem) Draw(screen *ebiten.Image, chatEntity *donburi.Entry) {
 
-	slideSprites := assetComponents.SpritesSliceComponent.Get(chatEntity)
+	// Config/State.
 	config := components.ChatStateComponent.Get(chatEntity)
-
-	indexOutOfSlideRange := config.CurrentSlideIndex >= len(*slideSprites)
-	if indexOutOfSlideRange {
-		config.Active = false
-		return
-	}
-
-	// Get the portrait.
-	portraitSpritesMap := assetComponents.SpritesMapComponent.Get(chatEntity)
-	portraitKey := config.PortraitNames[config.CurrentSlideIndex]
-	portraitSprite := (*portraitSpritesMap)[portraitKey]
 
 	// Grab the camera.
 	cameraEntity := systemsUtil.GetCameraEntity(sys.scene.World)
 	camera := components.CameraComponent.Get(cameraEntity)
 
-	// Draw options.
-	charBubbleOpts := &ebiten.DrawImageOptions{}
-	charBubbleOpts.GeoM.Translate(10, 10)
+	// Chat Box Draw options.
+	charBoxOpts := &ebiten.DrawImageOptions{}
+	charBoxOpts.GeoM.Translate(10, 10)
+	popDownSprite := systemsUtil.GetChatPopDownSprite(sys.scene.World)
+
+	// Handle the pop down animation one last time,
+	// when the chat box is no longer active.
+	if !config.Active && popDownSprite.StartTick == 0 {
+		sys.renderPopDownAnimation(popDownSprite, charBoxOpts, camera, config)
+		return
+	}
+
+	// If the chat box is not active, and the pop down animation is finished,
+	// then we don't need to render anything.
+	popDownFinished := sys.scene.Manager.TickHandler.TicksSinceNTicks(popDownSprite.StartTick) > UIConstants.CHAT_BOX_ANIM_SPEED*2
+	if !config.Active && popDownFinished {
+		return
+	}
+
+	// Handle the pop down animation, when the chat box is active,
+	// and where switching slides(pop down then pop up).
+	if config.PopDownMode {
+		sys.renderPopDownAnimation(popDownSprite, charBoxOpts, camera, config)
+		return
+	}
 
 	// Handle the pop up animation.
 	if config.PopUpMode {
+		finished := sys.renderPopUpAnimation(charBoxOpts, camera)
 
-		popUpEntity := systemsUtil.GetChatPopUpEntity(sys.scene.World)
-		popUpSprite := assetComponents.SpriteComponent.Get(popUpEntity)
+		if finished {
+			// Handle the portrait.
+			portraitSprites := assetComponents.SpritesSliceComponent.Get(chatEntity)
+			sys.handlePortrait(camera, config, portraitSprites)
 
-		spriteAtFrameIndex := animUtil.GetFrame(sys.scene.Manager, popUpSprite)
-		popUpExpired := sys.scene.Manager.TickHandler.TicksSinceNTicks(popUpSprite.StartTick) > constants.CHAT_POP_UP_TICKS
+			// Handle the text.
+			slideContent := config.SlidesContent[config.CurrentSlideIndex]
 
-		if popUpExpired {
-			config.PopUpMode = false
+			if config.TextAnimStartTick == 0 {
+				config.TextAnimStartTick = sys.scene.Manager.TickHandler.CurrentTick()
+			}
+
+			textUtil.RenderTextDefault(
+				slideContent.Text,
+				120,
+				45,
+				525,
+				config.TextAnimStartTick,
+				config.TicksPerWord,
+				camera,
+				&sys.scene.World,
+				sys.scene.Manager,
+			)
 		}
 
-		cameraUtil.AddImage(camera, spriteAtFrameIndex, charBubbleOpts)
 		return
 	}
 
-	// Handle the pop down animation.
-	if config.PopDownMode {
+}
 
-		popDownEntity := systemsUtil.GetChatPopDownEntity(sys.scene.World)
-		popDownSprite := assetComponents.SpriteComponent.Get(popDownEntity)
+func (sys ChatSlidesRendererSystem) renderPopUpAnimation(chatBoxOpts *ebiten.DrawImageOptions, camera *components.Camera) (finished bool) {
 
-		spriteAtFrameIndex := animUtil.GetFrame(sys.scene.Manager, popDownSprite)
-		popUpExpired := sys.scene.Manager.TickHandler.TicksSinceNTicks(popDownSprite.StartTick) > constants.CHAT_POP_UP_TICKS
+	popUpSprite := systemsUtil.GetChatPopUpSprite(sys.scene.World)
 
-		// If the pop down animation is over, stage the pop up animation
-		// for the next slide.
-		if popUpExpired {
-			config.PopDownMode = false
-			config.PopUpMode = true
-		}
+	spriteAtFrameIndex := animUtil.PlayAnim(sys.scene.Manager, popUpSprite)
 
-		// No need to stage the pop up animation, if theres no next slide.
-		if indexOutOfSlideRange {
-			config.PopUpMode = false
-		}
+	cameraUtil.AddImage(camera, spriteAtFrameIndex, chatBoxOpts)
 
-		cameraUtil.AddImage(camera, spriteAtFrameIndex, charBubbleOpts)
-		return
-	}
+	finished = sys.scene.Manager.TickHandler.TicksSinceNTicks(popUpSprite.StartTick) > UIConstants.CHAT_BOX_ANIM_SPEED*2
 
-	// If the chat is not active, don't render anything.
-	// We allow the pop down animation to finish though.
-	// So its down here.
-	if !config.Active {
-		return
-	}
+	return finished
+}
 
-	// Handle the slide/text animation.
-	activeSlideSprite := (*slideSprites)[config.CurrentSlideIndex]
+func (sys ChatSlidesRendererSystem) renderPopDownAnimation(popDownSprite *assetComponents.Sprite, chatBoxOpts *ebiten.DrawImageOptions, camera *components.Camera, config *components.ChatStateAndConfig) {
 
-	spriteAtFrameIndex := animUtil.GetFrame(sys.scene.Manager, activeSlideSprite)
+	spriteAtFrameIndex := animUtil.PlayAnim(sys.scene.Manager, popDownSprite)
 
-	cameraUtil.AddImage(camera, spriteAtFrameIndex, charBubbleOpts)
+	cameraUtil.AddImage(camera, spriteAtFrameIndex, chatBoxOpts)
 
-	// Handle the portrait.
+}
+
+func (sys ChatSlidesRendererSystem) handlePortrait(camera *components.Camera, config *components.ChatStateAndConfig, portraitSprites *[]*assetComponents.Sprite) {
 	portraitOpts := &ebiten.DrawImageOptions{}
 	portraitOpts.GeoM.Translate(35, 25)
-	cameraUtil.AddImage(camera, portraitSprite.Image, portraitOpts)
-
+	cameraUtil.AddImage(camera, (*portraitSprites)[config.CurrentSlideIndex].Image, portraitOpts)
 }

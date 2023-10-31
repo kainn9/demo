@@ -5,7 +5,7 @@ import (
 
 	"github.com/kainn9/coldBrew"
 	assetComponents "github.com/kainn9/demo/components/assets"
-	"github.com/kainn9/demo/constants"
+	clientConstants "github.com/kainn9/demo/constants/client"
 	"github.com/kainn9/demo/queries"
 	"github.com/yohamta/donburi"
 )
@@ -16,13 +16,13 @@ func NewPlayerSpritesLoader(scene *coldBrew.Scene) *PlayerSpritesLoaderSystem {
 	return &PlayerSpritesLoaderSystem{}
 }
 
-func (sys *PlayerSpritesLoaderSystem) Query() *donburi.Query {
+func (sys PlayerSpritesLoaderSystem) Query() *donburi.Query {
 	return queries.PlayerQuery
 }
 
-func (sys *PlayerSpritesLoaderSystem) Load(entity *donburi.Entry) {
+func (sys PlayerSpritesLoaderSystem) Load(entity *donburi.Entry) {
 
-	spritesMap := assetComponents.SpritesMapComponent.Get(entity)
+	spritesMap := assetComponents.PlayerSpritesAnimMapComponent.Get(entity)
 
 	for nameKey, sprite := range *spritesMap {
 		if sprite.AssetData.Loaded {
@@ -31,7 +31,7 @@ func (sys *PlayerSpritesLoaderSystem) Load(entity *donburi.Entry) {
 
 		log.Println("Loading Player Sprite: " + nameKey + ".")
 
-		path := constants.PLAYER_ASSETS_SUB_PATH + nameKey
+		path := string(clientConstants.PLAYER_ASSETS_SUB_PATH + nameKey)
 		LoadImage(path, sprite)
 	}
 

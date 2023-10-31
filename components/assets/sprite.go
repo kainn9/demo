@@ -2,6 +2,7 @@ package assetComponents
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	playerConstants "github.com/kainn9/demo/constants/player"
 	"github.com/yohamta/donburi"
 )
 
@@ -17,6 +18,7 @@ type Sprite struct {
 var SpriteComponent = donburi.NewComponentType[Sprite]()
 var SpritesMapComponent = donburi.NewComponentType[map[string]*Sprite]()
 var SpritesSliceComponent = donburi.NewComponentType[[]*Sprite]()
+var PlayerSpritesAnimMapComponent = donburi.NewComponentType[map[playerConstants.AnimState]*Sprite]()
 
 // This should work, but its not needed for now.
 // var MultipleSpritesSliceComponent = donburi.NewComponentType[map[string][]*Sprite]()

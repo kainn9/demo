@@ -2,18 +2,28 @@ package components
 
 import "github.com/yohamta/donburi"
 
-type ChatState struct {
+type ChatStateAndConfig struct {
+	// State.
 	Active, PopUpMode, PopDownMode bool
 	CurrentSlideIndex              int
-	PortraitNames                  []string
-	ChatName, SceneAssetsPath      string
+
+	// Config.
+	SlidesContent                   []SlidesContent
+	ChatName                        string
+	TextAnimStartTick, TicksPerWord int
 }
 
-var ChatStateComponent = donburi.NewComponentType[ChatState]()
+type SlidesContent struct {
+	Text, PortraitName string
+}
 
-func NewChatState(chatName, sceneAssetsPath string) *ChatState {
-	return &ChatState{
-		ChatName:        chatName,
-		SceneAssetsPath: sceneAssetsPath,
+var ChatStateComponent = donburi.NewComponentType[ChatStateAndConfig]()
+
+func NewChatStateAndConfig(chatName, sceneAssetsPath string, ticksPerWord int, content []SlidesContent) *ChatStateAndConfig {
+	return &ChatStateAndConfig{
+		ChatName:      chatName,
+		SlidesContent: content,
+
+		TicksPerWord: ticksPerWord,
 	}
 }

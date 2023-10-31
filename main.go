@@ -2,13 +2,13 @@ package main
 
 import (
 	"image/color"
-	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kainn9/coldBrew"
-	"github.com/kainn9/demo/constants"
+	clientConstants "github.com/kainn9/demo/constants/client"
 	"github.com/kainn9/demo/scenes"
+	scenesUtil "github.com/kainn9/demo/scenes/util"
 )
 
 type game struct {
@@ -23,17 +23,17 @@ func main() {
 
 func NewGame() *game {
 
-	loaderImage := ebiten.NewImage(constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
+	loaderImage := ebiten.NewImage(clientConstants.SCREEN_WIDTH, clientConstants.SCREEN_HEIGHT)
 	loaderImage.Fill(color.RGBA{B: 255})
 
-	manager := coldBrew.NewManager(constants.SCENE_CACHE_LIMIT, constants.MAX_TICKS, loaderImage)
+	manager := coldBrew.NewManager(clientConstants.SCENE_CACHE_LIMIT, clientConstants.MAX_TICKS, loaderImage)
 
 	firstScene := scenes.Intro.LevelOneScene
-	manager.LoadScene(firstScene)
+	scenesUtil.InitFirstScene(manager, firstScene, 100, 600)
 
 	g := &game{
-		width:   constants.SCREEN_WIDTH,
-		height:  constants.SCREEN_HEIGHT,
+		width:   clientConstants.SCREEN_WIDTH,
+		height:  clientConstants.SCREEN_HEIGHT,
 		manager: manager,
 	}
 
@@ -49,22 +49,15 @@ func NewGame() *game {
 func (g *game) Update() error {
 
 	// Temp hack/test. ------------------------
-
 	if inpututil.IsKeyJustPressed(ebiten.Key1) {
-		err := g.manager.LoadScene(scenes.Intro.LevelOneScene)
-		if err != nil {
-			log.Println("Yo!", err)
-		}
+		scenesUtil.ChangeScene(g.manager, scenes.Intro.LevelOneScene, 100, 600)
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.Key2) {
-		err := g.manager.LoadScene(scenes.Intro.LevelTwoScene)
-		if err != nil {
-			log.Println("Yo!", err)
-		}
+		scenesUtil.ChangeScene(g.manager, scenes.Intro.LevelTwoScene, 20, 70)
 	}
-
 	// end of hack/test. ----------------------
+
 	activeScene := g.manager.ActiveScene()
 
 	go activeScene.Load()

@@ -22,7 +22,7 @@ func NewFrontLayerRenderer(scene *coldBrew.Scene) *FrontLayerRendererSystem {
 	}
 }
 
-func (sys *FrontLayerRendererSystem) Draw(screen *ebiten.Image, _ *donburi.Entry) {
+func (sys FrontLayerRendererSystem) Draw(screen *ebiten.Image, _ *donburi.Entry) {
 
 	world := sys.scene.World
 	cameraEntity := systemsUtil.GetCameraEntity(world)

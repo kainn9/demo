@@ -8,15 +8,12 @@ import (
 	simSystems "github.com/kainn9/demo/systems/sim"
 )
 
-func ChangeScene(prevScene, newScene *coldBrew.Scene) {
-
-}
-
 func InitStandardSystems(scene *coldBrew.Scene) {
 	// Loader Systems.
 	scene.AddSystem(loaderSystems.NewPlayerSpritesLoader(scene))
 	scene.AddSystem(loaderSystems.NewBackgroundLoader(scene))
 	scene.AddSystem(loaderSystems.NewChatLoader(scene))
+	scene.AddSystem(loaderSystems.NewUIGlobalLoader(scene))
 
 	// Client Systems.
 	scene.AddSystem(clientSystems.NewPlayerMovementInputTracker())
@@ -33,9 +30,10 @@ func InitStandardSystems(scene *coldBrew.Scene) {
 
 	// Render Systems.
 	scene.AddSystem(renderSystems.NewParallaxBackgroundRenderer(scene))
-	scene.AddSystem(renderSystems.NewChatSlidesRenderer(scene))
 	scene.AddSystem(renderSystems.NewPlayerRenderer(scene))
 	scene.AddSystem(renderSystems.NewFrontLayerRenderer(scene))
+	scene.AddSystem(renderSystems.NewChatSlidesRenderer(scene))
+
 	// This must be the last Render system to be added for now(minus debug).
 	scene.AddSystem(renderSystems.NewCameraRendererRenderer(scene))
 	scene.AddSystem(renderSystems.NewDebugRigidBodyRenderer(scene))

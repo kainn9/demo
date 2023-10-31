@@ -22,7 +22,7 @@ func NewParallaxBackgroundRenderer(scene *coldBrew.Scene) *ParallaxBackgroundRen
 	}
 }
 
-func (sys *ParallaxBackgroundRendererSystem) Draw(screen *ebiten.Image, _ *donburi.Entry) {
+func (sys ParallaxBackgroundRendererSystem) Draw(screen *ebiten.Image, _ *donburi.Entry) {
 
 	world := sys.scene.World
 	cameraEntity := systemsUtil.GetCameraEntity(world)

@@ -5,7 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	assetComponents "github.com/kainn9/demo/components/assets"
-	"github.com/kainn9/demo/constants"
+	clientConstants "github.com/kainn9/demo/constants/client"
 )
 
 func LoadImage(path string, sprite *assetComponents.Sprite) {
@@ -22,8 +22,8 @@ func LoadImage(path string, sprite *assetComponents.Sprite) {
 	// 	path = strings.ReplaceAll(path, "./", "/")
 	// }
 
-	concatPath := constants.ASSET_ROOT_PATH + path
-	img, _, err := ebitenutil.NewImageFromFile(concatPath + constants.IMAGE_EXTENSION)
+	concatPath := clientConstants.ASSET_ROOT_PATH + path
+	img, _, err := ebitenutil.NewImageFromFile(concatPath + clientConstants.IMAGE_EXTENSION)
 	if err != nil {
 		log.Fatal(err)
 	}

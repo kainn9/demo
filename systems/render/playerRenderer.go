@@ -7,9 +7,9 @@ import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	assetComponents "github.com/kainn9/demo/components/assets"
-	"github.com/kainn9/demo/constants"
+	playerConstants "github.com/kainn9/demo/constants/player"
 	"github.com/kainn9/demo/queries"
-	"github.com/kainn9/demo/systems/render/util/animUtil"
+	animUtil "github.com/kainn9/demo/systems/render/util/anim"
 	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 )
@@ -18,22 +18,22 @@ type PlayerRendererSystem struct {
 	scene *coldBrew.Scene
 }
 
-func (sys *PlayerRendererSystem) Query() *donburi.Query {
-	return queries.PlayerQuery
-}
-
 func NewPlayerRenderer(scene *coldBrew.Scene) *PlayerRendererSystem {
 	return &PlayerRendererSystem{
 		scene: scene,
 	}
 }
 
-func (sys *PlayerRendererSystem) Draw(screen *ebiten.Image, playerEntity *donburi.Entry) {
+func (sys PlayerRendererSystem) Query() *donburi.Query {
+	return queries.PlayerQuery
+}
+
+func (sys PlayerRendererSystem) Draw(screen *ebiten.Image, playerEntity *donburi.Entry) {
 
 	// Get relevant entities and components.
 	world := sys.scene.World
 
-	sprites := assetComponents.SpritesMapComponent.Get(playerEntity)
+	sprites := assetComponents.PlayerSpritesAnimMapComponent.Get(playerEntity)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 	opts := &ebiten.DrawImageOptions{}
@@ -43,7 +43,7 @@ func (sys *PlayerRendererSystem) Draw(screen *ebiten.Image, playerEntity *donbur
 
 	// Clearing old animation data if animation state has changed.
 	prevAnimationState := playerState.AnimationState
-	currentAnimationState := determinePlayerAnimationState(playerState)
+	currentAnimationState := sys.determinePlayerAnimationState(playerState)
 
 	if prevAnimationState != currentAnimationState {
 		animUtil.ResetAnimationConfig((*sprites)[prevAnimationState])
@@ -55,7 +55,7 @@ func (sys *PlayerRendererSystem) Draw(screen *ebiten.Image, playerEntity *donbur
 
 	// If the current sprite sheet is nil, default to idle.
 	if currentSpriteSheet == nil {
-		currentSpriteSheet = (*sprites)[constants.PLAYER_ANIM_STATE_IDLE]
+		currentSpriteSheet = (*sprites)[playerConstants.PLAYER_ANIM_STATE_IDLE]
 	}
 
 	// Scaling player sprite to face correct direction.
@@ -71,35 +71,35 @@ func (sys *PlayerRendererSystem) Draw(screen *ebiten.Image, playerEntity *donbur
 	cameraUtil.Translate(camera, opts, xPos, yPos)
 
 	// Selecting correct sprite frame to render.
-	spriteAtFrameIndex := animUtil.GetFrame(sys.scene.Manager, currentSpriteSheet)
+	spriteAtFrameIndex := animUtil.PlayAnim(sys.scene.Manager, currentSpriteSheet)
 
 	// Adding sprite frame to camera.
 	cameraUtil.AddImage(camera, spriteAtFrameIndex, opts)
 
 }
 
-func determinePlayerAnimationState(playerState *components.PlayerState) string {
+func (sys PlayerRendererSystem) determinePlayerAnimationState(playerState *components.PlayerState) playerConstants.AnimState {
 
 	if playerState.Climbing && (playerState.Up || playerState.Down) {
-		return constants.PLAYER_ANIM_STATE_CLIMB_LADDER_ACTIVE
+		return playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_ACTIVE
 	}
 
 	if playerState.Climbing {
-		return constants.PLAYER_ANIM_STATE_CLIMB_LADDER_IDLE
+		return playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_IDLE
 	}
 
 	if playerState.Jumping || playerState.JumpWindupStart != 0 {
-		return constants.PLAYER_ANIM_STATE_JUMP
+		return playerConstants.PLAYER_ANIM_STATE_JUMP
 	}
 
 	if !playerState.Jumping && !playerState.OnGround {
 
-		return constants.PLAYER_ANIM_STATE_FALL
+		return playerConstants.PLAYER_ANIM_STATE_FALL
 	}
 
 	if playerState.OnGround && playerState.BasicHorizontalMovement {
-		return constants.PLAYER_ANIM_STATE_RUN
+		return playerConstants.PLAYER_ANIM_STATE_RUN
 	}
 
-	return constants.PLAYER_ANIM_STATE_IDLE
+	return playerConstants.PLAYER_ANIM_STATE_IDLE
 }

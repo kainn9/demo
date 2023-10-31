@@ -5,7 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kainn9/demo/components"
-	"github.com/kainn9/demo/constants"
+	cameraConstants "github.com/kainn9/demo/constants/camera"
 )
 
 func Translate(c *components.Camera, ops *ebiten.DrawImageOptions, x, y float64) *ebiten.DrawImageOptions {
@@ -29,15 +29,15 @@ func SetPosition(c *components.Camera, x, y float64, smoothCam bool) {
 		return
 	}
 
-	incX := constants.CAMERA_MIN_SPEED
-	incY := constants.CAMERA_MIN_SPEED
+	incX := cameraConstants.CAMERA_MIN_SPEED
+	incY := cameraConstants.CAMERA_MIN_SPEED
 
-	if math.Abs(c.X-x) > constants.CAMERA_EPSILON {
-		incX = constants.CAMERA_MAX_SPEED
+	if math.Abs(c.X-x) > cameraConstants.CAMERA_EPSILON {
+		incX = cameraConstants.CAMERA_MAX_SPEED
 	}
 
-	if math.Abs(c.Y-y) > constants.CAMERA_EPSILON {
-		incY = constants.CAMERA_MAX_SPEED
+	if math.Abs(c.Y-y) > cameraConstants.CAMERA_EPSILON {
+		incY = cameraConstants.CAMERA_MAX_SPEED
 	}
 
 	c.X = smooth(c.X, x, incX)

@@ -10,6 +10,4 @@ var PlatformTag = donburi.NewTag()
 
 var LadderTag = donburi.NewTag()
 
-var ChatPopUpSpriteTag = donburi.NewTag()
-
-var ChatPopDownSpriteTag = donburi.NewTag()
+var UISingletonTag = donburi.NewTag()

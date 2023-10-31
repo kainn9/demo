@@ -2,7 +2,9 @@ package intro
 
 import (
 	"github.com/kainn9/coldBrew"
+	"github.com/kainn9/demo/components"
 	assetComponents "github.com/kainn9/demo/components/assets"
+	UIConstants "github.com/kainn9/demo/constants/UI"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
 )
 
@@ -28,6 +30,8 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scenesUtil.InitStandardSystems(scene)
 
 	// Entities ----------------------------------------------------------------------------------
+
+	scenesUtil.AddCameraEntity(scene, 0, 262)
 
 	scenesUtil.AddParallaxBackgroundEntity(scene, []*assetComponents.ParallaxLayerConfig{
 		// Sky.
@@ -57,9 +61,6 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		assetComponents.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 8, 0, 0, false),
 	})
 
-	scenesUtil.AddPlayerEntity(scene, 100, 600)
-	scenesUtil.AddCameraEntity(scene, 0, 262)
-
 	// Floor.
 	scenesUtil.AddFloorEntity(scene, float64(scene.Width/2), float64(scene.Height-40), float64(scene.Width), 20, -0.04)
 
@@ -70,17 +71,35 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	// Ladder.
 	scenesUtil.AddLadderEntity(scene, 1875, 326, 20, 420)
 
+	// Chat.
+	content := []components.SlidesContent{
+		{
+			Text:         "Jeez, I'm so tired...I've been running for hours. Can't believe its really not out here.",
+			PortraitName: "player",
+		},
+		{
+			Text:         "*stomach growls*",
+			PortraitName: "player",
+		},
+		{
+			Text:         "And thats a problem too...I did hear the country club has a new chef...",
+			PortraitName: "player",
+		},
+		{
+			Text:         "Maybe I can sneak in and get a bite to eat. Guess It's time to grab the whip.",
+			PortraitName: "player",
+		},
+	}
+
 	scenesUtil.AddChatEntity(
 		scene,
-		3,
 		"introChat",
 		LEVEL_ONE_SCENE_ASSET_PATH,
-		[]string{
-			"player",
-			"player",
-			"player",
-		},
+		15,
+		content,
 	)
+
+	scenesUtil.AddOnCollisionIndicatorEntity(scene, 100, LEVEL_ONE_SCENE_HEIGHT-40, 40, 40, true, UIConstants.INDICATOR_MOVEMENT)
 
 	return scene
 }

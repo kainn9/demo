@@ -46,10 +46,6 @@ var LadderQuery = donburi.NewQuery(
 	filter.Contains(tags.LadderTag),
 )
 
-var ChatPopUpAnimQuery = donburi.NewQuery(
-	filter.Contains(tags.ChatPopUpSpriteTag),
-)
-
-var ChatPopDownAnimQuery = donburi.NewQuery(
-	filter.Contains(tags.ChatPopDownSpriteTag),
+var UISingletonQuery = donburi.NewQuery(
+	filter.Contains(tags.UISingletonTag),
 )

@@ -1,6 +1,7 @@
 package components
 
 import (
+	playerConstants "github.com/kainn9/demo/constants/player"
 	"github.com/yohamta/donburi"
 )
 
@@ -16,7 +17,7 @@ type PlayerState struct {
 	Jumping                 bool
 	PhaseThroughPlatforms   bool
 
-	AnimationState string
+	AnimationState playerConstants.AnimState
 }
 
 var PlayerStateComponent = donburi.NewComponentType[PlayerState]()

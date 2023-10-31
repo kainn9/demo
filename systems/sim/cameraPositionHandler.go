@@ -3,7 +3,7 @@ package simSystems
 import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	"github.com/kainn9/demo/constants"
+	clientConstants "github.com/kainn9/demo/constants/client"
 	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	"github.com/yohamta/donburi"
@@ -25,7 +25,7 @@ func NewCameraPositionHandler(scene *coldBrew.Scene) *CameraPositionHandlerSyste
 	}
 }
 
-func (sys *CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
+func (sys CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 	world := sys.scene.World
 	mapWidth := sys.scene.Width
 	mapHeight := sys.scene.Height
@@ -37,8 +37,8 @@ func (sys *CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 
-	halfScreenWidthInt := constants.SCREEN_WIDTH / 2
-	halfScreenHeightInt := constants.SCREEN_HEIGHT / 2 // Half of the screen height
+	halfScreenWidthInt := clientConstants.SCREEN_WIDTH / 2
+	halfScreenHeightInt := clientConstants.SCREEN_HEIGHT / 2 // Half of the screen height
 
 	halfScreenWidth := float64(halfScreenWidthInt)
 	halfScreenHeight := float64(halfScreenHeightInt)
@@ -58,7 +58,7 @@ func (sys *CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 	if playerInsideXBoundsLeft {
 		cameraUtil.SetPosition(camera, 0, camera.Y, true)
 	} else if playerInsideXBoundsRight {
-		cameraUtil.SetPosition(camera, float64(mapWidth-constants.SCREEN_WIDTH), camera.Y, true)
+		cameraUtil.SetPosition(camera, float64(mapWidth-clientConstants.SCREEN_WIDTH), camera.Y, true)
 	} else {
 		cameraUtil.SetPosition(camera, playerBody.Pos.X-halfScreenWidth, camera.Y, true)
 	}
@@ -67,7 +67,7 @@ func (sys *CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 	if playerInsideYBoundsTop {
 		cameraUtil.SetPosition(camera, camera.X, 0, true)
 	} else if playerInsideYBoundsBottom {
-		cameraUtil.SetPosition(camera, camera.X, float64(mapHeight-constants.SCREEN_HEIGHT), true)
+		cameraUtil.SetPosition(camera, camera.X, float64(mapHeight-clientConstants.SCREEN_HEIGHT), true)
 	} else {
 		cameraUtil.SetPosition(camera, camera.X, playerBody.Pos.Y-halfScreenHeight, true)
 	}

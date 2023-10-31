@@ -16,7 +16,10 @@ func ResetAnimationConfig(spriteSheet *assetComponents.Sprite) {
 	spriteSheet.AnimationConfig.StartTick = 0
 }
 
-func GetFrame(m *coldBrew.Manager, spriteSheet *assetComponents.Sprite) *ebiten.Image {
+// PlayAnim returns the current frame of the animation.
+// If the Animation has not been "initialized", it will initialize it,
+// by setting the start tick to the current tick.
+func PlayAnim(m *coldBrew.Manager, spriteSheet *assetComponents.Sprite) *ebiten.Image {
 	currentTick := m.TickHandler.CurrentTick()
 
 	animConfig := spriteSheet.AnimationConfig
@@ -42,7 +45,7 @@ func GetFrame(m *coldBrew.Manager, spriteSheet *assetComponents.Sprite) *ebiten.
 		frameIndex = (ticksSinceAnimationStart / animConfig.AnimationFramesPerTick) % animConfig.FrameCount
 	}
 
-	sx, sy := (0)+frameIndex*(animConfig.FrameWidth), (0)
+	sx, sy := frameIndex*(animConfig.FrameWidth), 0
 
 	rect := image.Rect(sx, sy, sx+(animConfig.FrameWidth), animConfig.FrameHeight)
 

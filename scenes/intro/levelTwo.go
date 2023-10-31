@@ -2,6 +2,7 @@ package intro
 
 import (
 	"github.com/kainn9/coldBrew"
+	"github.com/kainn9/demo/components"
 	assetComponents "github.com/kainn9/demo/components/assets"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
 )
@@ -28,13 +29,33 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scenesUtil.InitStandardSystems(scene)
 
 	// Entities ----------------------------------------------------------------------------------
+	scenesUtil.AddCameraEntity(scene, 0, 0)
+
+	// Chat(Temp).
+	content := []components.SlidesContent{
+		{
+			Text:         "Oh man, I hate this place...This jump really is the worst.",
+			PortraitName: "player",
+		},
+		{
+			Text:         "Good thing there is no fall damage in this universe.",
+			PortraitName: "player",
+		},
+	}
+
+	scenesUtil.AddChatEntity(
+		scene,
+		"introChat",
+		LEVEL_ONE_SCENE_ASSET_PATH,
+		15,
+		content,
+	)
+
 	scenesUtil.AddParallaxBackgroundEntity(scene, []*assetComponents.ParallaxLayerConfig{
 		assetComponents.NewParallaxLayerConfig(LEVEL_TWO_SCENE_ASSET_PATH, 0, 8, 0, false),
 		assetComponents.NewParallaxLayerConfig(LEVEL_TWO_SCENE_ASSET_PATH, 1, 0, 0, false),
 	})
 	scenesUtil.AddFrontLayerEntity(scene, LEVEL_TWO_SCENE_ASSET_PATH)
-	scenesUtil.AddPlayerEntity(scene, 100, 0)
-	scenesUtil.AddCameraEntity(scene, 0, 0)
 
 	// Platform.
 	scenesUtil.AddPlatformEntity(scene, float64(scene.Width/2), float64(scene.Height-528), float64(scene.Width), 15)

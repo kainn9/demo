@@ -13,25 +13,31 @@ import (
 )
 
 type PlayerMovementHandlerSystem struct {
-	scene *coldBrew.Scene
+	scene       *coldBrew.Scene
+	minVelocity float64
+	maxVelY     float64
+	maxVelX     float64
+	xVelUnit    float64
+	yVelUnit    float64
+	jumpDelay   int
 }
-
-var (
-	minVelocity = 3.0    // The minimum velocity to consider the player moving.
-	maxVelY     = 750.0  // Max speed up or down.
-	maxVelX     = 180.0  // Max speed left or right.
-	xVelUnit    = 18.0   // Left or right.
-	yVelUnit    = -275.0 // Jump.
-	jumpDelay   = 15     // The amount of ticks to wait before jumping.
-)
 
 func NewPlayerMovementHandler(scene *coldBrew.Scene) *PlayerMovementHandlerSystem {
-	return &PlayerMovementHandlerSystem{
+	sys := &PlayerMovementHandlerSystem{
 		scene: scene,
 	}
+
+	sys.minVelocity = 3.0 // The minimum velocity to consider the player moving.
+	sys.maxVelY = 750.0   // Max speed up or down.
+	sys.maxVelX = 180.0   // Max speed left or right.
+	sys.xVelUnit = 18.0   // Left or right.
+	sys.yVelUnit = -275.0 // Jump.
+	sys.jumpDelay = 15    // The amount of ticks to wait before jumping.
+
+	return sys
 }
 
-func (*PlayerMovementHandlerSystem) Query() *donburi.Query {
+func (PlayerMovementHandlerSystem) Query() *donburi.Query {
 	return donburi.NewQuery(
 		filter.And(
 			filter.Contains(components.PlayerStateComponent),
@@ -40,22 +46,22 @@ func (*PlayerMovementHandlerSystem) Query() *donburi.Query {
 	)
 }
 
-func (sys *PlayerMovementHandlerSystem) Run(dt float64, playerEntity *donburi.Entry) {
+func (sys PlayerMovementHandlerSystem) Run(dt float64, playerEntity *donburi.Entry) {
 	manager := sys.scene.Manager
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 
-	clampToMinVelocity(playerBody)
-	gravityHandler(playerBody, playerState)
-	horizontalMovementHandler(playerState, playerBody)
-	jumpHandler(playerBody, playerState, manager)
-	clampToMaxVelocity(playerBody)
-	IntegrateMovementForces(playerBody, dt)
+	sys.clampToMinVelocity(playerBody)
+	sys.gravityHandler(playerBody, playerState)
+	sys.horizontalMovementHandler(playerState, playerBody)
+	sys.jumpHandler(playerBody, playerState, manager)
+	sys.clampToMaxVelocity(playerBody)
+	sys.integrateMovementForces(playerBody, dt)
 
 }
 
-func clampToMinVelocity(playerBody *tBokiComponents.RigidBody) {
-	epsilon := minVelocity
+func (sys PlayerMovementHandlerSystem) clampToMinVelocity(playerBody *tBokiComponents.RigidBody) {
+	epsilon := sys.minVelocity
 
 	if playerBody.Vel.X > -epsilon && playerBody.Vel.X < epsilon {
 		playerBody.Vel.X = 0
@@ -68,7 +74,7 @@ func clampToMinVelocity(playerBody *tBokiComponents.RigidBody) {
 
 // Probably worth moving this to a more general gravity system,
 // once we have more than one entity that needs gravity.
-func gravityHandler(playerBody *tBokiComponents.RigidBody, playerState *components.PlayerState) {
+func (sys PlayerMovementHandlerSystem) gravityHandler(playerBody *tBokiComponents.RigidBody, playerState *components.PlayerState) {
 
 	if playerState.Climbing {
 		return
@@ -79,19 +85,19 @@ func gravityHandler(playerBody *tBokiComponents.RigidBody, playerState *componen
 
 }
 
-func horizontalMovementHandler(playerState *components.PlayerState, playerBody *tBokiComponents.RigidBody) {
+func (sys PlayerMovementHandlerSystem) horizontalMovementHandler(playerState *components.PlayerState, playerBody *tBokiComponents.RigidBody) {
 
 	if playerState.BasicHorizontalMovement {
-		handlePlayerBasicHorizontalMovement(playerBody, playerState)
+		sys.handlePlayerBasicHorizontalMovement(playerBody, playerState)
 	}
 
 	if playerState.BasicHorizontalMovement == false {
-		haltPlayerMovement(playerBody, playerState)
+		sys.haltPlayerMovement(playerBody, playerState)
 	}
 
 }
 
-func handlePlayerBasicHorizontalMovement(
+func (sys PlayerMovementHandlerSystem) handlePlayerBasicHorizontalMovement(
 	playerBody *tBokiComponents.RigidBody,
 	playerState *components.PlayerState,
 ) {
@@ -109,23 +115,23 @@ func handlePlayerBasicHorizontalMovement(
 	// So if the result is negative, they are moving in a opposite direction
 	// then the velocity, and we should halt the velocity before applying the opposite.
 	if playerBody.Vel.X*direction < 0 {
-		haltPlayerMovement(playerBody, playerState)
+		sys.haltPlayerMovement(playerBody, playerState)
 	}
 
-	tBokiPhysics.Transformer.ApplyImpulseLinear(playerBody, tBokiVec.Vec2{X: xVelUnit * direction, Y: 0})
+	tBokiPhysics.Transformer.ApplyImpulseLinear(playerBody, tBokiVec.Vec2{X: sys.xVelUnit * direction, Y: 0})
 }
 
-func haltPlayerMovement(playerBody *tBokiComponents.RigidBody, playerState *components.PlayerState) {
+func (sys PlayerMovementHandlerSystem) haltPlayerMovement(playerBody *tBokiComponents.RigidBody, playerState *components.PlayerState) {
 	playerBody.Vel.X = 0
 	playerState.BasicHorizontalMovement = false
 }
 
-func jumpHandler(playerBody *tBokiComponents.RigidBody, playerState *components.PlayerState, m *coldBrew.Manager) {
+func (sys PlayerMovementHandlerSystem) jumpHandler(playerBody *tBokiComponents.RigidBody, playerState *components.PlayerState, m *coldBrew.Manager) {
 
 	// Exit early if player winding up to jump, but the windup has not finished.
 	tickHandler := m.TickHandler
 
-	playerWindupNotFinished := tickHandler.TicksSinceNTicks(playerState.JumpWindupStart) < jumpDelay
+	playerWindupNotFinished := tickHandler.TicksSinceNTicks(playerState.JumpWindupStart) < sys.jumpDelay
 
 	if playerWindupNotFinished {
 		return
@@ -138,7 +144,7 @@ func jumpHandler(playerBody *tBokiComponents.RigidBody, playerState *components.
 	if playerPreparingToJump {
 		playerState.Jumping = true
 		playerState.JumpWindupStart = 0
-		tBokiPhysics.Transformer.ApplyImpulseLinear(playerBody, tBokiVec.Vec2{X: 0, Y: yVelUnit})
+		tBokiPhysics.Transformer.ApplyImpulseLinear(playerBody, tBokiVec.Vec2{X: 0, Y: sys.yVelUnit})
 	}
 
 	if playerBody.Vel.Y >= 0 {
@@ -147,13 +153,13 @@ func jumpHandler(playerBody *tBokiComponents.RigidBody, playerState *components.
 
 }
 
-func clampToMaxVelocity(playerBody *tBokiComponents.RigidBody) {
-	playerBody.Vel.X = tBokiMath.Clamp(playerBody.Vel.X, -maxVelX, maxVelX)
-	playerBody.Vel.Y = tBokiMath.Clamp(playerBody.Vel.Y, -maxVelY, maxVelY)
+func (sys PlayerMovementHandlerSystem) clampToMaxVelocity(playerBody *tBokiComponents.RigidBody) {
+	playerBody.Vel.X = tBokiMath.Clamp(playerBody.Vel.X, -sys.maxVelX, sys.maxVelX)
+	playerBody.Vel.Y = tBokiMath.Clamp(playerBody.Vel.Y, -sys.maxVelY, sys.maxVelY)
 
 }
 
-func IntegrateMovementForces(playerBody *tBokiComponents.RigidBody, dt float64) {
+func (sys PlayerMovementHandlerSystem) integrateMovementForces(playerBody *tBokiComponents.RigidBody, dt float64) {
 
 	tBokiPhysics.Transformer.Integrate(playerBody, dt)
 
