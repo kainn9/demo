@@ -80,6 +80,14 @@ func (sys *PlayerRendererSystem) Draw(screen *ebiten.Image, playerEntity *donbur
 
 func determinePlayerAnimationState(playerState *components.PlayerState) string {
 
+	if playerState.Climbing && (playerState.Up || playerState.Down) {
+		return constants.PLAYER_ANIM_STATE_CLIMB_LADDER_ACTIVE
+	}
+
+	if playerState.Climbing {
+		return constants.PLAYER_ANIM_STATE_CLIMB_LADDER_IDLE
+	}
+
 	if playerState.Jumping || playerState.JumpWindupStart != 0 {
 		return constants.PLAYER_ANIM_STATE_JUMP
 	}

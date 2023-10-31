@@ -8,6 +8,10 @@ import (
 	simSystems "github.com/kainn9/demo/systems/sim"
 )
 
+func ChangeScene(prevScene, newScene *coldBrew.Scene) {
+
+}
+
 func InitStandardSystems(scene *coldBrew.Scene) {
 	// Loader Systems.
 	scene.AddSystem(loaderSystems.NewPlayerSpritesLoader(scene))
