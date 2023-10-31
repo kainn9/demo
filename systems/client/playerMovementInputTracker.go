@@ -65,6 +65,10 @@ func (sys *PlayerMovementInputTrackerSystem) Sync(entity *donburi.Entry) {
 		addUniqueKey(&inputs.Queue, down)
 	}
 
+	if !ebiten.IsKeyPressed(up) && !ebiten.IsKeyPressed(down) {
+		addUniqueKey(&inputs.Queue, constants.RELEASED_VERTICAL)
+	}
+
 	// Interact.
 	if inpututil.IsKeyJustPressed(interact) {
 		addUniqueKey(&inputs.Queue, interact)

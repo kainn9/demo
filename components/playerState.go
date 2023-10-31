@@ -12,6 +12,7 @@ type PlayerState struct {
 	Down                    bool
 	Interact                bool
 	OnGround                bool
+	Climbing                bool
 	Jumping                 bool
 	PhaseThroughPlatforms   bool
 

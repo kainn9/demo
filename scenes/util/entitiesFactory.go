@@ -180,6 +180,23 @@ func AddPlatformEntity(scene *coldBrew.Scene, x, y, w, h float64) {
 	)
 }
 
+// Note: Ladders do not support rotation.
+func AddLadderEntity(scene *coldBrew.Scene, x, y, w, h float64) {
+
+	ladderEntity := scene.AddEntity(
+		components.RigidBodyComponent,
+		tags.LadderTag,
+	)
+
+	ladderBody := tBokiComponents.NewRigidBodyBox(x, y, w, h, 0, true)
+	ladderBody.UpdateVertices()
+
+	components.RigidBodyComponent.SetValue(
+		ladderEntity,
+		*ladderBody,
+	)
+}
+
 func AddChatEntity(scene *coldBrew.Scene, slidesCount int, introChat, sceneAssetPath string, portraitNames []string) {
 
 	chatEntity := scene.AddEntity(

@@ -11,17 +11,17 @@ import (
 	"github.com/yohamta/donburi/filter"
 )
 
-type PlayerMovementInputHandlerSystem struct {
+type PlayerMovementInputProcessorSystem struct {
 	scene *coldBrew.Scene
 }
 
-func NewPlayerMovementInputHandler(scene *coldBrew.Scene) *PlayerMovementInputHandlerSystem {
-	return &PlayerMovementInputHandlerSystem{
+func NewPlayerMovementInputProcessor(scene *coldBrew.Scene) *PlayerMovementInputProcessorSystem {
+	return &PlayerMovementInputProcessorSystem{
 		scene: scene,
 	}
 }
 
-func (*PlayerMovementInputHandlerSystem) Query() *donburi.Query {
+func (*PlayerMovementInputProcessorSystem) Query() *donburi.Query {
 	return donburi.NewQuery(
 		filter.And(
 			filter.Contains(components.PlayerStateComponent),
@@ -30,7 +30,7 @@ func (*PlayerMovementInputHandlerSystem) Query() *donburi.Query {
 	)
 }
 
-func (sys *PlayerMovementInputHandlerSystem) Run(dt float64, playerEntity *donburi.Entry) {
+func (sys *PlayerMovementInputProcessorSystem) Run(dt float64, playerEntity *donburi.Entry) {
 	inputs := components.InputsComponent.Get(playerEntity)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 
@@ -72,6 +72,11 @@ func (sys *PlayerMovementInputHandlerSystem) Run(dt float64, playerEntity *donbu
 		playerState.Down = true
 	}
 
+	if activeInput == constants.RELEASED_VERTICAL {
+		playerState.Up = false
+		playerState.Down = false
+	}
+
 	if activeInput == interact {
 		playerState.Interact = true
 	}
@@ -95,7 +100,7 @@ func handleKeySpace(playerState *components.PlayerState, m *coldBrew.Manager) {
 
 	playerPreparingToJump := playerState.JumpWindupStart != 0
 
-	if !playerState.OnGround || playerPreparingToJump {
+	if (!playerState.OnGround && !playerState.Climbing) || playerPreparingToJump {
 		return
 	}
 

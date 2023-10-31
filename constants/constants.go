@@ -75,6 +75,7 @@ const (
 	NO_INPUT            = -1
 	COMBO_DOWN_SPACE    = -2
 	RELEASED_HORIZONTAL = -3
+	RELEASED_VERTICAL   = -4
 )
 
 // Key Binds.

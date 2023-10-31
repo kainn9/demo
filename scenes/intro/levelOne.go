@@ -68,7 +68,7 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scenesUtil.AddPlatformEntity(scene, float64(scene.Width)+340, 121, float64(scene.Width), 10) // Right.
 
 	// Ladder.
-	scenesUtil.AddFloorEntity(scene, 1875, 326, 35, 420, 0)
+	scenesUtil.AddLadderEntity(scene, 1875, 326, 20, 420)
 
 	scenesUtil.AddChatEntity(
 		scene,

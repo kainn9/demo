@@ -8,6 +8,8 @@ var FloorTag = donburi.NewTag()
 
 var PlatformTag = donburi.NewTag()
 
+var LadderTag = donburi.NewTag()
+
 var ChatPopUpSpriteTag = donburi.NewTag()
 
 var ChatPopDownSpriteTag = donburi.NewTag()

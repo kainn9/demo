@@ -42,6 +42,10 @@ var PlatformQuery = donburi.NewQuery(
 	filter.Contains(tags.PlatformTag),
 )
 
+var LadderQuery = donburi.NewQuery(
+	filter.Contains(tags.LadderTag),
+)
+
 var ChatPopUpAnimQuery = donburi.NewQuery(
 	filter.Contains(tags.ChatPopUpSpriteTag),
 )

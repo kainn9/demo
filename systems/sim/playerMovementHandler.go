@@ -21,7 +21,7 @@ var (
 	maxVelY     = 750.0  // Max speed up or down.
 	maxVelX     = 180.0  // Max speed left or right.
 	xVelUnit    = 18.0   // Left or right.
-	yVelUnit    = -775.0 // Jump.
+	yVelUnit    = -275.0 // Jump.
 	jumpDelay   = 15     // The amount of ticks to wait before jumping.
 )
 
@@ -66,7 +66,14 @@ func clampToMinVelocity(playerBody *tBokiComponents.RigidBody) {
 	}
 }
 
+// Probably worth moving this to a more general gravity system,
+// once we have more than one entity that needs gravity.
 func gravityHandler(playerBody *tBokiComponents.RigidBody, playerState *components.PlayerState) {
+
+	if playerState.Climbing {
+		return
+	}
+
 	weightForce, _ := tBokiPhysics.ForceFactory.NewWeightForce(playerBody.GetMass())
 	tBokiPhysics.Transformer.AddForce(playerBody, weightForce)
 

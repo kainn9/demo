@@ -18,13 +18,13 @@ func InitStandardSystems(scene *coldBrew.Scene) {
 	scene.AddSystem(clientSystems.NewPlayerMovementInputTracker())
 
 	// Sim Systems.
-	scene.AddSystem(simSystems.NewPlayerMovementInputHandler(scene))
+	scene.AddSystem(simSystems.NewPlayerMovementInputProcessor(scene))
 	scene.AddSystem(simSystems.NewChatHandler(scene))
 	scene.AddSystem(simSystems.NewPlayerMovementHandler(scene))
-	scene.AddSystem(simSystems.NewPlayerClearOnGroundHandler(scene))
+	scene.AddSystem(simSystems.NewClearOnGroundHandler(scene))
 	scene.AddSystem(simSystems.NewPlayerFloorCollisionHandler(scene))
 	scene.AddSystem(simSystems.NewPlayerPlatformCollisionHandler(scene))
-
+	scene.AddSystem(simSystems.NewLadderHandler(scene))
 	scene.AddSystem(simSystems.NewCameraPositionHandler(scene))
 
 	// Render Systems.
@@ -34,7 +34,6 @@ func InitStandardSystems(scene *coldBrew.Scene) {
 	scene.AddSystem(renderSystems.NewFrontLayerRenderer(scene))
 	// This must be the last Render system to be added for now(minus debug).
 	scene.AddSystem(renderSystems.NewCameraRendererRenderer(scene))
-
 	scene.AddSystem(renderSystems.NewDebugRigidBodyRenderer(scene))
 
 }

@@ -7,17 +7,19 @@ import (
 	"github.com/yohamta/donburi"
 )
 
-type PlayerClearOnGroundHandlerSystem struct {
+// We make this a its own system, because we want to resetOnGround
+// to false before the floor and platform collision handlers run.
+type ClearOnGroundHandlerSystem struct {
 	scene *coldBrew.Scene
 }
 
-func NewPlayerClearOnGroundHandler(scene *coldBrew.Scene) *PlayerClearOnGroundHandlerSystem {
-	return &PlayerClearOnGroundHandlerSystem{
+func NewClearOnGroundHandler(scene *coldBrew.Scene) *ClearOnGroundHandlerSystem {
+	return &ClearOnGroundHandlerSystem{
 		scene: scene,
 	}
 }
 
-func (sys PlayerClearOnGroundHandlerSystem) Run(dt float64, _ *donburi.Entry) {
+func (sys ClearOnGroundHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 
 	world := sys.scene.World
 
@@ -25,5 +27,4 @@ func (sys PlayerClearOnGroundHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 
 	playerState.OnGround = false
-
 }
