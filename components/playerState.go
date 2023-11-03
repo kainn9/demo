@@ -1,23 +1,27 @@
 package components
 
 import (
-	playerConstants "github.com/kainn9/demo/constants/player"
 	"github.com/yohamta/donburi"
 )
 
-type PlayerState struct {
+type PlayerCollisionState struct {
+	OnGround bool
+	Climbing bool
+}
+type PlayerTransformState struct {
 	direction               float64
 	JumpWindupStart         int // Tick.
+	Jumping                 bool
 	BasicHorizontalMovement bool
 	Up                      bool
 	Down                    bool
-	Interact                bool
-	OnGround                bool
-	Climbing                bool
-	Jumping                 bool
 	PhaseThroughPlatforms   bool
+}
 
-	AnimationState playerConstants.AnimState
+type PlayerState struct {
+	Collision *PlayerCollisionState
+	Transform *PlayerTransformState
+	Animation AnimState
 }
 
 var PlayerStateComponent = donburi.NewComponentType[PlayerState]()
@@ -25,19 +29,21 @@ var PlayerStateComponent = donburi.NewComponentType[PlayerState]()
 func NewPlayerState() *PlayerState {
 
 	return &PlayerState{
-
-		direction: 1,
+		Collision: &PlayerCollisionState{},
+		Transform: &PlayerTransformState{
+			direction: 1,
+		},
 	}
 }
 
 func (ps *PlayerState) Direction() float64 {
-	return ps.direction
+	return ps.Transform.direction
 }
 
 func (ps *PlayerState) SetDirectionLeft() {
-	ps.direction = -1
+	ps.Transform.direction = -1
 }
 
 func (ps *PlayerState) SetDirectionRight() {
-	ps.direction = 1
+	ps.Transform.direction = 1
 }

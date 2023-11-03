@@ -10,19 +10,20 @@ import (
 	systemsUtil "github.com/kainn9/demo/systems/util"
 )
 
-type CameraRendererRendererSystem struct {
+type CameraRendererSystem struct {
 	scene *coldBrew.Scene
 }
 
-func NewCameraRendererRenderer(scene *coldBrew.Scene) *CameraRendererRendererSystem {
-	return &CameraRendererRendererSystem{
+func NewCameraRenderer(scene *coldBrew.Scene) *CameraRendererSystem {
+	return &CameraRendererSystem{
 		scene: scene,
 	}
 }
 
-func (sys CameraRendererRendererSystem) Draw(screen *ebiten.Image, _ *donburi.Entry) {
+func (sys CameraRendererSystem) Draw(screen *ebiten.Image, _ *donburi.Entry) {
 	world := sys.scene.World
 	cameraEntity := systemsUtil.GetCameraEntity(world)
 	camera := components.CameraComponent.Get(cameraEntity)
+
 	cameraUtil.Render(camera, screen)
 }

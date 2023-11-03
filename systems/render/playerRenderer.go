@@ -1,17 +1,19 @@
 package renderSystems
 
 import (
+	"log"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	assetComponents "github.com/kainn9/demo/components/assets"
 	playerConstants "github.com/kainn9/demo/constants/player"
 	"github.com/kainn9/demo/queries"
 	animUtil "github.com/kainn9/demo/systems/render/util/anim"
 	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
 	systemsUtil "github.com/kainn9/demo/systems/util"
+	tBokiComponents "github.com/kainn9/tteokbokki/components"
 )
 
 type PlayerRendererSystem struct {
@@ -33,16 +35,28 @@ func (sys PlayerRendererSystem) Draw(screen *ebiten.Image, playerEntity *donburi
 	// Get relevant entities and components.
 	world := sys.scene.World
 
-	sprites := assetComponents.PlayerSpritesAnimMapComponent.Get(playerEntity)
+	sprites := components.PlayerSpritesAnimMapComponent.Get(playerEntity)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
-	opts := &ebiten.DrawImageOptions{}
 
 	cameraEntity := systemsUtil.GetCameraEntity(world)
 	camera := components.CameraComponent.Get(cameraEntity)
 
+	sys.updateAnimationState(playerState, sprites)
+
+	currentSpriteSheet := sys.currentSpriteSheet(playerState, sprites)
+
+	opts := sys.configureDrawOptions(playerState, playerBody, currentSpriteSheet, camera)
+
+	sys.renderPlayerSpriteOnCamera(currentSpriteSheet, camera, opts)
+
+}
+func (sys PlayerRendererSystem) updateAnimationState(
+	playerState *components.PlayerState,
+	sprites *map[components.AnimState]*components.Sprite,
+) {
 	// Clearing old animation data if animation state has changed.
-	prevAnimationState := playerState.AnimationState
+	prevAnimationState := playerState.Animation
 	currentAnimationState := sys.determinePlayerAnimationState(playerState)
 
 	if prevAnimationState != currentAnimationState {
@@ -50,13 +64,39 @@ func (sys PlayerRendererSystem) Draw(screen *ebiten.Image, playerEntity *donburi
 	}
 
 	// Setting current animation state(selecting matching sprite/sheet).
-	playerState.AnimationState = currentAnimationState
-	currentSpriteSheet := (*sprites)[playerState.AnimationState]
+	playerState.Animation = currentAnimationState
+
+}
+
+func (sys PlayerRendererSystem) currentSpriteSheet(
+
+	playerState *components.PlayerState,
+	sprites *map[components.AnimState]*components.Sprite,
+
+) *components.Sprite {
+
+	currentSpriteSheet := (*sprites)[playerState.Animation]
 
 	// If the current sprite sheet is nil, default to idle.
 	if currentSpriteSheet == nil {
+		log.Println("Player sprite sheet is nil, defaulting to idle.")
+
 		currentSpriteSheet = (*sprites)[playerConstants.PLAYER_ANIM_STATE_IDLE]
 	}
+
+	return currentSpriteSheet
+}
+
+func (sys PlayerRendererSystem) configureDrawOptions(
+
+	playerState *components.PlayerState,
+	playerBody *tBokiComponents.RigidBody,
+	currentSpriteSheet *components.Sprite,
+	camera *components.Camera,
+
+) *ebiten.DrawImageOptions {
+
+	opts := &ebiten.DrawImageOptions{}
 
 	// Scaling player sprite to face correct direction.
 	opts.GeoM.Scale(playerState.Direction(), 1)
@@ -65,39 +105,41 @@ func (sys PlayerRendererSystem) Draw(screen *ebiten.Image, playerEntity *donburi
 	// Also handles offsetting of sprite onto the players Rigid body.
 	xOff := currentSpriteSheet.OffSetX * playerState.Direction()
 	yOff := currentSpriteSheet.OffSetY
-	xPos := playerBody.Pos.X - xOff
-	yPos := playerBody.Pos.Y - yOff
+	xPos := playerBody.Pos.X + xOff
+	yPos := playerBody.Pos.Y + yOff
 
 	cameraUtil.Translate(camera, opts, xPos, yPos)
 
+	return opts
+}
+
+func (sys PlayerRendererSystem) renderPlayerSpriteOnCamera(currentSpriteSheet *components.Sprite, camera *components.Camera, opts *ebiten.DrawImageOptions) {
 	// Selecting correct sprite frame to render.
 	spriteAtFrameIndex := animUtil.PlayAnim(sys.scene.Manager, currentSpriteSheet)
-
 	// Adding sprite frame to camera.
 	cameraUtil.AddImage(camera, spriteAtFrameIndex, opts)
 
 }
+func (sys PlayerRendererSystem) determinePlayerAnimationState(playerState *components.PlayerState) components.AnimState {
 
-func (sys PlayerRendererSystem) determinePlayerAnimationState(playerState *components.PlayerState) playerConstants.AnimState {
-
-	if playerState.Climbing && (playerState.Up || playerState.Down) {
+	if playerState.Collision.Climbing && (playerState.Transform.Up || playerState.Transform.Down) {
 		return playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_ACTIVE
 	}
 
-	if playerState.Climbing {
+	if playerState.Collision.Climbing {
 		return playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_IDLE
 	}
 
-	if playerState.Jumping || playerState.JumpWindupStart != 0 {
+	if playerState.Transform.Jumping || playerState.Transform.JumpWindupStart != 0 {
 		return playerConstants.PLAYER_ANIM_STATE_JUMP
 	}
 
-	if !playerState.Jumping && !playerState.OnGround {
+	if !playerState.Transform.Jumping && !playerState.Collision.OnGround {
 
 		return playerConstants.PLAYER_ANIM_STATE_FALL
 	}
 
-	if playerState.OnGround && playerState.BasicHorizontalMovement {
+	if playerState.Collision.OnGround && playerState.Transform.BasicHorizontalMovement {
 		return playerConstants.PLAYER_ANIM_STATE_RUN
 	}
 

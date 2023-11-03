@@ -51,7 +51,7 @@ func (sys PlayerPlatformCollisionHandlerSystem) Run(dt float64, _ *donburi.Entry
 	})
 
 	if noPlatformCollisions {
-		playerState.PhaseThroughPlatforms = false
+		playerState.Transform.PhaseThroughPlatforms = false
 	}
 
 }
@@ -63,10 +63,10 @@ func (PlayerPlatformCollisionHandlerSystem) handleCollision(
 	contacts []tBokiComponents.Contact,
 ) {
 
-	if playerState.PhaseThroughPlatforms {
+	if playerState.Transform.PhaseThroughPlatforms {
 		return
 	}
 
 	tBokiPhysics.Resolver.Resolve(playerBody, platform, contacts[0])
-	playerState.OnGround = true
+	playerState.Collision.OnGround = true
 }

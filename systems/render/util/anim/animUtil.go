@@ -5,28 +5,35 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kainn9/coldBrew"
-	assetComponents "github.com/kainn9/demo/components/assets"
+	"github.com/kainn9/demo/components"
 )
 
-func ResetAnimationConfig(spriteSheet *assetComponents.Sprite) {
+func ResetAnimationConfig(spriteSheet *components.Sprite) {
 	if spriteSheet == nil {
 		return
 	}
 
-	spriteSheet.AnimationConfig.StartTick = 0
+	spriteSheet.AnimationConfig.StartTick = -1
+}
+
+func ActiveAnimation(animConfig *components.AnimationConfig) bool {
+	return animConfig.StartTick != -1
+}
+
+func InactiveAnimation(spriteSheet *components.AnimationConfig) bool {
+	return !ActiveAnimation(spriteSheet)
 }
 
 // PlayAnim returns the current frame of the animation.
 // If the Animation has not been "initialized", it will initialize it,
 // by setting the start tick to the current tick.
-func PlayAnim(m *coldBrew.Manager, spriteSheet *assetComponents.Sprite) *ebiten.Image {
-	currentTick := m.TickHandler.CurrentTick()
+func PlayAnim(m *coldBrew.Manager, spriteSheet *components.Sprite) *ebiten.Image {
 
+	currentTick := m.TickHandler.CurrentTick()
 	animConfig := spriteSheet.AnimationConfig
 
 	// Anim has just started playing.
-	if animConfig.StartTick == 0 {
-
+	if InactiveAnimation(animConfig) {
 		animConfig.StartTick = currentTick
 	}
 
@@ -35,7 +42,8 @@ func PlayAnim(m *coldBrew.Manager, spriteSheet *assetComponents.Sprite) *ebiten.
 	ticksSinceAnimationStart := m.TickHandler.TicksSinceNTicks(animConfig.StartTick)
 
 	// If animation has finished, and does not have freeze bool,
-	// allow the animation to loop.
+	// allow the animation to loop. Otherwise, freeze the animation
+	// (render the last frame).
 	var frameIndex int
 	animationFinished := ticksSinceAnimationStart >= totalAnimationTicks
 

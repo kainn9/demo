@@ -9,7 +9,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	assetComponents "github.com/kainn9/demo/components/assets"
 	fontConstants "github.com/kainn9/demo/constants/font"
 	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
 	systemsUtil "github.com/kainn9/demo/systems/util"
@@ -27,7 +26,7 @@ func RenderText(
 	x, y, maxWidth, charWidth, charHeight, spaceWidth float64,
 	startTick, ticksPerWord int,
 	camera *components.Camera,
-	lower, upper, numbers, special *assetComponents.Sprite,
+	lower, upper, numbers, special *components.Sprite,
 	adjustmentMap map[string]fontConstants.FontAdjustment,
 	manager *coldBrew.Manager,
 
@@ -84,7 +83,7 @@ func StripInvalidCharacters(word string) string {
 func PrintWord(
 	word string,
 	currentX, currentY, charWidth, charHeight, animCoefficient float64,
-	lower, upper, numbers, special *assetComponents.Sprite,
+	lower, upper, numbers, special *components.Sprite,
 	adjustmentMap map[string]fontConstants.FontAdjustment,
 	camera *components.Camera,
 ) {

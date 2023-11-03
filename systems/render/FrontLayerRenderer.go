@@ -6,7 +6,6 @@ import (
 
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	assetComponents "github.com/kainn9/demo/components/assets"
 	"github.com/kainn9/demo/queries"
 	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
 	systemsUtil "github.com/kainn9/demo/systems/util"
@@ -29,12 +28,15 @@ func (sys FrontLayerRendererSystem) Draw(screen *ebiten.Image, _ *donburi.Entry)
 	camera := components.CameraComponent.Get(cameraEntity)
 
 	queries.FrontLayerQuery.Each(world, func(layerEntity *donburi.Entry) {
-
-		sprite := assetComponents.SpriteComponent.Get(layerEntity)
-		drawOptions := &ebiten.DrawImageOptions{}
-		cameraUtil.Translate(camera, drawOptions, 0, 0)
-		cameraUtil.AddImage(camera, sprite.Image, drawOptions)
-
+		sys.renderFrontLayerBgImage(layerEntity, camera)
 	})
+
+}
+
+func (sys FrontLayerRendererSystem) renderFrontLayerBgImage(layerEntity *donburi.Entry, camera *components.Camera) {
+	sprite := components.SpriteComponent.Get(layerEntity)
+	drawOptions := &ebiten.DrawImageOptions{}
+	cameraUtil.Translate(camera, drawOptions, 0, 0)
+	cameraUtil.AddImage(camera, sprite.Image, drawOptions)
 
 }

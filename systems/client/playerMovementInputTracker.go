@@ -3,17 +3,23 @@ package clientSystems
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	inputConstants "github.com/kainn9/demo/constants/input"
+	systemsUtil "github.com/kainn9/demo/systems/util"
 
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/filter"
 )
 
-type PlayerMovementInputTrackerSystem struct{}
+type PlayerMovementInputTrackerSystem struct {
+	scene *coldBrew.Scene
+}
 
-func NewPlayerMovementInputTracker() *PlayerMovementInputTrackerSystem {
-	return &PlayerMovementInputTrackerSystem{}
+func NewPlayerMovementInputTracker(scene *coldBrew.Scene) *PlayerMovementInputTrackerSystem {
+	return &PlayerMovementInputTrackerSystem{
+		scene: scene,
+	}
 }
 
 func (PlayerMovementInputTrackerSystem) Query() *donburi.Query {
@@ -22,14 +28,14 @@ func (PlayerMovementInputTrackerSystem) Query() *donburi.Query {
 	)
 }
 
-func (sys PlayerMovementInputTrackerSystem) Sync(entity *donburi.Entry) {
+func (sys PlayerMovementInputTrackerSystem) Sync(inputsEntity *donburi.Entry) {
 
 	// Block movement inputs unless chat is not active.
-	if sys.chatIsActive(entity) {
+	if systemsUtil.IsChatActive(sys.scene.World) {
 		return
 	}
 
-	inputs := components.InputsComponent.Get(entity)
+	inputs := components.InputsComponent.Get(inputsEntity)
 
 	left, right, jump, up, down, interact := inputConstants.ALL_BINDS()
 
@@ -74,26 +80,6 @@ func (sys PlayerMovementInputTrackerSystem) Sync(entity *donburi.Entry) {
 		sys.addUniqueKey(&inputs.Queue, interact)
 	}
 
-}
-
-func (sys PlayerMovementInputTrackerSystem) chatIsActive(inputEntity *donburi.Entry) bool {
-	world := inputEntity.World
-
-	var isChatActive bool
-
-	query := donburi.NewQuery(
-		filter.Contains(components.ChatStateComponent),
-	)
-
-	query.Each(world, func(chatEntity *donburi.Entry) {
-
-		config := components.ChatStateComponent.Get(chatEntity)
-		if config.Active {
-			isChatActive = true
-		}
-	})
-
-	return isChatActive
 }
 
 func (sys PlayerMovementInputTrackerSystem) addUniqueKey(slice *[]ebiten.Key, element ebiten.Key) bool {

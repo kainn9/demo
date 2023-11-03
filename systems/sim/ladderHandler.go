@@ -20,22 +20,21 @@ func NewLadderHandler(scene *coldBrew.Scene) *LadderHandlerSystem {
 	}
 }
 
-func (sys LadderHandlerSystem) CustomQuery() *donburi.Query {
+func (sys LadderHandlerSystem) LadderQuery() *donburi.Query {
 	return queries.LadderQuery
 }
 
 func (sys LadderHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 
 	world := sys.scene.World
-	query := sys.CustomQuery()
-
-	noLadderCollisions := true
 
 	playerEntity := systemsUtil.GetPlayerEntity(world)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 
-	query.Each(world, func(ladderEntity *donburi.Entry) {
+	noLadderCollisions := true
+
+	sys.LadderQuery().Each(world, func(ladderEntity *donburi.Entry) {
 
 		ladderBody := components.RigidBodyComponent.Get(ladderEntity)
 
@@ -46,7 +45,7 @@ func (sys LadderHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 	})
 
 	if noLadderCollisions {
-		playerState.Climbing = false
+		playerState.Collision.Climbing = false
 	}
 
 }
@@ -57,23 +56,23 @@ func (sys LadderHandlerSystem) handleClimb(
 	playerState *components.PlayerState,
 ) {
 
-	if !playerState.Up && !playerState.Down && !playerState.Climbing {
+	if !playerState.Transform.Up && !playerState.Transform.Down && !playerState.Collision.Climbing {
 		return
 	}
 
-	if playerState.Jumping || playerState.JumpWindupStart != 0 {
-		playerState.Climbing = false
+	if playerState.Transform.Jumping || playerState.Transform.JumpWindupStart != 0 {
+		playerState.Collision.Climbing = false
 		return
 	}
 
-	playerState.Climbing = true
+	playerState.Collision.Climbing = true
 
-	if playerState.Up {
+	if playerState.Transform.Up {
 		playerBody.Vel.Y = -100
 		return
 	}
 
-	if playerState.Down {
+	if playerState.Transform.Down {
 		playerBody.Vel.Y = 100
 		return
 	}

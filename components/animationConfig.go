@@ -1,12 +1,17 @@
-package assetComponents
+package components
 
 type AnimationConfig struct {
 	FrameWidth,
 	FrameHeight,
 	FrameCount,
-	AnimationFramesPerTick,
-	StartTick int
+	AnimationFramesPerTick int
 	Freeze bool
+
+	// This is technically "state", but it's used to track the animation.
+	// It is the only that is allowed to be mutated in the render phase,
+	// to begin/start the animation.
+	// -1 is the default value, and means the animation is not active.
+	StartTick int
 }
 
 func NewAnimationConfig(
@@ -24,5 +29,6 @@ func NewAnimationConfig(
 		FrameCount:             frameCount,
 		AnimationFramesPerTick: animationFramesPerTick,
 		Freeze:                 freeze,
+		StartTick:              -1,
 	}
 }

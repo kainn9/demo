@@ -2,7 +2,6 @@ package queries
 
 import (
 	"github.com/kainn9/demo/components"
-	assetComponents "github.com/kainn9/demo/components/assets"
 	"github.com/kainn9/demo/tags"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/filter"
@@ -22,15 +21,15 @@ var CameraQuery = donburi.NewQuery(
 
 var ParallaxBackGroundLayerQuery = donburi.NewQuery(
 	filter.And(
-		filter.Contains(assetComponents.SpriteComponent),
-		filter.Contains(assetComponents.ParallaxLayerConfigComponent),
+		filter.Contains(components.SpriteComponent),
+		filter.Contains(components.ParallaxLayerConfigComponent),
 	),
 )
 
 var FrontLayerQuery = donburi.NewQuery(
 	filter.And(
-		filter.Contains(assetComponents.SpriteComponent),
-		filter.Contains(assetComponents.FrontLayerComponent),
+		filter.Contains(components.SpriteComponent),
+		filter.Contains(components.FrontLayerComponent),
 	),
 )
 

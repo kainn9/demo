@@ -2,23 +2,23 @@ package scenesUtil
 
 import (
 	"github.com/kainn9/coldBrew"
-	assetComponents "github.com/kainn9/demo/components/assets"
+	"github.com/kainn9/demo/components"
 )
 
-func AddParallaxBackgroundEntity(scene *coldBrew.Scene, layers []*assetComponents.ParallaxLayerConfig) {
+func AddParallaxBackgroundEntity(scene *coldBrew.Scene, layers []*components.ParallaxLayerConfig) {
 
 	for _, layer := range layers {
 
-		bgLayerEntity := scene.AddEntity(assetComponents.ParallaxLayerConfigComponent, assetComponents.SpriteComponent)
+		bgLayerEntity := scene.AddEntity(components.ParallaxLayerConfigComponent, components.SpriteComponent)
 
-		assetComponents.ParallaxLayerConfigComponent.SetValue(
+		components.ParallaxLayerConfigComponent.SetValue(
 			bgLayerEntity,
 			*layer,
 		)
 
-		assetComponents.SpriteComponent.SetValue(
+		components.SpriteComponent.SetValue(
 			bgLayerEntity,
-			*assetComponents.NewSprite(0, 0),
+			*components.NewSprite(0, 0),
 		)
 
 	}
@@ -26,15 +26,15 @@ func AddParallaxBackgroundEntity(scene *coldBrew.Scene, layers []*assetComponent
 }
 
 func AddFrontLayerEntity(scene *coldBrew.Scene, sceneAssetPath string) {
-	frontLayerBackgroundEntity := scene.AddEntity(assetComponents.FrontLayerComponent, assetComponents.SpriteComponent)
+	frontLayerBackgroundEntity := scene.AddEntity(components.FrontLayerComponent, components.SpriteComponent)
 
-	assetComponents.FrontLayerComponent.SetValue(
+	components.FrontLayerComponent.SetValue(
 		frontLayerBackgroundEntity,
-		*assetComponents.NewFrontLayerConfig(sceneAssetPath),
+		*components.NewFrontLayerConfig(sceneAssetPath),
 	)
 
-	assetComponents.SpriteComponent.SetValue(
+	components.SpriteComponent.SetValue(
 		frontLayerBackgroundEntity,
-		*assetComponents.NewSprite(0, 0),
+		*components.NewSprite(0, 0),
 	)
 }

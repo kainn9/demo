@@ -5,7 +5,6 @@ import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	inputConstants "github.com/kainn9/demo/constants/input"
-	systemsUtil "github.com/kainn9/demo/systems/util"
 
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/filter"
@@ -36,11 +35,7 @@ func (sys PlayerMovementInputProcessorSystem) Run(dt float64, playerEntity *donb
 
 	activeInput := sys.inputShift(&inputs.Queue)
 
-	if systemsUtil.PlayerStateHelper.PlayerCannotAcceptInputs(playerState) {
-		return
-	}
-
-	left, right, jump, up, down, interact := inputConstants.ALL_BINDS()
+	left, right, jump, up, down, _ := inputConstants.ALL_BINDS()
 
 	// Left/Right movement.
 	if activeInput == left {
@@ -52,7 +47,7 @@ func (sys PlayerMovementInputProcessorSystem) Run(dt float64, playerEntity *donb
 	}
 
 	if activeInput == inputConstants.RELEASED_HORIZONTAL {
-		playerState.BasicHorizontalMovement = false
+		playerState.Transform.BasicHorizontalMovement = false
 	}
 
 	// Jumping or descending platform.
@@ -60,32 +55,28 @@ func (sys PlayerMovementInputProcessorSystem) Run(dt float64, playerEntity *donb
 		sys.handleKeySpace(playerState, sys.scene.Manager)
 	}
 
-	if activeInput == inputConstants.COMBO_DOWN_SPACE && playerState.OnGround {
-		playerState.PhaseThroughPlatforms = true
+	if activeInput == inputConstants.COMBO_DOWN_SPACE && playerState.Collision.OnGround {
+		playerState.Transform.PhaseThroughPlatforms = true
 	}
 
 	if activeInput == up {
-		playerState.Up = true
+		playerState.Transform.Up = true
 	}
 
 	if activeInput == down {
-		playerState.Down = true
+		playerState.Transform.Down = true
 	}
 
 	if activeInput == inputConstants.RELEASED_VERTICAL {
-		playerState.Up = false
-		playerState.Down = false
-	}
-
-	if activeInput == interact {
-		playerState.Interact = true
+		playerState.Transform.Up = false
+		playerState.Transform.Down = false
 	}
 
 }
 
 func (sys PlayerMovementInputProcessorSystem) handleKeyRightLeft(playerState *components.PlayerState, right bool) {
 
-	playerState.BasicHorizontalMovement = true
+	playerState.Transform.BasicHorizontalMovement = true
 
 	if right {
 		playerState.SetDirectionRight()
@@ -98,13 +89,13 @@ func (sys PlayerMovementInputProcessorSystem) handleKeyRightLeft(playerState *co
 func (sys PlayerMovementInputProcessorSystem) handleKeySpace(playerState *components.PlayerState, m *coldBrew.Manager) {
 	tickHandler := m.TickHandler
 
-	playerPreparingToJump := playerState.JumpWindupStart != 0
+	playerPreparingToJump := playerState.Transform.JumpWindupStart != 0
 
-	if (!playerState.OnGround && !playerState.Climbing) || playerPreparingToJump {
+	if (!playerState.Collision.OnGround && !playerState.Collision.Climbing) || playerPreparingToJump {
 		return
 	}
 
-	playerState.JumpWindupStart = tickHandler.CurrentTick()
+	playerState.Transform.JumpWindupStart = tickHandler.CurrentTick()
 
 }
 

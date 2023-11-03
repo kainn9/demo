@@ -3,7 +3,6 @@ package intro
 import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	assetComponents "github.com/kainn9/demo/components/assets"
 	UIConstants "github.com/kainn9/demo/constants/UI"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
 )
@@ -33,32 +32,32 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 
 	scenesUtil.AddCameraEntity(scene, 0, 262)
 
-	scenesUtil.AddParallaxBackgroundEntity(scene, []*assetComponents.ParallaxLayerConfig{
+	scenesUtil.AddParallaxBackgroundEntity(scene, []*components.ParallaxLayerConfig{
 		// Sky.
-		assetComponents.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 0, 22, 22, false),
+		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 0, 22, 22, false),
 
 		// City Far Shadow.
-		assetComponents.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 1, 18, 18, false),
+		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 1, 18, 18, false),
 
 		// City Lights.
-		assetComponents.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 2, 8, 8, false),
+		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 2, 8, 8, false),
 
 		// Mountains
-		assetComponents.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 3, 0, 0, false),
+		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 3, 0, 0, false),
 
 		// Green Trees.
-		assetComponents.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 4, 10, 10, false),
+		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 4, 10, 10, false),
 
 		// Statues.
-		assetComponents.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 5, 5, 12, false),
+		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 5, 5, 12, false),
 
 		// Red Shrubs.
-		assetComponents.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 6, 4, 8, false),
+		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 6, 4, 8, false),
 
 		// Gears Close.
-		assetComponents.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 7, 2, 0, false),
+		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 7, 2, 0, false),
 		// Main layer.
-		assetComponents.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 8, 0, 0, false),
+		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 8, 0, 0, false),
 	})
 
 	// Floor.
@@ -99,7 +98,16 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		content,
 	)
 
-	scenesUtil.AddOnCollisionIndicatorEntity(scene, 100, LEVEL_ONE_SCENE_HEIGHT-40, 40, 40, true, UIConstants.INDICATOR_MOVEMENT)
+	scenesUtil.AddOnCollisionIndicatorEntity(
+		scene,
+		85,
+		LEVEL_ONE_SCENE_HEIGHT-40,
+		15,
+		10,
+		-22,
+		-73,
+		true,
+		UIConstants.INDICATOR_MOVEMENT)
 
 	return scene
 }

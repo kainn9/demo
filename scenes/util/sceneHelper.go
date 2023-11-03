@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/kainn9/coldBrew"
-	assetComponents "github.com/kainn9/demo/components/assets"
+	"github.com/kainn9/demo/components"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	"github.com/yohamta/donburi"
 )
@@ -63,9 +63,9 @@ func transferPlayer(
 	newPlayerEntity := systemsUtil.GetPlayerEntity(newScene.World)
 
 	// Transfer sprites to avoid asset reloading.
-	oldPlayerSpriteMap := assetComponents.PlayerSpritesAnimMapComponent.Get(prevPlayerEntity)
+	oldPlayerSpriteMap := components.PlayerSpritesAnimMapComponent.Get(prevPlayerEntity)
 
-	newPlayerSpriteMap := assetComponents.PlayerSpritesAnimMapComponent.Get(newPlayerEntity)
+	newPlayerSpriteMap := components.PlayerSpritesAnimMapComponent.Get(newPlayerEntity)
 
 	for key, value := range *oldPlayerSpriteMap {
 		(*newPlayerSpriteMap)[key] = value
@@ -81,12 +81,12 @@ func transferUISingleton(
 	prevScene, newScene *coldBrew.Scene,
 ) {
 
-	prevSpritesMap := assetComponents.SpritesMapComponent.Get(prevUISingletonEntity)
+	prevSpritesMap := components.SpritesMapComponent.Get(prevUISingletonEntity)
 
 	AddUISpritesSingletonEntity(newScene)
 	newUISingletonEntity := systemsUtil.GetUISingletonEntity(newScene.World)
 
-	newSpritesMap := assetComponents.SpritesMapComponent.Get(newUISingletonEntity)
+	newSpritesMap := components.SpritesMapComponent.Get(newUISingletonEntity)
 
 	// Transfer sprites to avoid asset reloading.
 	for key, value := range *prevSpritesMap {

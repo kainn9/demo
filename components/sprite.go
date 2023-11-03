@@ -1,10 +1,11 @@
-package assetComponents
+package components
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	playerConstants "github.com/kainn9/demo/constants/player"
 	"github.com/yohamta/donburi"
 )
+
+type AnimState string
 
 type Sprite struct {
 	OffSetX, OffSetY float64
@@ -18,7 +19,7 @@ type Sprite struct {
 var SpriteComponent = donburi.NewComponentType[Sprite]()
 var SpritesMapComponent = donburi.NewComponentType[map[string]*Sprite]()
 var SpritesSliceComponent = donburi.NewComponentType[[]*Sprite]()
-var PlayerSpritesAnimMapComponent = donburi.NewComponentType[map[playerConstants.AnimState]*Sprite]()
+var PlayerSpritesAnimMapComponent = donburi.NewComponentType[map[AnimState]*Sprite]()
 
 // This should work, but its not needed for now.
 // var MultipleSpritesSliceComponent = donburi.NewComponentType[map[string][]*Sprite]()

@@ -26,5 +26,5 @@ func (sys ClearOnGroundHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 	playerEntity := systemsUtil.GetPlayerEntity(world)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 
-	playerState.OnGround = false
+	playerState.Collision.OnGround = false
 }

@@ -1,32 +1,49 @@
 package components
 
 import (
-	UIConstants "github.com/kainn9/demo/constants/UI"
 	"github.com/yohamta/donburi"
 )
 
-type IndicatorStateAndConfig struct {
-	// State:
-	Active bool
+// Indicator Constants.
+type IndicatorType string
 
-	// Config:
-	Type     UIConstants.IndicatorType
+type IndicatorState struct {
+	Active bool
+}
+
+type IndicatorConfig struct {
+	X, Y     float64
+	Type     IndicatorType
 	OnPlayer bool
+}
+
+type IndicatorStateAndConfig struct {
+	State  *IndicatorState
+	Config *IndicatorConfig
 }
 
 var IndicatorStateAndConfigComponent = donburi.NewComponentType[IndicatorStateAndConfig]()
 
+// If onPlayer is true, then x,y is relative to the player,
+// otherwise, it global/relative to the scene.
 func NewIndicatorStateAndConfig(
-
+	x, y float64,
 	active, onPlayer bool,
-	indicatorType UIConstants.IndicatorType,
+	indicatorType IndicatorType,
 
 ) *IndicatorStateAndConfig {
 
 	return &IndicatorStateAndConfig{
 
-		Active:   active,
-		Type:     indicatorType,
-		OnPlayer: onPlayer,
+		Config: &IndicatorConfig{
+			X:        x,
+			Y:        y,
+			Type:     indicatorType,
+			OnPlayer: onPlayer,
+		},
+
+		State: &IndicatorState{
+			Active: active,
+		},
 	}
 }

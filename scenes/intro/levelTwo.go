@@ -3,7 +3,6 @@ package intro
 import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	assetComponents "github.com/kainn9/demo/components/assets"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
 )
 
@@ -51,9 +50,9 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		content,
 	)
 
-	scenesUtil.AddParallaxBackgroundEntity(scene, []*assetComponents.ParallaxLayerConfig{
-		assetComponents.NewParallaxLayerConfig(LEVEL_TWO_SCENE_ASSET_PATH, 0, 8, 0, false),
-		assetComponents.NewParallaxLayerConfig(LEVEL_TWO_SCENE_ASSET_PATH, 1, 0, 0, false),
+	scenesUtil.AddParallaxBackgroundEntity(scene, []*components.ParallaxLayerConfig{
+		components.NewParallaxLayerConfig(LEVEL_TWO_SCENE_ASSET_PATH, 0, 8, 0, false),
+		components.NewParallaxLayerConfig(LEVEL_TWO_SCENE_ASSET_PATH, 1, 0, 0, false),
 	})
 	scenesUtil.AddFrontLayerEntity(scene, LEVEL_TWO_SCENE_ASSET_PATH)
 

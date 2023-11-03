@@ -25,47 +25,61 @@ func NewChatHandler(scene *coldBrew.Scene) *ChatHandlerSystem {
 
 func (ChatHandlerSystem) Query() *donburi.Query {
 	return donburi.NewQuery(
-		filter.Contains(components.ChatStateComponent),
+		filter.Contains(components.ChatStateAndConfigComponent),
 	)
 }
 
 func (sys ChatHandlerSystem) Run(dt float64, chatEntity *donburi.Entry) {
-	config := components.ChatStateComponent.Get(chatEntity)
+	configAndState := components.ChatStateAndConfigComponent.Get(chatEntity)
 	interact := inputConstants.KEY_BINDS[inputConstants.KEY_BIND_INTERACT]
 
 	popDownSprite := systemsUtil.GetChatPopDownSprite(sys.scene.World)
 	popUpSprite := systemsUtil.GetChatPopUpSprite(sys.scene.World)
 
-	if inpututil.IsKeyJustPressed(interact) && config.Active {
-
-		// Switch to the PopDown animation.
-		config.PopDownMode = true
-		popDownSprite.StartTick = sys.scene.Manager.TickHandler.CurrentTick()
-
-		// Reset the pop up animation(since it will play after popDown finishes).
-		animUtil.ResetAnimationConfig(popUpSprite)
-
-		// Reset the text counter, since it will be incremented in the popUp animation.
-		config.TextAnimStartTick = 0
-		config.CurrentSlideIndex++ // Increment the slide index.
-
+	// Handle Key Press.
+	if inpututil.IsKeyJustPressed(interact) && configAndState.State.Active {
+		sys.handleNextSlide(configAndState, popDownSprite, popUpSprite)
 	}
 
+	sys.handleTransitionState(configAndState, popDownSprite)
+	sys.handleClose(configAndState, popDownSprite, popUpSprite)
+
+}
+
+func (sys ChatHandlerSystem) handleNextSlide(
+	configAndState *components.ChatStateAndConfig,
+	popDownSprite, popUpSprite *components.Sprite,
+) {
+
+	// Switch to the PopDown animation.
+	configAndState.State.PopDownMode = true
+	popDownSprite.StartTick = sys.scene.Manager.TickHandler.CurrentTick()
+
+	// Reset the pop up animation(since it will play after popDown finishes).
+	animUtil.ResetAnimationConfig(popUpSprite)
+
+	// Reset the text counter, since it will be incremented in the popUp animation.
+	configAndState.State.TextAnimStartTick = -1
+	configAndState.State.CurrentSlideIndex++ // Increment the slide index.
+}
+
+func (sys ChatHandlerSystem) handleTransitionState(configAndState *components.ChatStateAndConfig, popDownSprite *components.Sprite) {
 	// Once the pop down animation is finished, switch to the pop up animation.
 	popDownFinished := sys.scene.Manager.TickHandler.TicksSinceNTicks(popDownSprite.StartTick) > UIConstants.CHAT_BOX_ANIM_SPEED*2
 	if popDownFinished {
-		config.PopDownMode = false
-		config.PopUpMode = true
+		configAndState.State.PopDownMode = false
+		configAndState.State.PopUpMode = true
 	}
+}
 
+func (sys ChatHandlerSystem) handleClose(configAndState *components.ChatStateAndConfig, popDownSprite, popUpSprite *components.Sprite) {
 	// If we are out of chat slides, time to close the chat box and
 	// reset the state(incase we ever want to re-open it).
-	chatFinished := config.CurrentSlideIndex > len(config.SlidesContent)-1
+	chatFinished := configAndState.State.CurrentSlideIndex > len(configAndState.State.SlidesContent)-1
 	if chatFinished {
-		config.Active = false
-		config.CurrentSlideIndex = 0
+		configAndState.State.Active = false
+		configAndState.State.CurrentSlideIndex = 0
 		animUtil.ResetAnimationConfig(popDownSprite)
 		animUtil.ResetAnimationConfig(popUpSprite)
 	}
-
 }

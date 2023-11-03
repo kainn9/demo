@@ -4,11 +4,11 @@ import (
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	assetComponents "github.com/kainn9/demo/components/assets"
+	"github.com/kainn9/demo/components"
 	clientConstants "github.com/kainn9/demo/constants/client"
 )
 
-func LoadImage(path string, sprite *assetComponents.Sprite) {
+func LoadImage(path string, sprite *components.Sprite) {
 	// Todo: change for build?
 	// if BuildTime == "true" {
 

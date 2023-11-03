@@ -3,7 +3,6 @@ package scenesUtil
 import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	assetComponents "github.com/kainn9/demo/components/assets"
 	playerConstants "github.com/kainn9/demo/constants/player"
 	"github.com/kainn9/demo/tags"
 	tBokiComponents "github.com/kainn9/tteokbokki/components"
@@ -16,7 +15,7 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 		components.RigidBodyComponent,
 		components.InputsComponent,
 		components.PlayerStateComponent,
-		assetComponents.PlayerSpritesAnimMapComponent,
+		components.PlayerSpritesAnimMapComponent,
 		tags.PlayerTag,
 	)
 
@@ -34,94 +33,58 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 	components.PlayerStateComponent.SetValue(playerEntity, *playerState)
 
 	// Sprites/Animations.
-	playerSprites := make(map[playerConstants.AnimState]*assetComponents.Sprite, 0)
+	playerSprites := make(map[components.AnimState]*components.Sprite, 0)
 
 	// Idle.
 
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_IDLE] = assetComponents.NewSprite(
+	playerSprites[playerConstants.PLAYER_ANIM_STATE_IDLE] = components.NewSprite(
 		playerConstants.PLAYER_SPRITE_OFFSET_X,
 		playerConstants.PLAYER_SPRITE_OFFSET_Y,
 	)
 
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_IDLE].AnimationConfig = assetComponents.NewAnimationConfig(
-		playerConstants.PLAYER_ANIMATIONS_SPRITE_WIDTH,
-		playerConstants.PLAYER_ANIMATIONS_SPRITE_HEIGHT,
-		playerConstants.PLAYER_IDLE_FRAME_COUNT,
-		playerConstants.PLAYER_IDLE_ANIM_SPEED,
-		false,
-	)
+	playerSprites[playerConstants.PLAYER_ANIM_STATE_IDLE].AnimationConfig = playerConstants.PLAYER_ANIMATION_CONFIGS[playerConstants.PLAYER_ANIM_STATE_IDLE]
 
 	// Run.
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_RUN] = assetComponents.NewSprite(
+	playerSprites[playerConstants.PLAYER_ANIM_STATE_RUN] = components.NewSprite(
 		playerConstants.PLAYER_SPRITE_OFFSET_X,
 		playerConstants.PLAYER_SPRITE_OFFSET_Y,
 	)
 
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_RUN].AnimationConfig = assetComponents.NewAnimationConfig(
-		playerConstants.PLAYER_ANIMATIONS_SPRITE_WIDTH,
-		playerConstants.PLAYER_ANIMATIONS_SPRITE_HEIGHT,
-		playerConstants.PLAYER_RUN_FRAME_COUNT,
-		playerConstants.PLAYER_RUN_ANIM_SPEED,
-		false,
-	)
+	playerSprites[playerConstants.PLAYER_ANIM_STATE_RUN].AnimationConfig = playerConstants.PLAYER_ANIMATION_CONFIGS[playerConstants.PLAYER_ANIM_STATE_RUN]
 
 	// Jump.
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_JUMP] = assetComponents.NewSprite(
+	playerSprites[playerConstants.PLAYER_ANIM_STATE_JUMP] = components.NewSprite(
 		playerConstants.PLAYER_SPRITE_OFFSET_X,
 		playerConstants.PLAYER_SPRITE_OFFSET_Y,
 	)
 
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_JUMP].AnimationConfig = assetComponents.NewAnimationConfig(
-		playerConstants.PLAYER_ANIMATIONS_SPRITE_WIDTH,
-		playerConstants.PLAYER_ANIMATIONS_SPRITE_HEIGHT,
-		playerConstants.PLAYER_JUMP_FRAME_COUNT,
-		playerConstants.PLAYER_JUMP_ANIM_SPEED,
-		true,
-	)
+	playerSprites[playerConstants.PLAYER_ANIM_STATE_JUMP].AnimationConfig = playerConstants.PLAYER_ANIMATION_CONFIGS[playerConstants.PLAYER_ANIM_STATE_JUMP]
 
 	// Fall.
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_FALL] = assetComponents.NewSprite(
+	playerSprites[playerConstants.PLAYER_ANIM_STATE_FALL] = components.NewSprite(
 		playerConstants.PLAYER_SPRITE_OFFSET_X,
 		playerConstants.PLAYER_SPRITE_OFFSET_Y,
 	)
 
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_FALL].AnimationConfig = assetComponents.NewAnimationConfig(
-		playerConstants.PLAYER_ANIMATIONS_SPRITE_WIDTH,
-		playerConstants.PLAYER_ANIMATIONS_SPRITE_HEIGHT,
-		playerConstants.PLAYER_FALL_FRAME_COUNT,
-		playerConstants.PLAYER_FALL_ANIM_SPEED,
-		true,
-	)
+	playerSprites[playerConstants.PLAYER_ANIM_STATE_FALL].AnimationConfig = playerConstants.PLAYER_ANIMATION_CONFIGS[playerConstants.PLAYER_ANIM_STATE_FALL]
 
 	// Climb Ladder.
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_IDLE] = assetComponents.NewSprite(
+	playerSprites[playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_IDLE] = components.NewSprite(
 		playerConstants.PLAYER_SPRITE_OFFSET_X,
 		playerConstants.PLAYER_SPRITE_OFFSET_Y,
 	)
 
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_IDLE].AnimationConfig = assetComponents.NewAnimationConfig(
-		playerConstants.PLAYER_ANIMATIONS_SPRITE_WIDTH,
-		playerConstants.PLAYER_ANIMATIONS_SPRITE_HEIGHT,
-		playerConstants.PLAYER_CLIMB_LADDER_IDLE_FRAME_COUNT,
-		playerConstants.PLAYER_CLIMB_LADDER_ANIM_SPEED,
-		false,
-	)
+	playerSprites[playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_IDLE].AnimationConfig = playerConstants.PLAYER_ANIMATION_CONFIGS[playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_IDLE]
 
 	// Climb Ladder Active
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_ACTIVE] = assetComponents.NewSprite(
+	playerSprites[playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_ACTIVE] = components.NewSprite(
 		playerConstants.PLAYER_SPRITE_OFFSET_X,
 		playerConstants.PLAYER_SPRITE_OFFSET_Y,
 	)
 
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_ACTIVE].AnimationConfig = assetComponents.NewAnimationConfig(
-		playerConstants.PLAYER_ANIMATIONS_SPRITE_WIDTH,
-		playerConstants.PLAYER_ANIMATIONS_SPRITE_HEIGHT,
-		playerConstants.PLAYER_CLIMB_LADDER_ACTIVE_FRAME_COUNT,
-		playerConstants.PLAYER_CLIMB_LADDER_ANIM_SPEED,
-		false,
-	)
+	playerSprites[playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_ACTIVE].AnimationConfig = playerConstants.PLAYER_ANIMATION_CONFIGS[playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_ACTIVE]
 
-	assetComponents.PlayerSpritesAnimMapComponent.SetValue(playerEntity, playerSprites)
+	components.PlayerSpritesAnimMapComponent.SetValue(playerEntity, playerSprites)
 
 	return playerBody
 }

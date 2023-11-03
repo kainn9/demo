@@ -1,4 +1,4 @@
-package assetComponents
+package components
 
 // Generic asset data.
 type AssetData struct {

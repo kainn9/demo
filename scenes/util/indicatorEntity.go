@@ -3,15 +3,14 @@ package scenesUtil
 import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	UIConstants "github.com/kainn9/demo/constants/UI"
 	tBokiComponents "github.com/kainn9/tteokbokki/components"
 )
 
 func AddOnCollisionIndicatorEntity(
 	scene *coldBrew.Scene,
-	x, y, height, width float64,
+	x, y, height, width, playerOffsetX, playerOffsetY float64,
 	onPlayer bool,
-	indicatorType UIConstants.IndicatorType,
+	indicatorType components.IndicatorType,
 ) {
 
 	indicatorEntity := scene.AddEntity(
@@ -23,6 +22,7 @@ func AddOnCollisionIndicatorEntity(
 	components.RigidBodyComponent.SetValue(indicatorEntity, *body)
 
 	state := components.NewIndicatorStateAndConfig(
+		playerOffsetX, playerOffsetY,
 		false,
 		onPlayer,
 		indicatorType,

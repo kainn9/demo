@@ -34,8 +34,10 @@ func (sys PlayerFloorCollisionHandlerSystem) Run(dt float64, floorEntity *donbur
 	floorBody := components.RigidBodyComponent.Get(floorEntity)
 
 	if isColliding, contacts := tBokiPhysics.Detector.Detect(playerBody, floorBody, true); isColliding {
+
 		tBokiPhysics.Resolver.Resolve(playerBody, floorBody, contacts[0])
-		playerState.OnGround = true
+		playerState.Collision.OnGround = true
+
 	}
 
 }

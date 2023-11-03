@@ -1,4 +1,4 @@
-package assetComponents
+package components
 
 type Sound struct {
 	*AssetData

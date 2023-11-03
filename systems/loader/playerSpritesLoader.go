@@ -4,7 +4,8 @@ import (
 	"log"
 
 	"github.com/kainn9/coldBrew"
-	assetComponents "github.com/kainn9/demo/components/assets"
+
+	"github.com/kainn9/demo/components"
 	clientConstants "github.com/kainn9/demo/constants/client"
 	"github.com/kainn9/demo/queries"
 	"github.com/yohamta/donburi"
@@ -22,7 +23,7 @@ func (sys PlayerSpritesLoaderSystem) Query() *donburi.Query {
 
 func (sys PlayerSpritesLoaderSystem) Load(entity *donburi.Entry) {
 
-	spritesMap := assetComponents.PlayerSpritesAnimMapComponent.Get(entity)
+	spritesMap := components.PlayerSpritesAnimMapComponent.Get(entity)
 
 	for nameKey, sprite := range *spritesMap {
 		if sprite.AssetData.Loaded {

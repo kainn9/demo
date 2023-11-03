@@ -5,7 +5,6 @@ import (
 
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	assetComponents "github.com/kainn9/demo/components/assets"
 	clientConstants "github.com/kainn9/demo/constants/client"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/filter"
@@ -23,22 +22,21 @@ func NewChatLoader(scene *coldBrew.Scene) *ChatLoaderSystem {
 
 func (sys ChatLoaderSystem) Query() *donburi.Query {
 	return donburi.NewQuery(
-		filter.Contains(components.ChatStateComponent),
+		filter.Contains(components.ChatStateAndConfigComponent),
 	)
 }
 
 func (sys ChatLoaderSystem) Load(entity *donburi.Entry) {
-	config := components.ChatStateComponent.Get(entity)
-	portraitSprites := assetComponents.SpritesSliceComponent.Get(entity)
+	configAndState := components.ChatStateAndConfigComponent.Get(entity)
+	portraitSprites := components.SpritesSliceComponent.Get(entity)
 
-	// sys.loadChatPreReqAssets(sys.scene)
-	sys.loadPortraitSprites(config, portraitSprites)
+	sys.loadPortraitSprites(configAndState, portraitSprites)
 
 }
 
-func (sys ChatLoaderSystem) loadPortraitSprites(config *components.ChatStateAndConfig, portraitSprites *[]*assetComponents.Sprite) {
+func (sys ChatLoaderSystem) loadPortraitSprites(configAndState *components.ChatStateAndConfig, portraitSprites *[]*components.Sprite) {
 
-	for i, data := range config.SlidesContent {
+	for i, data := range configAndState.State.SlidesContent {
 
 		if (*portraitSprites)[i].AssetData.Loaded {
 			continue

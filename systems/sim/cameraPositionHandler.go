@@ -37,6 +37,9 @@ func (sys CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 
+	// We stop moving the camera, if the player is within the bounds of the screen.
+	// E.g., bottom left, top left, bottom right, top right.
+
 	halfScreenWidthInt := clientConstants.SCREEN_WIDTH / 2
 	halfScreenHeightInt := clientConstants.SCREEN_HEIGHT / 2 // Half of the screen height
 

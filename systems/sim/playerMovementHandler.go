@@ -13,7 +13,10 @@ import (
 )
 
 type PlayerMovementHandlerSystem struct {
-	scene       *coldBrew.Scene
+	scene *coldBrew.Scene
+
+	// May eventually lift these out into a more shared scope,
+	// but for now it seems this is the only system that needs them.
 	minVelocity float64
 	maxVelY     float64
 	maxVelX     float64
@@ -76,7 +79,7 @@ func (sys PlayerMovementHandlerSystem) clampToMinVelocity(playerBody *tBokiCompo
 // once we have more than one entity that needs gravity.
 func (sys PlayerMovementHandlerSystem) gravityHandler(playerBody *tBokiComponents.RigidBody, playerState *components.PlayerState) {
 
-	if playerState.Climbing {
+	if playerState.Collision.Climbing {
 		return
 	}
 
@@ -87,11 +90,11 @@ func (sys PlayerMovementHandlerSystem) gravityHandler(playerBody *tBokiComponent
 
 func (sys PlayerMovementHandlerSystem) horizontalMovementHandler(playerState *components.PlayerState, playerBody *tBokiComponents.RigidBody) {
 
-	if playerState.BasicHorizontalMovement {
+	if playerState.Transform.BasicHorizontalMovement {
 		sys.handlePlayerBasicHorizontalMovement(playerBody, playerState)
 	}
 
-	if playerState.BasicHorizontalMovement == false {
+	if playerState.Transform.BasicHorizontalMovement == false {
 		sys.haltPlayerMovement(playerBody, playerState)
 	}
 
@@ -123,7 +126,7 @@ func (sys PlayerMovementHandlerSystem) handlePlayerBasicHorizontalMovement(
 
 func (sys PlayerMovementHandlerSystem) haltPlayerMovement(playerBody *tBokiComponents.RigidBody, playerState *components.PlayerState) {
 	playerBody.Vel.X = 0
-	playerState.BasicHorizontalMovement = false
+	playerState.Transform.BasicHorizontalMovement = false
 }
 
 func (sys PlayerMovementHandlerSystem) jumpHandler(playerBody *tBokiComponents.RigidBody, playerState *components.PlayerState, m *coldBrew.Manager) {
@@ -131,7 +134,7 @@ func (sys PlayerMovementHandlerSystem) jumpHandler(playerBody *tBokiComponents.R
 	// Exit early if player winding up to jump, but the windup has not finished.
 	tickHandler := m.TickHandler
 
-	playerWindupNotFinished := tickHandler.TicksSinceNTicks(playerState.JumpWindupStart) < sys.jumpDelay
+	playerWindupNotFinished := tickHandler.TicksSinceNTicks(playerState.Transform.JumpWindupStart) < sys.jumpDelay
 
 	if playerWindupNotFinished {
 		return
@@ -140,15 +143,15 @@ func (sys PlayerMovementHandlerSystem) jumpHandler(playerBody *tBokiComponents.R
 	// If player is preparing to jump and the jump
 	// windup has finished(guarded above),
 	// apply the jump impulse.
-	playerPreparingToJump := playerState.JumpWindupStart != 0
+	playerPreparingToJump := playerState.Transform.JumpWindupStart != 0
 	if playerPreparingToJump {
-		playerState.Jumping = true
-		playerState.JumpWindupStart = 0
+		playerState.Transform.Jumping = true
+		playerState.Transform.JumpWindupStart = 0
 		tBokiPhysics.Transformer.ApplyImpulseLinear(playerBody, tBokiVec.Vec2{X: 0, Y: sys.yVelUnit})
 	}
 
 	if playerBody.Vel.Y >= 0 {
-		playerState.Jumping = false
+		playerState.Transform.Jumping = false
 	}
 
 }

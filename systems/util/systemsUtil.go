@@ -3,13 +3,12 @@ package systemsUtil
 import (
 	"log"
 
-	assetComponents "github.com/kainn9/demo/components/assets"
+	"github.com/kainn9/demo/components"
+	UIConstants "github.com/kainn9/demo/constants/UI"
 	fontConstants "github.com/kainn9/demo/constants/font"
-
 	"github.com/kainn9/demo/queries"
 	"github.com/yohamta/donburi"
-
-	UIConstants "github.com/kainn9/demo/constants/UI"
+	"github.com/yohamta/donburi/filter"
 )
 
 func GetCameraEntity(world donburi.World) *donburi.Entry {
@@ -45,40 +44,40 @@ func GetUISingletonEntity(world donburi.World) *donburi.Entry {
 
 }
 
-func GetChatPopUpSprite(world donburi.World) *assetComponents.Sprite {
+func GetChatPopUpSprite(world donburi.World) *components.Sprite {
 	entity, ok := queries.UISingletonQuery.First(world)
 
 	if !ok {
 		log.Fatal("UISpritesSingletonQuery query failed, when getting chat pop up sprite.")
 	}
 
-	UISpritesMap := assetComponents.SpritesMapComponent.Get(entity)
+	UISpritesMap := components.SpritesMapComponent.Get(entity)
 
 	return (*UISpritesMap)[UIConstants.CHAT_BOX_POP_UP_SPRITE_NAME]
 
 }
 
-func GetChatPopDownSprite(world donburi.World) *assetComponents.Sprite {
+func GetChatPopDownSprite(world donburi.World) *components.Sprite {
 	entity, ok := queries.UISingletonQuery.First(world)
 
 	if !ok {
 		log.Fatal("UISpritesSingletonQuery query failed, when getting chat pop down sprite.")
 	}
 
-	UISpritesMap := assetComponents.SpritesMapComponent.Get(entity)
+	UISpritesMap := components.SpritesMapComponent.Get(entity)
 
 	return (*UISpritesMap)[UIConstants.CHAT_BOX_POP_DOWN_SPRITE_NAME]
 
 }
 
-func GetDefaultFontSpriteMap(world donburi.World) (lower, upper, numbers, special *assetComponents.Sprite) {
+func GetDefaultFontSpriteMap(world donburi.World) (lower, upper, numbers, special *components.Sprite) {
 	entity, ok := queries.UISingletonQuery.First(world)
 
 	if !ok {
 		log.Fatal("UISpritesSingletonQuery query failed.")
 	}
 
-	UISpritesMap := assetComponents.SpritesMapComponent.Get(entity)
+	UISpritesMap := components.SpritesMapComponent.Get(entity)
 
 	keyLower := fontConstants.FONT_DEFAULT_NAME + fontConstants.FONT_LOWER_CASE_SPRITE_NAME
 	keyUpper := fontConstants.FONT_DEFAULT_NAME + fontConstants.FONT_UPPER_CASE_SPRITE_NAME
@@ -92,4 +91,28 @@ func GetDefaultFontSpriteMap(world donburi.World) (lower, upper, numbers, specia
 	special = (*UISpritesMap)[keySpecial]
 
 	return lower, upper, numbers, special
+}
+
+func IsChatActive(world donburi.World) bool {
+
+	var isChatActive bool
+
+	query := donburi.NewQuery(
+		filter.Contains(components.ChatStateAndConfigComponent),
+	)
+
+	if query.Count(world) == 0 {
+		log.Println("Chat query failed, is there a chat entities in this world?")
+		return false
+	}
+
+	query.Each(world, func(chatEntity *donburi.Entry) {
+
+		configAndState := components.ChatStateAndConfigComponent.Get(chatEntity)
+		if configAndState.State.Active {
+			isChatActive = true
+		}
+	})
+
+	return isChatActive
 }

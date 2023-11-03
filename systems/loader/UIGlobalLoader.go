@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/kainn9/coldBrew"
-	assetComponents "github.com/kainn9/demo/components/assets"
+	"github.com/kainn9/demo/components"
 	UIConstants "github.com/kainn9/demo/constants/UI"
 	clientConstants "github.com/kainn9/demo/constants/client"
 	fontConstants "github.com/kainn9/demo/constants/font"
@@ -34,14 +34,14 @@ func (sys UIGlobalLoaderSystem) Load(_ *donburi.Entry) {
 
 	UISpritesMapEntity, _ := query.First(world)
 
-	UISpritesMap := assetComponents.SpritesMapComponent.Get(UISpritesMapEntity)
+	UISpritesMap := components.SpritesMapComponent.Get(UISpritesMapEntity)
 
 	// Todo: Break this up into sub functions.
 	sys.loadAll(UISpritesMap)
 
 }
 
-func (sys UIGlobalLoaderSystem) loadAll(UISpritesMap *map[string]*assetComponents.Sprite) {
+func (sys UIGlobalLoaderSystem) loadAll(UISpritesMap *map[string]*components.Sprite) {
 
 	// Default Font.
 	lowerCaseSpriteSheet := (*UISpritesMap)[fontConstants.FONT_DEFAULT_NAME+fontConstants.FONT_LOWER_CASE_SPRITE_NAME]
@@ -86,7 +86,7 @@ func (sys UIGlobalLoaderSystem) loadAll(UISpritesMap *map[string]*assetComponent
 		UIConstants.CHAT_BOX_POP_DOWN_SPRITE_NAME,
 	}
 
-	sprites := []*assetComponents.Sprite{
+	sprites := []*components.Sprite{
 		chatBoxPopUpSprite,
 		chatBoxPopDownSprite,
 	}
@@ -103,18 +103,18 @@ func (sys UIGlobalLoaderSystem) loadAll(UISpritesMap *map[string]*assetComponent
 		LoadImage(path+spriteNames[i], sprite)
 
 		frameWidth, frameHeight, frameCount := sys.getAnimData(sprite)
-		sprite.AnimationConfig = assetComponents.NewAnimationConfig(frameWidth, frameHeight, frameCount, UIConstants.CHAT_BOX_ANIM_SPEED, true)
+		sprite.AnimationConfig = components.NewAnimationConfig(frameWidth, frameHeight, frameCount, UIConstants.CHAT_BOX_ANIM_SPEED, true)
 	}
 
 	// --------------------------------------------------------------------------------
 	// Indicator Sprites.
 	log.Println("Loading indicator sprites.")
 
-	descKey := string(UIConstants.INDICATOR_DESCEND)
-	interactKey := string(UIConstants.INDICATOR_INTERACT)
-	jumpKey := string(UIConstants.INDICATOR_JUMP)
-	ladderKey := string(UIConstants.INDICATOR_LADDER)
-	movementKey := string(UIConstants.INDICATOR_MOVEMENT)
+	descKey := string(UIConstants.CurrentLayout) + string(UIConstants.INDICATOR_DESCEND)
+	interactKey := string(UIConstants.CurrentLayout) + string(UIConstants.INDICATOR_INTERACT)
+	jumpKey := string(UIConstants.CurrentLayout) + string(UIConstants.INDICATOR_JUMP)
+	ladderKey := string(UIConstants.CurrentLayout) + string(UIConstants.INDICATOR_LADDER)
+	movementKey := string(UIConstants.CurrentLayout) + string(UIConstants.INDICATOR_MOVEMENT)
 
 	indicatorDescendSprite := (*UISpritesMap)[descKey]
 	indicatorInteractSprite := (*UISpritesMap)[interactKey]
@@ -123,6 +123,7 @@ func (sys UIGlobalLoaderSystem) loadAll(UISpritesMap *map[string]*assetComponent
 	indicatorMovementSprite := (*UISpritesMap)[string(movementKey)]
 
 	path = clientConstants.UI_ASSETS_INDICATORS_SUBPATH
+	path += UIConstants.CurrentLayout + ""
 
 	log.Println("Loading", path+descKey)
 	LoadImage(path+descKey, indicatorDescendSprite)
@@ -139,13 +140,18 @@ func (sys UIGlobalLoaderSystem) loadAll(UISpritesMap *map[string]*assetComponent
 	log.Println("Loading", path+movementKey)
 	LoadImage(path+movementKey, indicatorMovementSprite)
 
-	// Register ANIM DATA.
+	// Register Animation Configs.
+	indicatorDescendSprite.AnimationConfig = UIConstants.IndicatorAnimationConfigs[UIConstants.CurrentLayout][UIConstants.INDICATOR_DESCEND]
+	indicatorInteractSprite.AnimationConfig = UIConstants.IndicatorAnimationConfigs[UIConstants.CurrentLayout][UIConstants.INDICATOR_INTERACT]
+	indicatorJumpSprite.AnimationConfig = UIConstants.IndicatorAnimationConfigs[UIConstants.CurrentLayout][UIConstants.INDICATOR_JUMP]
+	indicatorLadderSprite.AnimationConfig = UIConstants.IndicatorAnimationConfigs[UIConstants.CurrentLayout][UIConstants.INDICATOR_LADDER]
+	indicatorMovementSprite.AnimationConfig = UIConstants.IndicatorAnimationConfigs[UIConstants.CurrentLayout][UIConstants.INDICATOR_MOVEMENT]
 
 	// --------------------------------------------------------------------------------
 
 }
 
-func (sys UIGlobalLoaderSystem) getAnimData(spriteComponent *assetComponents.Sprite) (frameWidth, frameHeight, frameCount int) {
+func (sys UIGlobalLoaderSystem) getAnimData(spriteComponent *components.Sprite) (frameWidth, frameHeight, frameCount int) {
 	totalFrameWidth := spriteComponent.Image.Bounds().Size().X
 
 	frameWidth = UIConstants.CHAT_BOX_FRAME_WIDTH

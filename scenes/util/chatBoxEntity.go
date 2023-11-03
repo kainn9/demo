@@ -3,7 +3,6 @@ package scenesUtil
 import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	assetComponents "github.com/kainn9/demo/components/assets"
 )
 
 func AddChatEntity(
@@ -14,26 +13,26 @@ func AddChatEntity(
 ) {
 
 	chatEntity := scene.AddEntity(
-		components.ChatStateComponent,
-		assetComponents.SpritesSliceComponent,
+		components.ChatStateAndConfigComponent,
+		components.SpritesSliceComponent,
 	)
 
-	chatState := components.NewChatStateAndConfig(chatName, sceneAssetPath, ticksPerWord, content)
-	chatState.Active = true
-	chatState.PopUpMode = true
+	configAndState := components.NewChatStateAndConfig(chatName, sceneAssetPath, ticksPerWord, content)
+	configAndState.State.Active = true
+	configAndState.State.PopUpMode = true
 
-	components.ChatStateComponent.SetValue(
+	components.ChatStateAndConfigComponent.SetValue(
 		chatEntity,
-		*chatState,
+		*configAndState,
 	)
 
-	portraitSprites := make([]*assetComponents.Sprite, len(content))
+	portraitSprites := make([]*components.Sprite, len(content))
 
 	for i := range portraitSprites {
-		portraitSprites[i] = assetComponents.NewSprite(0, 0)
+		portraitSprites[i] = components.NewSprite(0, 0)
 	}
 
-	assetComponents.SpritesSliceComponent.SetValue(
+	components.SpritesSliceComponent.SetValue(
 		chatEntity,
 		portraitSprites,
 	)
