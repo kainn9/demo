@@ -12,6 +12,7 @@ import (
 	fontConstants "github.com/kainn9/demo/constants/font"
 	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
 	systemsUtil "github.com/kainn9/demo/systems/util"
+	tBokiVec "github.com/kainn9/tteokbokki/math/vec"
 	"github.com/yohamta/donburi"
 )
 
@@ -27,7 +28,7 @@ func RenderText(
 	startTick, ticksPerWord int,
 	camera *components.Camera,
 	lower, upper, numbers, special *components.Sprite,
-	adjustmentMap map[string]fontConstants.FontAdjustment,
+	adjustmentMap map[string]tBokiVec.Vec2,
 	manager *coldBrew.Manager,
 
 ) {
@@ -84,7 +85,7 @@ func PrintWord(
 	word string,
 	currentX, currentY, charWidth, charHeight, animCoefficient float64,
 	lower, upper, numbers, special *components.Sprite,
-	adjustmentMap map[string]fontConstants.FontAdjustment,
+	adjustmentMap map[string]tBokiVec.Vec2,
 	camera *components.Camera,
 ) {
 
@@ -148,7 +149,7 @@ func PrintWord(
 func NextWordPosition(
 	currX, currY, charWidth, charHeight, maxWidth, startX, spaceWidth float64,
 	word string,
-	adjustmentMap map[string]fontConstants.FontAdjustment,
+	adjustmentMap map[string]tBokiVec.Vec2,
 ) (nextX, nextY float64) {
 
 	nextX = currX

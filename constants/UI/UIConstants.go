@@ -3,6 +3,7 @@ package UIConstants
 import (
 	"github.com/kainn9/demo/components"
 	clientConstants "github.com/kainn9/demo/constants/client"
+	tBokiVec "github.com/kainn9/tteokbokki/math/vec"
 )
 
 // Layout Constants.
@@ -43,5 +44,17 @@ var IndicatorAnimationConfigs = map[Layout]IndicatorAnimationMap{
 		INDICATOR_MOVEMENT: components.NewAnimationConfig(50, 33, 4, 24, false),
 		INDICATOR_INTERACT: components.NewAnimationConfig(24, 16, 4, 24, false),
 		INDICATOR_DESCEND:  components.NewAnimationConfig(62, 16, 4, 24, false),
+	},
+}
+
+type IndicatorPlayerOffsetMap = map[components.IndicatorType]tBokiVec.Vec2
+
+var IndicatorPlayerOffsets = map[Layout]IndicatorPlayerOffsetMap{
+	LAYOUT_DEFAULT: {
+		INDICATOR_JUMP:     {X: -14, Y: -60},
+		INDICATOR_LADDER:   {X: -8, Y: -73},
+		INDICATOR_MOVEMENT: {X: -22, Y: -73},
+		INDICATOR_INTERACT: {X: -10, Y: -60},
+		INDICATOR_DESCEND:  {X: 0, Y: 0},
 	},
 }

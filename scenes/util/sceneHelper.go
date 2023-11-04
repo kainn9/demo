@@ -5,6 +5,7 @@ import (
 
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
+	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	"github.com/yohamta/donburi"
 )
@@ -30,7 +31,7 @@ func InitFirstScene(
 func ChangeScene(
 	manager *coldBrew.Manager,
 	newScene coldBrew.SceneFace,
-	playerX, playerY float64,
+	playerX, playerY, camX, camY float64,
 ) {
 
 	// Get old scene.
@@ -48,7 +49,7 @@ func ChangeScene(
 	currentScene := manager.ActiveScene()
 
 	// Transfer necessary player components(state) to new scene.
-	transferPlayer(prevPlayerEntity, prevScene, currentScene, playerX, playerY)
+	transferPlayer(prevPlayerEntity, prevScene, currentScene, playerX, playerY, camX, camY)
 	transferUISingleton(prevUISingletonEntity, prevScene, currentScene)
 
 }
@@ -56,7 +57,7 @@ func ChangeScene(
 func transferPlayer(
 	prevPlayerEntity *donburi.Entry,
 	prevScene, newScene *coldBrew.Scene,
-	playerX, playerY float64,
+	playerX, playerY, camX, camY float64,
 ) {
 
 	AddPlayerEntity(newScene, playerX, playerY)
@@ -74,6 +75,11 @@ func transferPlayer(
 	// Remove player from old scene.
 	prevScene.World.Remove(prevPlayerEntity.Entity())
 
+	// Set Camera Position.
+	currCameraEntity := systemsUtil.GetCameraEntity(newScene.World)
+	currCamera := components.CameraComponent.Get(currCameraEntity)
+
+	cameraUtil.SetPosition(currCamera, camX, camY, false)
 }
 
 func transferUISingleton(

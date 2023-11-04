@@ -19,4 +19,7 @@ const (
 	CHARACTER_ASSETS_SUB_PATH  = "characters/"                         // ./assets/characters/
 	PLAYER_ASSETS_SUB_PATH     = CHARACTER_ASSETS_SUB_PATH + "player/" // ./assets/characters/player/
 	CHAT_SCENE_ASSETS_SUB_PATH = "chats/"                              // ./assets/scenes/SCENE_SECTION/SCENE_NAME/chat/
+
 )
+
+var DEBUG_MODE = true

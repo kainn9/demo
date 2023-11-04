@@ -1,12 +1,10 @@
 package simSystems
 
 import (
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 
 	UIConstants "github.com/kainn9/demo/constants/UI"
-	inputConstants "github.com/kainn9/demo/constants/input"
 	animUtil "github.com/kainn9/demo/systems/render/util/anim"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	"github.com/yohamta/donburi"
@@ -30,14 +28,18 @@ func (ChatHandlerSystem) Query() *donburi.Query {
 }
 
 func (sys ChatHandlerSystem) Run(dt float64, chatEntity *donburi.Entry) {
+
+	playerEntity := systemsUtil.GetPlayerEntity(sys.scene.World)
+	playerState := components.PlayerStateComponent.Get(playerEntity)
+
 	configAndState := components.ChatStateAndConfigComponent.Get(chatEntity)
-	interact := inputConstants.KEY_BINDS[inputConstants.KEY_BIND_INTERACT]
 
 	popDownSprite := systemsUtil.GetChatPopDownSprite(sys.scene.World)
 	popUpSprite := systemsUtil.GetChatPopUpSprite(sys.scene.World)
 
 	// Handle Key Press.
-	if inpututil.IsKeyJustPressed(interact) && configAndState.State.Active {
+	if playerState.IsInteracting && configAndState.State.Active {
+		playerState.IsInteracting = false
 		sys.handleNextSlide(configAndState, popDownSprite, popUpSprite)
 	}
 

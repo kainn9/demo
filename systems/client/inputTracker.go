@@ -12,32 +12,55 @@ import (
 	"github.com/yohamta/donburi/filter"
 )
 
-type PlayerMovementInputTrackerSystem struct {
+type InputTrackerSystem struct {
 	scene *coldBrew.Scene
 }
 
-func NewPlayerMovementInputTracker(scene *coldBrew.Scene) *PlayerMovementInputTrackerSystem {
-	return &PlayerMovementInputTrackerSystem{
+func NewInputTracker(scene *coldBrew.Scene) *InputTrackerSystem {
+	return &InputTrackerSystem{
 		scene: scene,
 	}
 }
 
-func (PlayerMovementInputTrackerSystem) Query() *donburi.Query {
+func (InputTrackerSystem) InputsQuery() *donburi.Query {
 	return donburi.NewQuery(
 		filter.Contains(components.InputsComponent),
 	)
 }
 
-func (sys PlayerMovementInputTrackerSystem) Sync(inputsEntity *donburi.Entry) {
+func (sys InputTrackerSystem) Sync(_ *donburi.Entry) {
 
-	// Block movement inputs unless chat is not active.
-	if systemsUtil.IsChatActive(sys.scene.World) {
-		return
+	world := sys.scene.World
+	playerEntity := systemsUtil.GetPlayerEntity(world)
+	left, right, jump, up, down, interact := inputConstants.ALL_BINDS()
+
+	sys.processInteractionInput(playerEntity, interact)
+
+	sys.InputsQuery().Each(world, func(inputsEntity *donburi.Entry) {
+		sys.processMovementInputs(inputsEntity, left, right, jump, up, down)
+	})
+
+}
+
+func (sys InputTrackerSystem) processInteractionInput(playerEntity *donburi.Entry, interact ebiten.Key) {
+	playerState := components.PlayerStateComponent.Get(playerEntity)
+
+	if inpututil.IsKeyJustPressed(interact) {
+		playerState.IsInteracting = true
+	} else {
+		playerState.IsInteracting = false
 	}
 
-	inputs := components.InputsComponent.Get(inputsEntity)
+}
 
-	left, right, jump, up, down, interact := inputConstants.ALL_BINDS()
+func (sys InputTrackerSystem) processMovementInputs(inputsEntity *donburi.Entry, left, right, jump, up, down ebiten.Key) {
+	inputs := components.InputsComponent.Get(inputsEntity)
+	world := sys.scene.World
+
+	// Block movement inputs unless chat is not active.
+	if systemsUtil.IsChatActive(world) {
+		return
+	}
 
 	// Left/Right movement.
 	// Else if, is intentional here.
@@ -74,15 +97,9 @@ func (sys PlayerMovementInputTrackerSystem) Sync(inputsEntity *donburi.Entry) {
 	if !ebiten.IsKeyPressed(up) && !ebiten.IsKeyPressed(down) {
 		sys.addUniqueKey(&inputs.Queue, inputConstants.RELEASED_VERTICAL)
 	}
-
-	// Interact.
-	if inpututil.IsKeyJustPressed(interact) {
-		sys.addUniqueKey(&inputs.Queue, interact)
-	}
-
 }
 
-func (sys PlayerMovementInputTrackerSystem) addUniqueKey(slice *[]ebiten.Key, element ebiten.Key) bool {
+func (sys InputTrackerSystem) addUniqueKey(slice *[]ebiten.Key, element ebiten.Key) bool {
 	for _, existing := range *slice {
 		if existing == element {
 			return false // Element is not unique

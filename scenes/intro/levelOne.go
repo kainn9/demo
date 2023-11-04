@@ -1,9 +1,11 @@
-package intro
+package introScenes
 
 import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	UIConstants "github.com/kainn9/demo/constants/UI"
+	"github.com/kainn9/demo/systems/systemInitializers"
+
 	scenesUtil "github.com/kainn9/demo/scenes/util"
 )
 
@@ -26,7 +28,7 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scene := coldBrew.NewScene(m, LEVEL_ONE_SCENE_WIDTH, LEVEL_ONE_SCENE_HEIGHT)
 
 	// Systems ----------------------------------------------------------------------------------
-	scenesUtil.InitStandardSystems(scene)
+	systemInitializers.InitStandardSystems(scene)
 
 	// Entities ----------------------------------------------------------------------------------
 
@@ -98,16 +100,65 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		content,
 	)
 
+	// Tutorial indicators.
+
+	// Movement.
 	scenesUtil.AddOnCollisionIndicatorEntity(
 		scene,
 		85,
 		LEVEL_ONE_SCENE_HEIGHT-40,
-		15,
 		10,
-		-22,
-		-73,
+		15,
+		UIConstants.IndicatorPlayerOffsets[UIConstants.CurrentLayout][UIConstants.INDICATOR_MOVEMENT].X,
+		UIConstants.IndicatorPlayerOffsets[UIConstants.CurrentLayout][UIConstants.INDICATOR_MOVEMENT].Y,
 		true,
-		UIConstants.INDICATOR_MOVEMENT)
+		UIConstants.INDICATOR_MOVEMENT,
+	)
+
+	// Ladder.
+	scenesUtil.AddOnCollisionIndicatorEntity(
+		scene,
+		1870,
+		LEVEL_ONE_SCENE_HEIGHT-120,
+		10,
+		10,
+		UIConstants.IndicatorPlayerOffsets[UIConstants.CurrentLayout][UIConstants.INDICATOR_LADDER].X,
+		UIConstants.IndicatorPlayerOffsets[UIConstants.CurrentLayout][UIConstants.INDICATOR_LADDER].Y,
+		true,
+		UIConstants.INDICATOR_LADDER,
+	)
+
+	// Jump.
+	scenesUtil.AddOnCollisionIndicatorEntity(
+		scene,
+		1330,
+		90,
+		50,
+		10,
+		UIConstants.IndicatorPlayerOffsets[UIConstants.CurrentLayout][UIConstants.INDICATOR_JUMP].X,
+		UIConstants.IndicatorPlayerOffsets[UIConstants.CurrentLayout][UIConstants.INDICATOR_JUMP].Y,
+		true,
+		UIConstants.INDICATOR_JUMP,
+	)
+
+	// Door.
+	scenesUtil.AddSceneTransitionEntity(
+		scene,
+		23,
+		90,
+		20,
+		40,
+		UIConstants.IndicatorPlayerOffsets[UIConstants.CurrentLayout][UIConstants.INDICATOR_INTERACT].X,
+		UIConstants.IndicatorPlayerOffsets[UIConstants.CurrentLayout][UIConstants.INDICATOR_INTERACT].Y,
+		true,
+		UIConstants.INDICATOR_INTERACT,
+		LevelTwoScene{},
+		20,
+		70,
+		0,
+		0,
+		true,
+	)
 
 	return scene
 }

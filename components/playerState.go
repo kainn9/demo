@@ -19,9 +19,10 @@ type PlayerTransformState struct {
 }
 
 type PlayerState struct {
-	Collision *PlayerCollisionState
-	Transform *PlayerTransformState
-	Animation AnimState
+	Collision     *PlayerCollisionState
+	Transform     *PlayerTransformState
+	Animation     AnimState
+	IsInteracting bool
 }
 
 var PlayerStateComponent = donburi.NewComponentType[PlayerState]()

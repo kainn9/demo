@@ -10,6 +10,7 @@ import (
 
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
+	clientConstants "github.com/kainn9/demo/constants/client"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	tBokiComponents "github.com/kainn9/tteokbokki/components"
 	tBokiVec "github.com/kainn9/tteokbokki/math/vec"
@@ -32,6 +33,9 @@ func (DebugRigidBodyRendererSystem) Query() *donburi.Query {
 }
 
 func (sys DebugRigidBodyRendererSystem) Draw(screen *ebiten.Image, entity *donburi.Entry) {
+	if clientConstants.DEBUG_MODE == false {
+		return
+	}
 	body := components.RigidBodyComponent.Get(entity)
 	cameraEntity := systemsUtil.GetCameraEntity(sys.scene.World)
 	camera := components.CameraComponent.Get(cameraEntity)

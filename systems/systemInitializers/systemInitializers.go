@@ -1,4 +1,4 @@
-package scenesUtil
+package systemInitializers
 
 import (
 	"github.com/kainn9/coldBrew"
@@ -16,7 +16,7 @@ func InitStandardSystems(scene *coldBrew.Scene) {
 	scene.AddSystem(loaderSystems.NewUIGlobalLoader(scene))
 
 	// Client Systems.
-	scene.AddSystem(clientSystems.NewPlayerMovementInputTracker(scene))
+	scene.AddSystem(clientSystems.NewInputTracker(scene))
 
 	// Sim Systems.
 	scene.AddSystem(simSystems.NewPlayerMovementInputProcessor(scene))
@@ -28,6 +28,7 @@ func InitStandardSystems(scene *coldBrew.Scene) {
 	scene.AddSystem(simSystems.NewLadderHandler(scene))
 	scene.AddSystem(simSystems.NewCameraPositionHandler(scene))
 	scene.AddSystem(simSystems.NewIndicatorCollisionHandler(scene))
+	scene.AddSystem(simSystems.NewSceneTransitionHandler(scene))
 
 	// Render Systems.
 	scene.AddSystem(renderSystems.NewParallaxBackgroundRenderer(scene))

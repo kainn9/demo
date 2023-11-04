@@ -1,9 +1,11 @@
-package intro
+package introScenes
 
 import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
+	UIConstants "github.com/kainn9/demo/constants/UI"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
+	"github.com/kainn9/demo/systems/systemInitializers"
 )
 
 type LevelTwoScene struct{}
@@ -25,7 +27,7 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scene := coldBrew.NewScene(m, LEVEL_TWO_SCENE_WIDTH, LEVEL_TWO_SCENE_HEIGHT)
 
 	// Systems ----------------------------------------------------------------------------------
-	scenesUtil.InitStandardSystems(scene)
+	systemInitializers.InitStandardSystems(scene)
 
 	// Entities ----------------------------------------------------------------------------------
 	scenesUtil.AddCameraEntity(scene, 0, 0)
@@ -61,6 +63,25 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 
 	// Floor.
 	scenesUtil.AddFloorEntity(scene, float64(scene.Width/2), float64(scene.Height-20), float64(scene.Width), 20, 0)
+
+	// Door.
+	scenesUtil.AddSceneTransitionEntity(
+		scene,
+		23,
+		30,
+		20,
+		60,
+		UIConstants.IndicatorPlayerOffsets[UIConstants.CurrentLayout][UIConstants.INDICATOR_INTERACT].X,
+		UIConstants.IndicatorPlayerOffsets[UIConstants.CurrentLayout][UIConstants.INDICATOR_INTERACT].Y,
+		true,
+		UIConstants.INDICATOR_INTERACT,
+		LevelOneScene{},
+		23,
+		90,
+		0,
+		0,
+		true,
+	)
 
 	return scene
 }

@@ -1,5 +1,7 @@
 package fontConstants
 
+import tBokiVec "github.com/kainn9/tteokbokki/math/vec"
+
 // Font Constants.
 const (
 	FONT_LOWER_CASE_SPRITE_NAME = "lower"
@@ -71,11 +73,6 @@ var AllCharacterMap = func() map[string]int {
 	return charMap
 }()
 
-type FontAdjustment struct {
-	X float64
-	Y float64
-}
-
 // Default Font constants.
 const (
 	FONT_DEFAULT_NAME   = "defaultFont"
@@ -83,7 +80,7 @@ const (
 	FONT_DEFAULT_HEIGHT = 15
 )
 
-var FONT_DEFAULT_ADJUSTMENT_MAP = map[string]FontAdjustment{
+var FONT_DEFAULT_ADJUSTMENT_MAP = map[string]tBokiVec.Vec2{
 	"i": {X: -2, Y: 0},
 	"I": {X: -2, Y: 0},
 	"1": {X: -2, Y: 0},

@@ -1,13 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"image/color"
+	"log"
+	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kainn9/coldBrew"
 	clientConstants "github.com/kainn9/demo/constants/client"
-	"github.com/kainn9/demo/scenes"
+	introScenes "github.com/kainn9/demo/scenes/intro"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
 )
 
@@ -18,6 +22,9 @@ type game struct {
 
 func main() {
 	game := NewGame()
+
+	ebiten.SetVsyncEnabled(true) // Experimental.
+
 	ebiten.RunGame(game)
 }
 
@@ -28,7 +35,7 @@ func NewGame() *game {
 
 	manager := coldBrew.NewManager(clientConstants.SCENE_CACHE_LIMIT, clientConstants.MAX_TICKS, loaderImage)
 
-	firstScene := scenes.Intro.LevelOneScene
+	firstScene := introScenes.LevelOneScene{}
 	scenesUtil.InitFirstScene(manager, firstScene, 100, 600)
 
 	g := &game{
@@ -47,14 +54,15 @@ func NewGame() *game {
 }
 
 func (g *game) Update() error {
+	toggleDebugMode()
 
 	// Temp hack/test. ------------------------
 	if inpututil.IsKeyJustPressed(ebiten.Key1) {
-		scenesUtil.ChangeScene(g.manager, scenes.Intro.LevelOneScene, 100, 600)
+		scenesUtil.ChangeScene(g.manager, introScenes.LevelOneScene{}, 100, 600, 0, 0)
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.Key2) {
-		scenesUtil.ChangeScene(g.manager, scenes.Intro.LevelTwoScene, 20, 70)
+		scenesUtil.ChangeScene(g.manager, introScenes.LevelTwoScene{}, 20, 70, 0, 0)
 	}
 	// end of hack/test. ----------------------
 
@@ -74,11 +82,32 @@ func (g *game) Draw(screen *ebiten.Image) {
 
 	activeScene := g.manager.ActiveScene()
 	activeScene.Draw(screen)
-
 	g.manager.TickHandler.IncrementTick()
+
+	renderDebugInfo(screen)
 
 }
 
 func (g *game) Layout(w, h int) (int, int) {
 	return g.width, g.height
+}
+
+func renderDebugInfo(screen *ebiten.Image) {
+
+	if clientConstants.DEBUG_MODE == false {
+		return
+	}
+
+	tps := math.Round(ebiten.ActualTPS())
+	fps := math.Round(ebiten.ActualFPS())
+	ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %v", tps))
+	ebitenutil.DebugPrint(screen, fmt.Sprintf("\nFPS: %v\nDebug Mode Currently On.\nPress 0 to toggle on/off.", fps))
+
+}
+
+func toggleDebugMode() {
+	if inpututil.IsKeyJustPressed(ebiten.Key0) {
+		log.Println("Toggling debug mode.")
+		clientConstants.DEBUG_MODE = !clientConstants.DEBUG_MODE
+	}
 }
