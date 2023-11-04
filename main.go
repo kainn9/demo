@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"image/color"
 	"log"
 	"math"
 
@@ -10,9 +9,11 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kainn9/coldBrew"
+	"github.com/kainn9/demo/components"
 	clientConstants "github.com/kainn9/demo/constants/client"
 	introScenes "github.com/kainn9/demo/scenes/intro"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
+	loaderSystems "github.com/kainn9/demo/systems/loader"
 )
 
 type game struct {
@@ -30,10 +31,12 @@ func main() {
 
 func NewGame() *game {
 
-	loaderImage := ebiten.NewImage(clientConstants.SCREEN_WIDTH, clientConstants.SCREEN_HEIGHT)
-	loaderImage.Fill(color.RGBA{B: 255})
+	// This is pretty troll, but no big deal for now.
+	loaderSprite := components.NewSprite(0, 0)
+	loaderSprite.Image = ebiten.NewImage(clientConstants.SCREEN_WIDTH, clientConstants.SCREEN_HEIGHT)
+	loaderSystems.LoadImage(clientConstants.UI_ASSETS_SUB_PATH+"loader", loaderSprite)
 
-	manager := coldBrew.NewManager(clientConstants.SCENE_CACHE_LIMIT, clientConstants.MAX_TICKS, loaderImage)
+	manager := coldBrew.NewManager(clientConstants.SCENE_CACHE_LIMIT, clientConstants.MAX_TICKS, loaderSprite.Image)
 
 	firstScene := introScenes.LevelOneScene{}
 	scenesUtil.InitFirstScene(manager, firstScene, 100, 600)
