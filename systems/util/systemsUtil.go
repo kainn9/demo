@@ -102,7 +102,6 @@ func IsChatActive(world donburi.World) bool {
 	)
 
 	if query.Count(world) == 0 {
-		log.Println("Chat query failed, is there a chat entities in this world?")
 		return false
 	}
 

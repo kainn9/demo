@@ -4,6 +4,8 @@ import "github.com/yohamta/donburi"
 
 var PlayerTag = donburi.NewTag()
 
+var PlayerCarTag = donburi.NewTag()
+
 var FloorTag = donburi.NewTag()
 
 var PlatformTag = donburi.NewTag()

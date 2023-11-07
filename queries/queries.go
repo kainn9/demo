@@ -13,6 +13,12 @@ var PlayerQuery = donburi.NewQuery(
 	),
 )
 
+var PlayerCarQuery = donburi.NewQuery(
+	filter.Contains(
+		tags.PlayerCarTag,
+	),
+)
+
 var CameraQuery = donburi.NewQuery(
 	filter.And(
 		filter.Contains(components.CameraComponent),

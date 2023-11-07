@@ -4,6 +4,7 @@ import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	clientConstants "github.com/kainn9/demo/constants/client"
+	"github.com/kainn9/demo/queries"
 	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	"github.com/yohamta/donburi"
@@ -34,8 +35,18 @@ func (sys CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 	camera := components.CameraComponent.Get(cameraEntity)
 
 	playerEntity := systemsUtil.GetPlayerEntity(world)
-
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
+
+	// If driving scene use car body instead.
+	carEntity, match := sys.CheckForCarBody(world)
+
+	if match {
+		carBody := components.RigidBodyComponent.Get(carEntity)
+		playerBody = carBody
+	}
+
+	// Only smooth cam for player.
+	useSmoothCam := !match
 
 	// We stop moving the camera, if the player is within the bounds of the screen.
 	// E.g., bottom left, top left, bottom right, top right.
@@ -58,19 +69,26 @@ func (sys CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 
 	// Handle X-axis
 	if playerInsideXBoundsLeft {
-		cameraUtil.SetPosition(camera, 0, camera.Y, true)
+		cameraUtil.SetPosition(camera, 0, camera.Y, useSmoothCam)
 	} else if playerInsideXBoundsRight {
-		cameraUtil.SetPosition(camera, float64(mapWidth-clientConstants.SCREEN_WIDTH), camera.Y, true)
+		cameraUtil.SetPosition(camera, float64(mapWidth-clientConstants.SCREEN_WIDTH), camera.Y, useSmoothCam)
 	} else {
-		cameraUtil.SetPosition(camera, playerBody.Pos.X-halfScreenWidth, camera.Y, true)
+		cameraUtil.SetPosition(camera, playerBody.Pos.X-halfScreenWidth, camera.Y, useSmoothCam)
 	}
 
 	// Handle Y-axis
 	if playerInsideYBoundsTop {
-		cameraUtil.SetPosition(camera, camera.X, 0, true)
+		cameraUtil.SetPosition(camera, camera.X, 0, useSmoothCam)
 	} else if playerInsideYBoundsBottom {
-		cameraUtil.SetPosition(camera, camera.X, float64(mapHeight-clientConstants.SCREEN_HEIGHT), true)
+		cameraUtil.SetPosition(camera, camera.X, float64(mapHeight-clientConstants.SCREEN_HEIGHT), useSmoothCam)
 	} else {
-		cameraUtil.SetPosition(camera, camera.X, playerBody.Pos.Y-halfScreenHeight, true)
+		cameraUtil.SetPosition(camera, camera.X, playerBody.Pos.Y-halfScreenHeight, useSmoothCam)
 	}
+}
+
+func (sys CameraPositionHandlerSystem) CheckForCarBody(world donburi.World) (*donburi.Entry, bool) {
+
+	entity, ok := queries.PlayerCarQuery.First(world)
+
+	return entity, ok
 }

@@ -42,3 +42,29 @@ func InitStandardSystems(scene *coldBrew.Scene) {
 	scene.AddSystem(renderSystems.NewDebugRigidBodyRenderer(scene))
 
 }
+
+func InitDrivingSystems(scene *coldBrew.Scene) {
+	// Loader Systems.
+	scene.AddSystem(loaderSystems.NewBackgroundLoader(scene))
+	scene.AddSystem(loaderSystems.NewUIGlobalLoader(scene))
+	scene.AddSystem(loaderSystems.NewPlayerCarLoader(scene))
+
+	// Client Systems.
+	// scene.AddSystem(clientSystems.NewInputTracker(scene))
+	// Replace^
+
+	// Sim Systems.
+	scene.AddSystem(simSystems.NewCameraPositionHandler(scene))
+	scene.AddSystem(simSystems.NewSceneTransitionHandler(scene))
+	scene.AddSystem(simSystems.NewPlayerCarMovementHandler())
+
+	// Render Systems.
+	scene.AddSystem(renderSystems.NewParallaxBackgroundRenderer(scene))
+	scene.AddSystem(renderSystems.NewPlayerCarRenderer(scene))
+	scene.AddSystem(renderSystems.NewFrontLayerRenderer(scene))
+
+	// This must be the last Render system to be added for now(minus debug).
+	scene.AddSystem(renderSystems.NewCameraRenderer(scene))
+	scene.AddSystem(renderSystems.NewDebugRigidBodyRenderer(scene))
+
+}

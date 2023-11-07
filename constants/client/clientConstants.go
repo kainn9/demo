@@ -16,9 +16,13 @@ const (
 	UI_ASSETS_INDICATORS_SUBPATH   = UI_ASSETS_SUB_PATH + "indicators/"  // ./assets/UI/indicators/
 	UI_ASSETS_DEFAULT_FONT_SUBPATH = UI_ASSETS_FONT_SUBPATH + "default/" // ./assets/UI/font/default/
 
-	CHARACTER_ASSETS_SUB_PATH  = "characters/"                         // ./assets/characters/
-	PLAYER_ASSETS_SUB_PATH     = CHARACTER_ASSETS_SUB_PATH + "player/" // ./assets/characters/player/
-	CHAT_SCENE_ASSETS_SUB_PATH = "chats/"                              // ./assets/scenes/SCENE_SECTION/SCENE_NAME/chat/
+	CHARACTER_ASSETS_SUB_PATH = "characters/"                         // ./assets/characters/
+	PLAYER_ASSETS_SUB_PATH    = CHARACTER_ASSETS_SUB_PATH + "player/" // ./assets/characters/player/
+
+	CARS_ASSETS_SUB_PATH      = "cars/"                           // ./assets/cars/
+	PLAYER_CAR_ASSETS_SUBPATH = CARS_ASSETS_SUB_PATH + "speeder/" // ./assets/cars/speeder
+
+	CHAT_SCENE_ASSETS_SUB_PATH = "chats/" // ./assets/scenes/SCENE_SECTION/SCENE_NAME/chat/
 
 )
 

@@ -67,6 +67,10 @@ func (g *game) Update() error {
 	if inpututil.IsKeyJustPressed(ebiten.Key2) {
 		scenesUtil.ChangeScene(g.manager, introScenes.LevelTwoScene{}, 20, 70, 0, 0)
 	}
+
+	if inpututil.IsKeyJustPressed(ebiten.Key3) {
+		scenesUtil.ChangeScene(g.manager, introScenes.LevelThreeScene{}, -500, -500, 0, 0)
+	}
 	// end of hack/test. ----------------------
 
 	activeScene := g.manager.ActiveScene()
