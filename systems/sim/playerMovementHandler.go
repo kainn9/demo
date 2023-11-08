@@ -90,6 +90,11 @@ func (sys PlayerMovementHandlerSystem) gravityHandler(playerBody *tBokiComponent
 
 func (sys PlayerMovementHandlerSystem) horizontalMovementHandler(playerState *components.PlayerState, playerBody *tBokiComponents.RigidBody) {
 
+	if playerState.Combat.Attacking {
+		sys.haltPlayerMovement(playerBody, playerState)
+		return
+	}
+
 	if playerState.Transform.BasicHorizontalMovement {
 		sys.handlePlayerBasicHorizontalMovement(playerBody, playerState)
 	}

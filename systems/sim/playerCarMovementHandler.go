@@ -25,7 +25,7 @@ func (sys PlayerCarMovementHandlerSystem) Query() *donburi.Query {
 func (sys PlayerCarMovementHandlerSystem) Run(dt float64, playerCarEntity *donburi.Entry) {
 	body := components.RigidBodyComponent.Get(playerCarEntity)
 
-	_, _, jump, _, _, _ := inputConstants.ALL_BINDS()
+	_, _, jump, _, _, _, _ := inputConstants.ALL_BINDS()
 
 	if ebiten.IsKeyPressed(jump) {
 		tBokiPhysics.Transformer.ApplyImpulseLinear(body, tBokiVec.Vec2{X: 10, Y: 0})

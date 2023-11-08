@@ -27,6 +27,7 @@ func NewCameraPositionHandler(scene *coldBrew.Scene) *CameraPositionHandlerSyste
 }
 
 func (sys CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
+
 	world := sys.scene.World
 	mapWidth := sys.scene.Width
 	mapHeight := sys.scene.Height
@@ -84,6 +85,7 @@ func (sys CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 	} else {
 		cameraUtil.SetPosition(camera, camera.X, playerBody.Pos.Y-halfScreenHeight, useSmoothCam)
 	}
+
 }
 
 func (sys CameraPositionHandlerSystem) CheckForCarBody(world donburi.World) (*donburi.Entry, bool) {

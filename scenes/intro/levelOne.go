@@ -48,7 +48,7 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 3, 0, 0, false),
 
 		// Green Trees.
-		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 4, 10, 10, false),
+		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 4, 8, 10, false),
 
 		// Statues.
 		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 5, 5, 12, false),

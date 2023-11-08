@@ -32,12 +32,12 @@ func (sys InputTrackerSystem) Sync(_ *donburi.Entry) {
 
 	world := sys.scene.World
 	playerEntity := systemsUtil.GetPlayerEntity(world)
-	left, right, jump, up, down, interact := inputConstants.ALL_BINDS()
+	left, right, jump, up, down, interact, attackPrimary := inputConstants.ALL_BINDS()
 
 	sys.processInteractionInput(playerEntity, interact)
 
 	sys.InputsQuery().Each(world, func(inputsEntity *donburi.Entry) {
-		sys.processMovementInputs(inputsEntity, left, right, jump, up, down)
+		sys.processMovementInputs(inputsEntity, left, right, jump, up, down, attackPrimary)
 	})
 
 }
@@ -53,12 +53,20 @@ func (sys InputTrackerSystem) processInteractionInput(playerEntity *donburi.Entr
 
 }
 
-func (sys InputTrackerSystem) processMovementInputs(inputsEntity *donburi.Entry, left, right, jump, up, down ebiten.Key) {
+func (sys InputTrackerSystem) processMovementInputs(inputsEntity *donburi.Entry, left, right, jump, up, down, attackPrimary ebiten.Key) {
 	inputs := components.InputsComponent.Get(inputsEntity)
 	world := sys.scene.World
 
-	// Block movement inputs unless chat is not active.
+	// Block movement inputs if chat is active.
 	if systemsUtil.IsChatActive(world) {
+		return
+	}
+
+	playerEntity := systemsUtil.GetPlayerEntity(world)
+	playerState := components.PlayerStateComponent.Get(playerEntity)
+
+	// Block movement inputs if attack is active.
+	if playerState.Combat.Attacking == true {
 		return
 	}
 
@@ -96,6 +104,10 @@ func (sys InputTrackerSystem) processMovementInputs(inputsEntity *donburi.Entry,
 
 	if !ebiten.IsKeyPressed(up) && !ebiten.IsKeyPressed(down) {
 		sys.addUniqueKey(&inputs.Queue, inputConstants.RELEASED_VERTICAL)
+	}
+
+	if inpututil.IsKeyJustPressed(attackPrimary) {
+		sys.addUniqueKey(&inputs.Queue, attackPrimary)
 	}
 }
 

@@ -64,7 +64,7 @@ func (sys IndicatorRendererSystem) renderIndicator(
 		indicatorSprite := (*UISpritesMap)[string(indicatorConfigAndState.Config.Type)]
 		indicatorOpts := &ebiten.DrawImageOptions{}
 
-		currentFrame := animUtil.PlayAnim(
+		currentFrame := animUtil.GetAnimFrame(
 			sys.scene.Manager,
 			indicatorSprite,
 		)

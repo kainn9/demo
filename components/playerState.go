@@ -18,9 +18,16 @@ type PlayerTransformState struct {
 	PhaseThroughPlatforms   bool
 }
 
+type PlayerCombatState struct {
+	Attacking       bool
+	CurrentAttack   AnimState
+	AttackStartTick int
+}
+
 type PlayerState struct {
 	Collision     *PlayerCollisionState
 	Transform     *PlayerTransformState
+	Combat        *PlayerCombatState
 	Animation     AnimState
 	IsInteracting bool
 }
@@ -33,6 +40,9 @@ func NewPlayerState() *PlayerState {
 		Collision: &PlayerCollisionState{},
 		Transform: &PlayerTransformState{
 			direction: 1,
+		},
+		Combat: &PlayerCombatState{
+			AttackStartTick: -1,
 		},
 	}
 }

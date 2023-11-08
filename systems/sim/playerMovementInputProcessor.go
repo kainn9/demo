@@ -5,6 +5,7 @@ import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	inputConstants "github.com/kainn9/demo/constants/input"
+	playerConstants "github.com/kainn9/demo/constants/player"
 
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/filter"
@@ -35,7 +36,11 @@ func (sys PlayerMovementInputProcessorSystem) Run(dt float64, playerEntity *donb
 
 	activeInput := sys.inputShift(&inputs.Queue)
 
-	left, right, jump, up, down, _ := inputConstants.ALL_BINDS()
+	left, right, jump, up, down, _, attackPrimary := inputConstants.ALL_BINDS()
+
+	if activeInput == attackPrimary {
+		sys.handleKeyPrimaryAtk(playerState)
+	}
 
 	// Left/Right movement.
 	if activeInput == left {
@@ -117,4 +122,10 @@ func (sys PlayerMovementInputProcessorSystem) inputShift(inputQueue *[]ebiten.Ke
 	popped := (*inputQueue)[0]
 	*inputQueue = (*inputQueue)[1:]
 	return popped
+}
+
+func (sys PlayerMovementInputProcessorSystem) handleKeyPrimaryAtk(playerState *components.PlayerState) {
+	playerState.Combat.Attacking = true
+	playerState.Combat.AttackStartTick = sys.scene.Manager.TickHandler.CurrentTick()
+	playerState.Combat.CurrentAttack = playerConstants.PLAYER_ANIM_STATE_ATTACK_PRIMARY
 }

@@ -5,6 +5,7 @@ import (
 	clientSystems "github.com/kainn9/demo/systems/client"
 	loaderSystems "github.com/kainn9/demo/systems/loader"
 	renderSystems "github.com/kainn9/demo/systems/render"
+	renderDebugSystems "github.com/kainn9/demo/systems/render/debug"
 	simSystems "github.com/kainn9/demo/systems/sim"
 )
 
@@ -29,6 +30,7 @@ func InitStandardSystems(scene *coldBrew.Scene) {
 	scene.AddSystem(simSystems.NewCameraPositionHandler(scene))
 	scene.AddSystem(simSystems.NewIndicatorCollisionHandler(scene))
 	scene.AddSystem(simSystems.NewSceneTransitionHandler(scene))
+	scene.AddSystem(simSystems.NewPlayerAttackHandler(scene))
 
 	// Render Systems.
 	scene.AddSystem(renderSystems.NewParallaxBackgroundRenderer(scene))
@@ -39,7 +41,8 @@ func InitStandardSystems(scene *coldBrew.Scene) {
 
 	// This must be the last Render system to be added for now(minus debug).
 	scene.AddSystem(renderSystems.NewCameraRenderer(scene))
-	scene.AddSystem(renderSystems.NewDebugRigidBodyRenderer(scene))
+	scene.AddSystem(renderDebugSystems.NewDebugRigidBodyRenderer(scene))
+	scene.AddSystem(renderDebugSystems.NewHitBoxPreviewer(scene))
 
 }
 
@@ -65,6 +68,6 @@ func InitDrivingSystems(scene *coldBrew.Scene) {
 
 	// This must be the last Render system to be added for now(minus debug).
 	scene.AddSystem(renderSystems.NewCameraRenderer(scene))
-	scene.AddSystem(renderSystems.NewDebugRigidBodyRenderer(scene))
+	scene.AddSystem(renderDebugSystems.NewDebugRigidBodyRenderer(scene))
 
 }

@@ -16,6 +16,8 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 		components.InputsComponent,
 		components.PlayerStateComponent,
 		components.PlayerSpritesAnimMapComponent,
+		components.AttackHitboxConfigComponent,
+		components.PlayerAttackBoxesComponent,
 		tags.PlayerTag,
 	)
 
@@ -84,7 +86,54 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 
 	playerSprites[playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_ACTIVE].AnimationConfig = playerConstants.PLAYER_ANIMATION_CONFIGS[playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_ACTIVE]
 
+	// Attack Primary
+	playerSprites[playerConstants.PLAYER_ANIM_STATE_ATTACK_PRIMARY] = components.NewSprite(
+		playerConstants.PLAYER_SPRITE_OFFSET_X,
+		playerConstants.PLAYER_SPRITE_OFFSET_Y,
+	)
+
+	playerSprites[playerConstants.PLAYER_ANIM_STATE_ATTACK_PRIMARY].AnimationConfig = playerConstants.PLAYER_ANIMATION_CONFIGS[playerConstants.PLAYER_ANIM_STATE_ATTACK_PRIMARY]
+
 	components.PlayerSpritesAnimMapComponent.SetValue(playerEntity, playerSprites)
+
+	// Hitboxes
+	noBox := []components.HitboxData{components.NewHitboxData(0, 0, 0, 0, 0)}
+
+	hitboxesDataFrame0 := []components.HitboxData{
+		components.NewHitboxData(22, 10, -0.1, 7, 0),
+	}
+
+	hitboxesDataFrame1 := []components.HitboxData{
+		components.NewHitboxData(40, 10, -0.6, 25, -28),
+	}
+
+	hitboxesDataFrame2 := []components.HitboxData{
+		components.NewHitboxData(40, 10, -0.6, 25, -24),
+	}
+
+	hitboxesDataFrame3 := hitboxesDataFrame2
+
+	hitboxesDataFrame4 := hitboxesDataFrame2
+
+	hitboxes := components.NewAttackHitboxConfig(
+		hitboxesDataFrame0,
+		hitboxesDataFrame1,
+		hitboxesDataFrame2,
+		hitboxesDataFrame3,
+		hitboxesDataFrame4,
+		noBox, // 5
+		noBox, // 6
+		noBox, // 7
+		noBox, // 8
+	)
+
+	components.AttackHitboxConfigComponent.SetValue(playerEntity, *hitboxes)
+
+	emptyBoxes := []*tBokiComponents.RigidBody{
+		tBokiComponents.NewRigidBodyBox(0, 0, 0, 0, 0, false),
+	}
+
+	components.PlayerAttackBoxesComponent.SetValue(playerEntity, emptyBoxes)
 
 	return playerBody
 }

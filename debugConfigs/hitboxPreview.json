@@ -1,0 +1,14 @@
+{
+    "enabled": true,
+    "animationName": "atkPrimary",
+    "frame": 10,
+    "hitboxes": [
+        {
+            "width": 40,
+            "height": 10,
+            "rotation": -0.6,
+            "offsetX": 25,
+            "offsetY": -24
+        }
+    ]
+}

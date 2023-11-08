@@ -115,12 +115,17 @@ func (sys PlayerRendererSystem) configureDrawOptions(
 
 func (sys PlayerRendererSystem) renderPlayerSpriteOnCamera(currentSpriteSheet *components.Sprite, camera *components.Camera, opts *ebiten.DrawImageOptions) {
 	// Selecting correct sprite frame to render.
-	spriteAtFrameIndex := animUtil.PlayAnim(sys.scene.Manager, currentSpriteSheet)
+	spriteAtFrameIndex := animUtil.GetAnimFrame(sys.scene.Manager, currentSpriteSheet)
 	// Adding sprite frame to camera.
 	cameraUtil.AddImage(camera, spriteAtFrameIndex, opts)
 
 }
 func (sys PlayerRendererSystem) determinePlayerAnimationState(playerState *components.PlayerState) components.AnimState {
+
+	// Todo: Handler func for specific attacks once theres more than one.
+	if playerState.Combat.Attacking {
+		return playerConstants.PLAYER_ANIM_STATE_ATTACK_PRIMARY
+	}
 
 	if playerState.Collision.Climbing && (playerState.Transform.Up || playerState.Transform.Down) {
 		return playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_ACTIVE

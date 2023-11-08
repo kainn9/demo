@@ -103,7 +103,7 @@ func (sys ChatSlidesRendererSystem) renderPopUpAnimation(chatBoxOpts *ebiten.Dra
 
 	popUpSprite := systemsUtil.GetChatPopUpSprite(sys.scene.World)
 
-	spriteAtFrameIndex := animUtil.PlayAnim(sys.scene.Manager, popUpSprite)
+	spriteAtFrameIndex := animUtil.GetAnimFrame(sys.scene.Manager, popUpSprite)
 
 	cameraUtil.AddImage(camera, spriteAtFrameIndex, chatBoxOpts)
 
@@ -114,7 +114,7 @@ func (sys ChatSlidesRendererSystem) renderPopUpAnimation(chatBoxOpts *ebiten.Dra
 
 func (sys ChatSlidesRendererSystem) renderPopDownAnimation(popDownSprite *components.Sprite, chatBoxOpts *ebiten.DrawImageOptions, camera *components.Camera) {
 
-	spriteAtFrameIndex := animUtil.PlayAnim(sys.scene.Manager, popDownSprite)
+	spriteAtFrameIndex := animUtil.GetAnimFrame(sys.scene.Manager, popDownSprite)
 
 	cameraUtil.AddImage(camera, spriteAtFrameIndex, chatBoxOpts)
 
