@@ -13,7 +13,7 @@ import (
 
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	clientConstants "github.com/kainn9/demo/constants/client"
+	clientGlobals "github.com/kainn9/demo/globalConfig/client"
 	"github.com/kainn9/demo/queries"
 	animUtil "github.com/kainn9/demo/systems/render/util/anim"
 	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
@@ -29,7 +29,7 @@ type HitBoxPreviewerSystem struct {
 
 type hitboxPreviewConfigFromJson struct {
 	Enabled       bool                 `json:"enabled"`
-	AnimationName components.AnimState `json:"animationName"`
+	AnimationName components.CharState `json:"animationName"`
 	Frame         int                  `json:"frame"`
 	Hitboxes      []hitboxFromJson     `json:"hitboxes"`
 }
@@ -55,7 +55,7 @@ func (HitBoxPreviewerSystem) Query() *donburi.Query {
 
 func (sys *HitBoxPreviewerSystem) Draw(screen *ebiten.Image, playerEntity *donburi.Entry) {
 
-	if !clientConstants.DEBUG_MODE {
+	if !clientGlobals.DEBUG_MODE {
 		return
 	}
 
@@ -65,10 +65,10 @@ func (sys *HitBoxPreviewerSystem) Draw(screen *ebiten.Image, playerEntity *donbu
 
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
-	sprites := components.PlayerSpritesAnimMapComponent.Get(playerEntity)
+	sprites := components.SpritesAnimMapComponent.Get(playerEntity)
 
 	if !sys.jsonLoaded || inpututil.IsKeyJustPressed(ebiten.Key8) {
-		jsonFile, err := os.Open(clientConstants.DEBUG_HITBOX_PREVIEW_JSON_PATH)
+		jsonFile, err := os.Open(clientGlobals.DEBUG_HITBOX_PREVIEW_JSON_PATH)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -116,7 +116,7 @@ func (sys *HitBoxPreviewerSystem) Draw(screen *ebiten.Image, playerEntity *donbu
 		isAngular := hitboxData.Rotation != 0
 
 		hitbox := tBokiComponents.NewRigidBodyBox(xPos, yPos, hitboxData.Width, hitboxData.Height, 0, isAngular)
-		hitbox.Rotation = hitboxData.Rotation
+		hitbox.Rotation = hitboxData.Rotation * playerState.Direction()
 		hitbox.UpdateVertices()
 
 		green := color.RGBA{0, 255, 0, 255}

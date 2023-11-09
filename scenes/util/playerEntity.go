@@ -3,7 +3,8 @@ package scenesUtil
 import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	playerConstants "github.com/kainn9/demo/constants/player"
+	playerGlobals "github.com/kainn9/demo/globalConfig/player"
+	sharedAnimationGlobals "github.com/kainn9/demo/globalConfig/sharedAnimation"
 	"github.com/kainn9/demo/tags"
 	tBokiComponents "github.com/kainn9/tteokbokki/components"
 )
@@ -15,14 +16,13 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 		components.RigidBodyComponent,
 		components.InputsComponent,
 		components.PlayerStateComponent,
-		components.PlayerSpritesAnimMapComponent,
+		components.SpritesAnimMapComponent,
 		components.AttackHitboxConfigComponent,
-		components.PlayerAttackBoxesComponent,
 		tags.PlayerTag,
 	)
 
 	// RigidBody.
-	playerBody := *tBokiComponents.NewRigidBodyBox(x, y, playerConstants.PLAYER_WIDTH, playerConstants.PLAYER_HEIGHT, 1, false)
+	playerBody := *tBokiComponents.NewRigidBodyBox(x, y, playerGlobals.PLAYER_WIDTH, playerGlobals.PLAYER_HEIGHT, 1, false)
 	playerBody.Elasticity = 0
 
 	components.RigidBodyComponent.SetValue(playerEntity, playerBody)
@@ -35,92 +35,96 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 	components.PlayerStateComponent.SetValue(playerEntity, *playerState)
 
 	// Sprites/Animations.
-	playerSprites := make(map[components.AnimState]*components.Sprite, 0)
+	playerSprites := make(map[components.CharState]*components.Sprite, 0)
 
 	// Idle.
-
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_IDLE] = components.NewSprite(
-		playerConstants.PLAYER_SPRITE_OFFSET_X,
-		playerConstants.PLAYER_SPRITE_OFFSET_Y,
+	playerSprites[sharedAnimationGlobals.CHAR_STATE_IDLE] = components.NewSprite(
+		playerGlobals.PLAYER_SPRITE_OFFSET_X,
+		playerGlobals.PLAYER_SPRITE_OFFSET_Y,
 	)
 
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_IDLE].AnimationConfig = playerConstants.PLAYER_ANIMATION_CONFIGS[playerConstants.PLAYER_ANIM_STATE_IDLE]
+	playerSprites[sharedAnimationGlobals.CHAR_STATE_IDLE].AnimationConfig = playerGlobals.PLAYER_ANIMATION_CONFIGS[sharedAnimationGlobals.CHAR_STATE_IDLE]
 
 	// Run.
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_RUN] = components.NewSprite(
-		playerConstants.PLAYER_SPRITE_OFFSET_X,
-		playerConstants.PLAYER_SPRITE_OFFSET_Y,
+	playerSprites[sharedAnimationGlobals.CHAR_STATE_RUN] = components.NewSprite(
+		playerGlobals.PLAYER_SPRITE_OFFSET_X,
+		playerGlobals.PLAYER_SPRITE_OFFSET_Y,
 	)
 
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_RUN].AnimationConfig = playerConstants.PLAYER_ANIMATION_CONFIGS[playerConstants.PLAYER_ANIM_STATE_RUN]
+	playerSprites[sharedAnimationGlobals.CHAR_STATE_RUN].AnimationConfig = playerGlobals.PLAYER_ANIMATION_CONFIGS[sharedAnimationGlobals.CHAR_STATE_RUN]
 
 	// Jump.
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_JUMP] = components.NewSprite(
-		playerConstants.PLAYER_SPRITE_OFFSET_X,
-		playerConstants.PLAYER_SPRITE_OFFSET_Y,
+	playerSprites[sharedAnimationGlobals.CHAR_STATE_JUMP] = components.NewSprite(
+		playerGlobals.PLAYER_SPRITE_OFFSET_X,
+		playerGlobals.PLAYER_SPRITE_OFFSET_Y,
 	)
 
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_JUMP].AnimationConfig = playerConstants.PLAYER_ANIMATION_CONFIGS[playerConstants.PLAYER_ANIM_STATE_JUMP]
+	playerSprites[sharedAnimationGlobals.CHAR_STATE_JUMP].AnimationConfig = playerGlobals.PLAYER_ANIMATION_CONFIGS[sharedAnimationGlobals.CHAR_STATE_JUMP]
 
 	// Fall.
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_FALL] = components.NewSprite(
-		playerConstants.PLAYER_SPRITE_OFFSET_X,
-		playerConstants.PLAYER_SPRITE_OFFSET_Y,
+	playerSprites[sharedAnimationGlobals.CHAR_STATE_FALL] = components.NewSprite(
+		playerGlobals.PLAYER_SPRITE_OFFSET_X,
+		playerGlobals.PLAYER_SPRITE_OFFSET_Y,
 	)
 
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_FALL].AnimationConfig = playerConstants.PLAYER_ANIMATION_CONFIGS[playerConstants.PLAYER_ANIM_STATE_FALL]
+	playerSprites[sharedAnimationGlobals.CHAR_STATE_FALL].AnimationConfig = playerGlobals.PLAYER_ANIMATION_CONFIGS[sharedAnimationGlobals.CHAR_STATE_FALL]
 
 	// Climb Ladder.
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_IDLE] = components.NewSprite(
-		playerConstants.PLAYER_SPRITE_OFFSET_X,
-		playerConstants.PLAYER_SPRITE_OFFSET_Y,
+	playerSprites[playerGlobals.PLAYER_CHAR_STATE_CLIMB_LADDER_IDLE] = components.NewSprite(
+		playerGlobals.PLAYER_SPRITE_OFFSET_X,
+		playerGlobals.PLAYER_SPRITE_OFFSET_Y,
 	)
 
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_IDLE].AnimationConfig = playerConstants.PLAYER_ANIMATION_CONFIGS[playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_IDLE]
+	playerSprites[playerGlobals.PLAYER_CHAR_STATE_CLIMB_LADDER_IDLE].AnimationConfig = playerGlobals.PLAYER_ANIMATION_CONFIGS[playerGlobals.PLAYER_CHAR_STATE_CLIMB_LADDER_IDLE]
 
-	// Climb Ladder Active
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_ACTIVE] = components.NewSprite(
-		playerConstants.PLAYER_SPRITE_OFFSET_X,
-		playerConstants.PLAYER_SPRITE_OFFSET_Y,
+	// Climb Ladder Active.
+	playerSprites[playerGlobals.PLAYER_CHAR_STATE_CLIMB_LADDER_ACTIVE] = components.NewSprite(
+		playerGlobals.PLAYER_SPRITE_OFFSET_X,
+		playerGlobals.PLAYER_SPRITE_OFFSET_Y,
 	)
 
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_ACTIVE].AnimationConfig = playerConstants.PLAYER_ANIMATION_CONFIGS[playerConstants.PLAYER_ANIM_STATE_CLIMB_LADDER_ACTIVE]
+	playerSprites[playerGlobals.PLAYER_CHAR_STATE_CLIMB_LADDER_ACTIVE].AnimationConfig = playerGlobals.PLAYER_ANIMATION_CONFIGS[playerGlobals.PLAYER_CHAR_STATE_CLIMB_LADDER_ACTIVE]
 
-	// Attack Primary
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_ATTACK_PRIMARY] = components.NewSprite(
-		playerConstants.PLAYER_SPRITE_OFFSET_X,
-		playerConstants.PLAYER_SPRITE_OFFSET_Y,
+	// Attack Primary.
+	playerSprites[sharedAnimationGlobals.CHAR_STATE_ATTACK_PRIMARY] = components.NewSprite(
+		playerGlobals.PLAYER_SPRITE_OFFSET_X,
+		playerGlobals.PLAYER_SPRITE_OFFSET_Y,
 	)
 
-	playerSprites[playerConstants.PLAYER_ANIM_STATE_ATTACK_PRIMARY].AnimationConfig = playerConstants.PLAYER_ANIMATION_CONFIGS[playerConstants.PLAYER_ANIM_STATE_ATTACK_PRIMARY]
+	playerSprites[sharedAnimationGlobals.CHAR_STATE_ATTACK_PRIMARY].AnimationConfig = playerGlobals.PLAYER_ANIMATION_CONFIGS[sharedAnimationGlobals.CHAR_STATE_ATTACK_PRIMARY]
 
-	components.PlayerSpritesAnimMapComponent.SetValue(playerEntity, playerSprites)
+	// Hurt.
+	playerSprites[sharedAnimationGlobals.CHAR_STATE_HURT] = components.NewSprite(
+		playerGlobals.PLAYER_SPRITE_OFFSET_X,
+		playerGlobals.PLAYER_SPRITE_OFFSET_Y,
+	)
+
+	playerSprites[sharedAnimationGlobals.CHAR_STATE_HURT].AnimationConfig = playerGlobals.PLAYER_ANIMATION_CONFIGS[sharedAnimationGlobals.CHAR_STATE_HURT]
+
+	// Defeated.
+
+	playerSprites[sharedAnimationGlobals.CHAR_STATE_DEFEATED] = components.NewSprite(
+		playerGlobals.PLAYER_SPRITE_OFFSET_X,
+		playerGlobals.PLAYER_SPRITE_OFFSET_Y,
+	)
+
+	playerSprites[sharedAnimationGlobals.CHAR_STATE_DEFEATED].AnimationConfig = playerGlobals.PLAYER_ANIMATION_CONFIGS[sharedAnimationGlobals.CHAR_STATE_DEFEATED]
+
+	components.SpritesAnimMapComponent.SetValue(playerEntity, playerSprites)
 
 	// Hitboxes
 	noBox := []components.HitboxData{components.NewHitboxData(0, 0, 0, 0, 0)}
 
-	hitboxesDataFrame0 := []components.HitboxData{
-		components.NewHitboxData(22, 10, -0.1, 7, 0),
-	}
-
 	hitboxesDataFrame1 := []components.HitboxData{
-		components.NewHitboxData(40, 10, -0.6, 25, -28),
+		components.NewHitboxData(50, 10, 0, 30, -4),
 	}
-
-	hitboxesDataFrame2 := []components.HitboxData{
-		components.NewHitboxData(40, 10, -0.6, 25, -24),
-	}
-
-	hitboxesDataFrame3 := hitboxesDataFrame2
-
-	hitboxesDataFrame4 := hitboxesDataFrame2
 
 	hitboxes := components.NewAttackHitboxConfig(
-		hitboxesDataFrame0,
+		noBox,
+		noBox,
 		hitboxesDataFrame1,
-		hitboxesDataFrame2,
-		hitboxesDataFrame3,
-		hitboxesDataFrame4,
+		hitboxesDataFrame1,
+		hitboxesDataFrame1,
 		noBox, // 5
 		noBox, // 6
 		noBox, // 7
@@ -128,12 +132,6 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 	)
 
 	components.AttackHitboxConfigComponent.SetValue(playerEntity, *hitboxes)
-
-	emptyBoxes := []*tBokiComponents.RigidBody{
-		tBokiComponents.NewRigidBodyBox(0, 0, 0, 0, 0, false),
-	}
-
-	components.PlayerAttackBoxesComponent.SetValue(playerEntity, emptyBoxes)
 
 	return playerBody
 }

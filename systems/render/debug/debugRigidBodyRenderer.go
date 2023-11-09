@@ -9,7 +9,7 @@ import (
 
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	clientConstants "github.com/kainn9/demo/constants/client"
+	clientGlobals "github.com/kainn9/demo/globalConfig/client"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	tBokiComponents "github.com/kainn9/tteokbokki/components"
 )
@@ -28,27 +28,27 @@ func (DebugRigidBodyRendererSystem) Query() *donburi.Query {
 	return donburi.NewQuery(
 		filter.Or(
 			filter.Contains(components.RigidBodyComponent),
-			filter.Contains(components.PlayerAttackBoxesComponent),
+			filter.Contains(components.AttackBoxesComponent),
 		),
 	)
 }
 
 func (sys DebugRigidBodyRendererSystem) Draw(screen *ebiten.Image, entity *donburi.Entry) {
-	if clientConstants.DEBUG_MODE == false {
+	if clientGlobals.DEBUG_MODE == false {
 		return
 	}
 
 	bodies := make([]*tBokiComponents.RigidBody, 0)
-	bodies = append(bodies, components.RigidBodyComponent.Get(entity))
 
-	if entity.HasComponent(components.PlayerAttackBoxesComponent) {
-
-		attackBoxes := components.PlayerAttackBoxesComponent.Get(entity)
+	if entity.HasComponent(components.AttackBoxesComponent) {
+		attackBoxes := components.AttackBoxesComponent.Get(entity)
 
 		for _, box := range *attackBoxes {
 			bodies = append(bodies, box)
 		}
 
+	} else {
+		bodies = append(bodies, components.RigidBodyComponent.Get(entity))
 	}
 
 	for _, body := range bodies {

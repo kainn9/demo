@@ -5,7 +5,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	inputConstants "github.com/kainn9/demo/constants/input"
+	inputGlobals "github.com/kainn9/demo/globalConfig/input"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 
 	"github.com/yohamta/donburi"
@@ -13,12 +13,16 @@ import (
 )
 
 type InputTrackerSystem struct {
-	scene *coldBrew.Scene
+	scene                   *coldBrew.Scene
+	tickLeftKeyLastPressed  int
+	tickRightKeyLastPressed int
 }
 
 func NewInputTracker(scene *coldBrew.Scene) *InputTrackerSystem {
 	return &InputTrackerSystem{
-		scene: scene,
+		scene:                   scene,
+		tickLeftKeyLastPressed:  0,
+		tickRightKeyLastPressed: 0,
 	}
 }
 
@@ -28,13 +32,15 @@ func (InputTrackerSystem) InputsQuery() *donburi.Query {
 	)
 }
 
-func (sys InputTrackerSystem) Sync(_ *donburi.Entry) {
+func (sys *InputTrackerSystem) Sync(_ *donburi.Entry) {
 
 	world := sys.scene.World
 	playerEntity := systemsUtil.GetPlayerEntity(world)
-	left, right, jump, up, down, interact, attackPrimary := inputConstants.ALL_BINDS()
+	left, right, jump, up, down, interact, attackPrimary := inputGlobals.ALL_BINDS()
 
 	sys.processInteractionInput(playerEntity, interact)
+
+	sys.trackLeftRightLastPressed(left, right)
 
 	sys.InputsQuery().Each(world, func(inputsEntity *donburi.Entry) {
 		sys.processMovementInputs(inputsEntity, left, right, jump, up, down, attackPrimary)
@@ -57,29 +63,26 @@ func (sys InputTrackerSystem) processMovementInputs(inputsEntity *donburi.Entry,
 	inputs := components.InputsComponent.Get(inputsEntity)
 	world := sys.scene.World
 
-	// Block movement inputs if chat is active.
-	if systemsUtil.IsChatActive(world) {
-		return
-	}
-
 	playerEntity := systemsUtil.GetPlayerEntity(world)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 
-	// Block movement inputs if attack is active.
-	if playerState.Combat.Attacking == true {
+	if sys.playerCannotAcceptMovementInputs(world, playerState) {
 		return
 	}
 
 	// Left/Right movement.
-	// Else if, is intentional here.
-	if ebiten.IsKeyPressed(left) {
+	leftPriority := sys.tickLeftKeyLastPressed > sys.tickRightKeyLastPressed
+
+	if ebiten.IsKeyPressed(left) && leftPriority {
 		sys.addUniqueKey(&inputs.Queue, left)
-	} else if ebiten.IsKeyPressed(right) {
+	}
+
+	if ebiten.IsKeyPressed(right) && !leftPriority {
 		sys.addUniqueKey(&inputs.Queue, right)
 	}
 
 	if !ebiten.IsKeyPressed(left) && !ebiten.IsKeyPressed(right) {
-		sys.addUniqueKey(&inputs.Queue, inputConstants.RELEASED_HORIZONTAL)
+		sys.addUniqueKey(&inputs.Queue, inputGlobals.RELEASED_HORIZONTAL)
 	}
 
 	// Jump.
@@ -89,7 +92,7 @@ func (sys InputTrackerSystem) processMovementInputs(inputsEntity *donburi.Entry,
 
 	// Phase through platforms.
 	if inpututil.IsKeyJustPressed(jump) && ebiten.IsKeyPressed(down) {
-		sys.addUniqueKey(&inputs.Queue, inputConstants.COMBO_DOWN_SPACE)
+		sys.addUniqueKey(&inputs.Queue, inputGlobals.COMBO_DOWN_SPACE)
 	}
 
 	// Climb up.
@@ -102,13 +105,36 @@ func (sys InputTrackerSystem) processMovementInputs(inputsEntity *donburi.Entry,
 		sys.addUniqueKey(&inputs.Queue, down)
 	}
 
-	if !ebiten.IsKeyPressed(up) && !ebiten.IsKeyPressed(down) {
-		sys.addUniqueKey(&inputs.Queue, inputConstants.RELEASED_VERTICAL)
+	if inpututil.IsKeyJustReleased(up) {
+		sys.addUniqueKey(&inputs.Queue, inputGlobals.RELEASED_VERTICAL_UP)
+	}
+
+	if inpututil.IsKeyJustReleased(down) {
+		sys.addUniqueKey(&inputs.Queue, inputGlobals.RELEASED_VERTICAL_DOWN)
 	}
 
 	if inpututil.IsKeyJustPressed(attackPrimary) {
 		sys.addUniqueKey(&inputs.Queue, attackPrimary)
 	}
+}
+
+func (sys *InputTrackerSystem) trackLeftRightLastPressed(left ebiten.Key, right ebiten.Key) {
+	if inpututil.IsKeyJustPressed(left) {
+		sys.tickLeftKeyLastPressed = sys.scene.Manager.TickHandler.CurrentTick()
+	}
+
+	if inpututil.IsKeyJustPressed(right) {
+		sys.tickRightKeyLastPressed = sys.scene.Manager.TickHandler.CurrentTick()
+	}
+
+	if inpututil.IsKeyJustReleased(left) {
+		sys.tickLeftKeyLastPressed = 0
+	}
+
+	if inpututil.IsKeyJustReleased(right) {
+		sys.tickRightKeyLastPressed = 0
+	}
+
 }
 
 func (sys InputTrackerSystem) addUniqueKey(slice *[]ebiten.Key, element ebiten.Key) bool {
@@ -119,4 +145,12 @@ func (sys InputTrackerSystem) addUniqueKey(slice *[]ebiten.Key, element ebiten.K
 	}
 	*slice = append(*slice, element)
 	return true // Element added (unique)
+}
+
+func (sys InputTrackerSystem) playerCannotAcceptMovementInputs(world donburi.World, playerState *components.PlayerState) bool {
+
+	return systemsUtil.IsChatActive(world) ||
+		playerState.Combat.IsHit ||
+		playerState.Combat.Attacking ||
+		playerState.Combat.Defeated
 }

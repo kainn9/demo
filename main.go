@@ -10,21 +10,19 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	clientConstants "github.com/kainn9/demo/constants/client"
+	clientGlobals "github.com/kainn9/demo/globalConfig/client"
 	introScenes "github.com/kainn9/demo/scenes/intro"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
-	loaderSystems "github.com/kainn9/demo/systems/loader"
+	loaderUtil "github.com/kainn9/demo/systems/loader/util"
+	systemsUtil "github.com/kainn9/demo/systems/util"
 )
 
 type game struct {
-	width, height int
-	manager       *coldBrew.Manager
+	manager *coldBrew.Manager
 }
 
 func main() {
 	game := NewGame()
-
-	ebiten.SetVsyncEnabled(true) // Experimental.
 
 	ebiten.RunGame(game)
 }
@@ -33,24 +31,23 @@ func NewGame() *game {
 
 	// This is pretty troll, but no big deal for now.
 	loaderSprite := components.NewSprite(0, 0)
-	loaderSprite.Image = ebiten.NewImage(clientConstants.SCREEN_WIDTH, clientConstants.SCREEN_HEIGHT)
-	loaderSystems.LoadImage(clientConstants.UI_ASSETS_SUB_PATH+"loader", loaderSprite)
+	loaderSprite.Image = ebiten.NewImage(clientGlobals.SCREEN_WIDTH, clientGlobals.SCREEN_HEIGHT)
+	loaderUtil.LoadImage(clientGlobals.UI_ASSETS_SUB_PATH+"loader", loaderSprite)
 
-	manager := coldBrew.NewManager(clientConstants.SCENE_CACHE_LIMIT, clientConstants.MAX_TICKS, loaderSprite.Image)
+	manager := coldBrew.NewManager(clientGlobals.SCENE_CACHE_LIMIT, clientGlobals.MAX_TICKS, loaderSprite.Image)
 
 	firstScene := introScenes.LevelOneScene{}
-	scenesUtil.InitFirstScene(manager, firstScene, 100, 600)
+	scenesUtil.InitFirstScene(manager, firstScene, 147, 275)
 
 	g := &game{
-		width:   clientConstants.SCREEN_WIDTH,
-		height:  clientConstants.SCREEN_HEIGHT,
 		manager: manager,
 	}
 
 	ebiten.SetWindowTitle("Demo!")
-	ebiten.SetWindowSize(g.width*2, g.height*2)
 	windowResizingMode := ebiten.WindowResizingModeEnabled
 	ebiten.SetWindowResizingMode(windowResizingMode)
+	ebiten.SetVsyncEnabled(true) // Experimental.
+	// ebiten.SetFullscreen(true)
 
 	return g
 
@@ -61,16 +58,23 @@ func (g *game) Update() error {
 
 	// Temp hack/test. ------------------------
 	if inpututil.IsKeyJustPressed(ebiten.Key1) {
-		scenesUtil.ChangeScene(g.manager, introScenes.LevelOneScene{}, 100, 600, 0, 0)
+		scenesUtil.ChangeScene(g.manager, introScenes.LevelOneScene{}, 147, 275, 0, 0)
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.Key2) {
-		scenesUtil.ChangeScene(g.manager, introScenes.LevelTwoScene{}, 20, 70, 0, 0)
+		scenesUtil.ChangeScene(g.manager, introScenes.LevelTwoScene{}, 66, 231, 0, 0)
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.Key3) {
-		scenesUtil.ChangeScene(g.manager, introScenes.LevelThreeScene{}, -500, -500, 0, 0)
+		scenesUtil.ChangeScene(g.manager, introScenes.LevelThreeScene{}, 66, 231, 0, 0)
 	}
+
+	if inpututil.IsKeyJustPressed(ebiten.Key5) {
+		playerEntity := systemsUtil.GetPlayerEntity(g.manager.ActiveScene().World)
+		playerBody := components.RigidBodyComponent.Get(playerEntity)
+		log.Println("pos", playerBody.Pos.X, playerBody.Pos.Y)
+	}
+
 	// end of hack/test. ----------------------
 
 	activeScene := g.manager.ActiveScene()
@@ -96,12 +100,12 @@ func (g *game) Draw(screen *ebiten.Image) {
 }
 
 func (g *game) Layout(w, h int) (int, int) {
-	return g.width, g.height
+	return clientGlobals.SCREEN_WIDTH, clientGlobals.SCREEN_HEIGHT
 }
 
 func renderDebugInfo(screen *ebiten.Image) {
 
-	if clientConstants.DEBUG_MODE == false {
+	if clientGlobals.DEBUG_MODE == false {
 		return
 	}
 
@@ -115,6 +119,6 @@ func renderDebugInfo(screen *ebiten.Image) {
 func toggleDebugMode() {
 	if inpututil.IsKeyJustPressed(ebiten.Key0) {
 		log.Println("Toggling debug mode.")
-		clientConstants.DEBUG_MODE = !clientConstants.DEBUG_MODE
+		clientGlobals.DEBUG_MODE = !clientGlobals.DEBUG_MODE
 	}
 }

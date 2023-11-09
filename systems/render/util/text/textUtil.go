@@ -9,7 +9,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	fontConstants "github.com/kainn9/demo/constants/font"
+	fontGlobals "github.com/kainn9/demo/globalConfig/font"
 	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	tBokiVec "github.com/kainn9/tteokbokki/math/vec"
@@ -33,7 +33,7 @@ func RenderText(
 
 ) {
 
-	if int(maxWidth)%fontConstants.FONT_DEFAULT_WIDTH != 0 {
+	if int(maxWidth)%fontGlobals.FONT_DEFAULT_WIDTH != 0 {
 		panic("maxWidth must be a multiple of charWidth")
 	}
 
@@ -66,7 +66,7 @@ func RenderText(
 
 func StripInvalidCharacters(word string) string {
 	return strings.Map(func(r rune) rune {
-		if _, ok := fontConstants.AllCharacterMap[string(r)]; ok {
+		if _, ok := fontGlobals.AllCharacterMap[string(r)]; ok {
 			return r
 		}
 
@@ -102,19 +102,19 @@ func PrintWord(
 
 		char := string(charRune)
 
-		if _, ok := fontConstants.LowerCaseCharacterMap[char]; ok {
+		if _, ok := fontGlobals.LowerCaseCharacterMap[char]; ok {
 			charSheet = lower.Image
-			charSheetIndex = fontConstants.LowerCaseCharacterMap[char]
+			charSheetIndex = fontGlobals.LowerCaseCharacterMap[char]
 		}
 
-		if _, ok := fontConstants.UpperCaseCharacterMap[char]; ok {
+		if _, ok := fontGlobals.UpperCaseCharacterMap[char]; ok {
 			charSheet = upper.Image
-			charSheetIndex = fontConstants.UpperCaseCharacterMap[char]
+			charSheetIndex = fontGlobals.UpperCaseCharacterMap[char]
 		}
 
-		if _, ok := fontConstants.SpecialCharacterMap[char]; ok {
+		if _, ok := fontGlobals.SpecialCharacterMap[char]; ok {
 			charSheet = special.Image
-			charSheetIndex = fontConstants.SpecialCharacterMap[char]
+			charSheetIndex = fontGlobals.SpecialCharacterMap[char]
 		}
 
 		if num, err := strconv.Atoi(char); err == nil && num <= 9 {
@@ -190,11 +190,11 @@ func RenderTextDefault(
 
 	RenderText(
 		text,
-		x, y, maxWidth, fontConstants.FONT_DEFAULT_WIDTH, fontConstants.FONT_DEFAULT_HEIGHT, fontConstants.FONT_DEFAULT_WIDTH-1,
+		x, y, maxWidth, fontGlobals.FONT_DEFAULT_WIDTH, fontGlobals.FONT_DEFAULT_HEIGHT, fontGlobals.FONT_DEFAULT_WIDTH-1,
 		startTick, ticksPerWord,
 		camera,
 		lower, upper, numbers, special,
-		fontConstants.FONT_DEFAULT_ADJUSTMENT_MAP,
+		fontGlobals.FONT_DEFAULT_ADJUSTMENT_MAP,
 		manager,
 	)
 }

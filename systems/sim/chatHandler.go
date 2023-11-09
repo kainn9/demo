@@ -4,7 +4,7 @@ import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 
-	UIConstants "github.com/kainn9/demo/constants/UI"
+	UIGlobals "github.com/kainn9/demo/globalConfig/UI"
 	animUtil "github.com/kainn9/demo/systems/render/util/anim"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	"github.com/yohamta/donburi"
@@ -67,7 +67,7 @@ func (sys ChatHandlerSystem) handleNextSlide(
 
 func (sys ChatHandlerSystem) handleTransitionState(configAndState *components.ChatStateAndConfig, popDownSprite *components.Sprite) {
 	// Once the pop down animation is finished, switch to the pop up animation.
-	popDownFinished := sys.scene.Manager.TickHandler.TicksSinceNTicks(popDownSprite.StartTick) > UIConstants.CHAT_BOX_ANIM_SPEED*2
+	popDownFinished := sys.scene.Manager.TickHandler.TicksSinceNTicks(popDownSprite.StartTick) > UIGlobals.CHAT_BOX_ANIM_SPEED*2
 	if popDownFinished {
 		configAndState.State.PopDownMode = false
 		configAndState.State.PopUpMode = true

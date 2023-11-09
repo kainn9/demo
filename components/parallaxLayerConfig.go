@@ -13,10 +13,6 @@ type ParallaxLayerConfig struct {
 
 	ZIndex int
 
-	// For things that we want to always be visible
-	// on the camera...like a moon. The coefficients
-	// will still dictate sliding, but within the
-	// bounds of the camera(ish).
 	AlwaysVisible bool
 }
 

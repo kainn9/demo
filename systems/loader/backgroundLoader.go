@@ -6,8 +6,9 @@ import (
 
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	clientConstants "github.com/kainn9/demo/constants/client"
+	clientGlobals "github.com/kainn9/demo/globalConfig/client"
 	"github.com/kainn9/demo/queries"
+	loaderUtil "github.com/kainn9/demo/systems/loader/util"
 	"github.com/yohamta/donburi"
 )
 
@@ -53,11 +54,11 @@ func (sys BackgroundLoaderSystem) parallaxLoader(layerEntity *donburi.Entry) {
 
 	pLaxLayerConfig := components.ParallaxLayerConfigComponent.Get(layerEntity)
 
-	path := clientConstants.SCENE_ASSETS_SUB_PATH
+	path := clientGlobals.SCENE_ASSETS_SUB_PATH
 	path += pLaxLayerConfig.SceneAssetsPath
 	path += strconv.Itoa(pLaxLayerConfig.ZIndex)
 
-	LoadImage(path, sprite)
+	loaderUtil.LoadImage(path, sprite)
 
 	log.Println("Loading background layer for ", pLaxLayerConfig.SceneAssetsPath, strconv.Itoa(pLaxLayerConfig.ZIndex)+".")
 }
@@ -66,11 +67,11 @@ func (sys BackgroundLoaderSystem) frontLayerLoader(layerEntity *donburi.Entry) {
 	sprite := components.SpriteComponent.Get(layerEntity)
 	frontLayerConfig := components.FrontLayerComponent.Get(layerEntity)
 
-	path := clientConstants.SCENE_ASSETS_SUB_PATH
+	path := clientGlobals.SCENE_ASSETS_SUB_PATH
 	path += frontLayerConfig.SceneAssetPath
 	path += "front"
 
 	log.Println("Loading front layer for", path+".")
 
-	LoadImage(path, sprite)
+	loaderUtil.LoadImage(path, sprite)
 }

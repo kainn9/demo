@@ -3,7 +3,7 @@ package scenesUtil
 import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	clientConstants "github.com/kainn9/demo/constants/client"
+	clientGlobals "github.com/kainn9/demo/globalConfig/client"
 )
 
 func AddCameraEntity(scene *coldBrew.Scene, x, y float64) {
@@ -14,7 +14,7 @@ func AddCameraEntity(scene *coldBrew.Scene, x, y float64) {
 
 	components.CameraComponent.SetValue(
 		cameraEntity,
-		*components.NewCamera(x, y, clientConstants.SCREEN_WIDTH, clientConstants.SCREEN_HEIGHT),
+		*components.NewCamera(x, y, clientGlobals.SCREEN_WIDTH, clientGlobals.SCREEN_HEIGHT),
 	)
 
 }

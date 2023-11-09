@@ -33,12 +33,12 @@ func (sys ParallaxBackgroundRendererSystem) Draw(screen *ebiten.Image, _ *donbur
 	cameraUtil.Clear(camera)
 
 	queries.ParallaxBackGroundLayerQuery.Each(world, func(bgEntity *donburi.Entry) {
-		sys.renderPLaxBGImage(bgEntity, camera)
+		sys.renderPLaxBGImage(bgEntity, camera, screen)
 	})
 
 }
 
-func (sys ParallaxBackgroundRendererSystem) renderPLaxBGImage(bgEntity *donburi.Entry, camera *components.Camera) {
+func (sys ParallaxBackgroundRendererSystem) renderPLaxBGImage(bgEntity *donburi.Entry, camera *components.Camera, screen *ebiten.Image) {
 	pLaxLayerConfig := components.ParallaxLayerConfigComponent.Get(bgEntity)
 	sprite := components.SpriteComponent.Get(bgEntity)
 
@@ -56,11 +56,7 @@ func (sys ParallaxBackgroundRendererSystem) renderPLaxBGImage(bgEntity *donburi.
 		y = -(camera.Y / pLaxLayerConfig.CoefficientY)
 	}
 
-	if pLaxLayerConfig.AlwaysVisible {
-		drawOptions.GeoM.Translate(camera.X/1.2, y)
-		cameraUtil.Translate(camera, drawOptions, 0, y)
-
-	} else {
+	if !pLaxLayerConfig.AlwaysVisible {
 		cameraUtil.Translate(camera, drawOptions, x, y)
 	}
 

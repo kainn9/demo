@@ -19,6 +19,12 @@ var PlayerCarQuery = donburi.NewQuery(
 	),
 )
 
+var NpcQuery = donburi.NewQuery(
+	filter.And(
+		filter.Contains(tags.NpcTag),
+	),
+)
+
 var CameraQuery = donburi.NewQuery(
 	filter.And(
 		filter.Contains(components.CameraComponent),
@@ -53,4 +59,15 @@ var LadderQuery = donburi.NewQuery(
 
 var UISingletonQuery = donburi.NewQuery(
 	filter.Contains(tags.UISingletonTag),
+)
+
+var AttackQuery = donburi.NewQuery(
+	filter.Contains(components.AttackStateComponent),
+)
+
+var IndicatorQuery = donburi.NewQuery(
+	filter.And(
+		filter.Contains(components.IndicatorStateAndConfigComponent),
+		filter.Contains(components.RigidBodyComponent),
+	),
 )

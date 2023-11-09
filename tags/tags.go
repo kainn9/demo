@@ -12,4 +12,6 @@ var PlatformTag = donburi.NewTag()
 
 var LadderTag = donburi.NewTag()
 
+var NpcTag = donburi.NewTag()
+
 var UISingletonTag = donburi.NewTag()

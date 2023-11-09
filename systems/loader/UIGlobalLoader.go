@@ -5,10 +5,11 @@ import (
 
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	UIConstants "github.com/kainn9/demo/constants/UI"
-	clientConstants "github.com/kainn9/demo/constants/client"
-	fontConstants "github.com/kainn9/demo/constants/font"
+	UIGlobals "github.com/kainn9/demo/globalConfig/UI"
+	clientGlobals "github.com/kainn9/demo/globalConfig/client"
+	fontGlobals "github.com/kainn9/demo/globalConfig/font"
 	"github.com/kainn9/demo/queries"
+	loaderUtil "github.com/kainn9/demo/systems/loader/util"
 	"github.com/yohamta/donburi"
 )
 
@@ -44,7 +45,7 @@ func (sys UIGlobalLoaderSystem) Load(_ *donburi.Entry) {
 func (sys UIGlobalLoaderSystem) loadAll(UISpritesMap *map[string]*components.Sprite) {
 
 	// Default Font.
-	lowerCaseSpriteSheet := (*UISpritesMap)[fontConstants.FONT_DEFAULT_NAME+fontConstants.FONT_LOWER_CASE_SPRITE_NAME]
+	lowerCaseSpriteSheet := (*UISpritesMap)[fontGlobals.FONT_DEFAULT_NAME+fontGlobals.FONT_LOWER_CASE_SPRITE_NAME]
 
 	// Assuming if lowerCaseSpriteSheet(first global asset) is loaded,
 	// then all global assets are loaded(for now, at least).
@@ -57,33 +58,33 @@ func (sys UIGlobalLoaderSystem) loadAll(UISpritesMap *map[string]*components.Spr
 
 	log.Println("Loading default font.")
 
-	upperCaseSpriteSheet := (*UISpritesMap)[fontConstants.FONT_DEFAULT_NAME+fontConstants.FONT_UPPER_CASE_SPRITE_NAME]
-	numbersSpriteSheet := (*UISpritesMap)[fontConstants.FONT_DEFAULT_NAME+fontConstants.FONT_NUMBERS_SPRITE_NAME]
-	specialSpriteSheet := (*UISpritesMap)[fontConstants.FONT_DEFAULT_NAME+fontConstants.FONT_SPECIAL_SPRITE_NAME]
+	upperCaseSpriteSheet := (*UISpritesMap)[fontGlobals.FONT_DEFAULT_NAME+fontGlobals.FONT_UPPER_CASE_SPRITE_NAME]
+	numbersSpriteSheet := (*UISpritesMap)[fontGlobals.FONT_DEFAULT_NAME+fontGlobals.FONT_NUMBERS_SPRITE_NAME]
+	specialSpriteSheet := (*UISpritesMap)[fontGlobals.FONT_DEFAULT_NAME+fontGlobals.FONT_SPECIAL_SPRITE_NAME]
 
-	path := clientConstants.UI_ASSETS_DEFAULT_FONT_SUBPATH
+	path := clientGlobals.UI_ASSETS_DEFAULT_FONT_SUBPATH
 
-	log.Println("Loading", path+fontConstants.FONT_LOWER_CASE_SPRITE_NAME)
-	LoadImage(path+fontConstants.FONT_LOWER_CASE_SPRITE_NAME, lowerCaseSpriteSheet)
+	log.Println("Loading", path+fontGlobals.FONT_LOWER_CASE_SPRITE_NAME)
+	loaderUtil.LoadImage(path+fontGlobals.FONT_LOWER_CASE_SPRITE_NAME, lowerCaseSpriteSheet)
 
-	log.Println("Loading", path+fontConstants.FONT_UPPER_CASE_SPRITE_NAME)
-	LoadImage(path+fontConstants.FONT_UPPER_CASE_SPRITE_NAME, upperCaseSpriteSheet)
+	log.Println("Loading", path+fontGlobals.FONT_UPPER_CASE_SPRITE_NAME)
+	loaderUtil.LoadImage(path+fontGlobals.FONT_UPPER_CASE_SPRITE_NAME, upperCaseSpriteSheet)
 
-	log.Println("Loading", path+fontConstants.FONT_NUMBERS_SPRITE_NAME)
-	LoadImage(path+fontConstants.FONT_NUMBERS_SPRITE_NAME, numbersSpriteSheet)
+	log.Println("Loading", path+fontGlobals.FONT_NUMBERS_SPRITE_NAME)
+	loaderUtil.LoadImage(path+fontGlobals.FONT_NUMBERS_SPRITE_NAME, numbersSpriteSheet)
 
-	log.Println("Loading", path+fontConstants.FONT_SPECIAL_SPRITE_NAME)
-	LoadImage(path+fontConstants.FONT_SPECIAL_SPRITE_NAME, specialSpriteSheet)
+	log.Println("Loading", path+fontGlobals.FONT_SPECIAL_SPRITE_NAME)
+	loaderUtil.LoadImage(path+fontGlobals.FONT_SPECIAL_SPRITE_NAME, specialSpriteSheet)
 
 	// --------------------------------------------------------------------------------
 	// Chat Box Sprites.
 	log.Println("Loading chat box sprites.")
-	chatBoxPopUpSprite := (*UISpritesMap)[UIConstants.CHAT_BOX_POP_UP_SPRITE_NAME]
-	chatBoxPopDownSprite := (*UISpritesMap)[UIConstants.CHAT_BOX_POP_DOWN_SPRITE_NAME]
+	chatBoxPopUpSprite := (*UISpritesMap)[UIGlobals.CHAT_BOX_POP_UP_SPRITE_NAME]
+	chatBoxPopDownSprite := (*UISpritesMap)[UIGlobals.CHAT_BOX_POP_DOWN_SPRITE_NAME]
 
 	spriteNames := []string{
-		UIConstants.CHAT_BOX_POP_UP_SPRITE_NAME,
-		UIConstants.CHAT_BOX_POP_DOWN_SPRITE_NAME,
+		UIGlobals.CHAT_BOX_POP_UP_SPRITE_NAME,
+		UIGlobals.CHAT_BOX_POP_DOWN_SPRITE_NAME,
 	}
 
 	sprites := []*components.Sprite{
@@ -97,24 +98,24 @@ func (sys UIGlobalLoaderSystem) loadAll(UISpritesMap *map[string]*components.Spr
 			continue
 		}
 
-		path = clientConstants.UI_ASSETS_CHAT_BOX_SUBPATH
+		path = clientGlobals.UI_ASSETS_CHAT_BOX_SUBPATH
 
 		log.Println("Loading", path+spriteNames[i])
-		LoadImage(path+spriteNames[i], sprite)
+		loaderUtil.LoadImage(path+spriteNames[i], sprite)
 
 		frameWidth, frameHeight, frameCount := sys.getAnimData(sprite)
-		sprite.AnimationConfig = components.NewAnimationConfig(frameWidth, frameHeight, frameCount, UIConstants.CHAT_BOX_ANIM_SPEED, true)
+		sprite.AnimationConfig = components.NewAnimationConfig(frameWidth, frameHeight, frameCount, UIGlobals.CHAT_BOX_ANIM_SPEED, true)
 	}
 
 	// --------------------------------------------------------------------------------
 	// Indicator Sprites.
 	log.Println("Loading indicator sprites.")
 
-	descKey := string(UIConstants.CurrentLayout) + string(UIConstants.INDICATOR_DESCEND)
-	interactKey := string(UIConstants.CurrentLayout) + string(UIConstants.INDICATOR_INTERACT)
-	jumpKey := string(UIConstants.CurrentLayout) + string(UIConstants.INDICATOR_JUMP)
-	ladderKey := string(UIConstants.CurrentLayout) + string(UIConstants.INDICATOR_LADDER)
-	movementKey := string(UIConstants.CurrentLayout) + string(UIConstants.INDICATOR_MOVEMENT)
+	descKey := string(UIGlobals.CurrentLayout) + string(UIGlobals.INDICATOR_DESCEND)
+	interactKey := string(UIGlobals.CurrentLayout) + string(UIGlobals.INDICATOR_INTERACT)
+	jumpKey := string(UIGlobals.CurrentLayout) + string(UIGlobals.INDICATOR_JUMP)
+	ladderKey := string(UIGlobals.CurrentLayout) + string(UIGlobals.INDICATOR_LADDER)
+	movementKey := string(UIGlobals.CurrentLayout) + string(UIGlobals.INDICATOR_MOVEMENT)
 
 	indicatorDescendSprite := (*UISpritesMap)[descKey]
 	indicatorInteractSprite := (*UISpritesMap)[interactKey]
@@ -122,30 +123,30 @@ func (sys UIGlobalLoaderSystem) loadAll(UISpritesMap *map[string]*components.Spr
 	indicatorLadderSprite := (*UISpritesMap)[string(ladderKey)]
 	indicatorMovementSprite := (*UISpritesMap)[string(movementKey)]
 
-	path = clientConstants.UI_ASSETS_INDICATORS_SUBPATH
-	path += UIConstants.CurrentLayout + ""
+	path = clientGlobals.UI_ASSETS_INDICATORS_SUBPATH
+	path += UIGlobals.CurrentLayout + ""
 
 	log.Println("Loading", path+descKey)
-	LoadImage(path+descKey, indicatorDescendSprite)
+	loaderUtil.LoadImage(path+descKey, indicatorDescendSprite)
 
 	log.Println("Loading", path+interactKey)
-	LoadImage(path+interactKey, indicatorInteractSprite)
+	loaderUtil.LoadImage(path+interactKey, indicatorInteractSprite)
 
 	log.Println("Loading", path+jumpKey)
-	LoadImage(path+jumpKey, indicatorJumpSprite)
+	loaderUtil.LoadImage(path+jumpKey, indicatorJumpSprite)
 
 	log.Println("Loading", path+ladderKey)
-	LoadImage(path+ladderKey, indicatorLadderSprite)
+	loaderUtil.LoadImage(path+ladderKey, indicatorLadderSprite)
 
 	log.Println("Loading", path+movementKey)
-	LoadImage(path+movementKey, indicatorMovementSprite)
+	loaderUtil.LoadImage(path+movementKey, indicatorMovementSprite)
 
 	// Register Animation Configs.
-	indicatorDescendSprite.AnimationConfig = UIConstants.IndicatorAnimationConfigs[UIConstants.CurrentLayout][UIConstants.INDICATOR_DESCEND]
-	indicatorInteractSprite.AnimationConfig = UIConstants.IndicatorAnimationConfigs[UIConstants.CurrentLayout][UIConstants.INDICATOR_INTERACT]
-	indicatorJumpSprite.AnimationConfig = UIConstants.IndicatorAnimationConfigs[UIConstants.CurrentLayout][UIConstants.INDICATOR_JUMP]
-	indicatorLadderSprite.AnimationConfig = UIConstants.IndicatorAnimationConfigs[UIConstants.CurrentLayout][UIConstants.INDICATOR_LADDER]
-	indicatorMovementSprite.AnimationConfig = UIConstants.IndicatorAnimationConfigs[UIConstants.CurrentLayout][UIConstants.INDICATOR_MOVEMENT]
+	indicatorDescendSprite.AnimationConfig = UIGlobals.IndicatorAnimationConfigs[UIGlobals.CurrentLayout][UIGlobals.INDICATOR_DESCEND]
+	indicatorInteractSprite.AnimationConfig = UIGlobals.IndicatorAnimationConfigs[UIGlobals.CurrentLayout][UIGlobals.INDICATOR_INTERACT]
+	indicatorJumpSprite.AnimationConfig = UIGlobals.IndicatorAnimationConfigs[UIGlobals.CurrentLayout][UIGlobals.INDICATOR_JUMP]
+	indicatorLadderSprite.AnimationConfig = UIGlobals.IndicatorAnimationConfigs[UIGlobals.CurrentLayout][UIGlobals.INDICATOR_LADDER]
+	indicatorMovementSprite.AnimationConfig = UIGlobals.IndicatorAnimationConfigs[UIGlobals.CurrentLayout][UIGlobals.INDICATOR_MOVEMENT]
 
 	// --------------------------------------------------------------------------------
 
@@ -154,9 +155,9 @@ func (sys UIGlobalLoaderSystem) loadAll(UISpritesMap *map[string]*components.Spr
 func (sys UIGlobalLoaderSystem) getAnimData(spriteComponent *components.Sprite) (frameWidth, frameHeight, frameCount int) {
 	totalFrameWidth := spriteComponent.Image.Bounds().Size().X
 
-	frameWidth = UIConstants.CHAT_BOX_FRAME_WIDTH
+	frameWidth = UIGlobals.CHAT_BOX_FRAME_WIDTH
 	frameHeight = spriteComponent.Image.Bounds().Size().Y
-	frameCount = totalFrameWidth / UIConstants.CHAT_BOX_FRAME_WIDTH
+	frameCount = totalFrameWidth / UIGlobals.CHAT_BOX_FRAME_WIDTH
 
 	return frameWidth, frameHeight, frameCount
 }

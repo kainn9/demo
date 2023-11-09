@@ -4,8 +4,8 @@ import (
 	"log"
 
 	"github.com/kainn9/demo/components"
-	UIConstants "github.com/kainn9/demo/constants/UI"
-	fontConstants "github.com/kainn9/demo/constants/font"
+	UIGlobals "github.com/kainn9/demo/globalConfig/UI"
+	fontGlobals "github.com/kainn9/demo/globalConfig/font"
 	"github.com/kainn9/demo/queries"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/filter"
@@ -53,7 +53,7 @@ func GetChatPopUpSprite(world donburi.World) *components.Sprite {
 
 	UISpritesMap := components.SpritesMapComponent.Get(entity)
 
-	return (*UISpritesMap)[UIConstants.CHAT_BOX_POP_UP_SPRITE_NAME]
+	return (*UISpritesMap)[UIGlobals.CHAT_BOX_POP_UP_SPRITE_NAME]
 
 }
 
@@ -66,7 +66,7 @@ func GetChatPopDownSprite(world donburi.World) *components.Sprite {
 
 	UISpritesMap := components.SpritesMapComponent.Get(entity)
 
-	return (*UISpritesMap)[UIConstants.CHAT_BOX_POP_DOWN_SPRITE_NAME]
+	return (*UISpritesMap)[UIGlobals.CHAT_BOX_POP_DOWN_SPRITE_NAME]
 
 }
 
@@ -79,11 +79,11 @@ func GetDefaultFontSpriteMap(world donburi.World) (lower, upper, numbers, specia
 
 	UISpritesMap := components.SpritesMapComponent.Get(entity)
 
-	keyLower := fontConstants.FONT_DEFAULT_NAME + fontConstants.FONT_LOWER_CASE_SPRITE_NAME
-	keyUpper := fontConstants.FONT_DEFAULT_NAME + fontConstants.FONT_UPPER_CASE_SPRITE_NAME
+	keyLower := fontGlobals.FONT_DEFAULT_NAME + fontGlobals.FONT_LOWER_CASE_SPRITE_NAME
+	keyUpper := fontGlobals.FONT_DEFAULT_NAME + fontGlobals.FONT_UPPER_CASE_SPRITE_NAME
 
-	keyNumbers := fontConstants.FONT_DEFAULT_NAME + fontConstants.FONT_NUMBERS_SPRITE_NAME
-	keySpecial := fontConstants.FONT_DEFAULT_NAME + fontConstants.FONT_SPECIAL_SPRITE_NAME
+	keyNumbers := fontGlobals.FONT_DEFAULT_NAME + fontGlobals.FONT_NUMBERS_SPRITE_NAME
+	keySpecial := fontGlobals.FONT_DEFAULT_NAME + fontGlobals.FONT_SPECIAL_SPRITE_NAME
 
 	lower = (*UISpritesMap)[keyLower]
 	upper = (*UISpritesMap)[keyUpper]

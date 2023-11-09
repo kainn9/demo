@@ -64,9 +64,9 @@ func transferPlayer(
 	newPlayerEntity := systemsUtil.GetPlayerEntity(newScene.World)
 
 	// Transfer sprites to avoid asset reloading.
-	oldPlayerSpriteMap := components.PlayerSpritesAnimMapComponent.Get(prevPlayerEntity)
+	oldPlayerSpriteMap := components.SpritesAnimMapComponent.Get(prevPlayerEntity)
 
-	newPlayerSpriteMap := components.PlayerSpritesAnimMapComponent.Get(newPlayerEntity)
+	newPlayerSpriteMap := components.SpritesAnimMapComponent.Get(newPlayerEntity)
 
 	for key, value := range *oldPlayerSpriteMap {
 		(*newPlayerSpriteMap)[key] = value

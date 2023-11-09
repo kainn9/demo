@@ -5,7 +5,8 @@ import (
 
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	clientConstants "github.com/kainn9/demo/constants/client"
+	clientGlobals "github.com/kainn9/demo/globalConfig/client"
+	loaderUtil "github.com/kainn9/demo/systems/loader/util"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/filter"
 )
@@ -42,12 +43,12 @@ func (sys ChatLoaderSystem) loadPortraitSprites(configAndState *components.ChatS
 			continue
 		}
 
-		path := clientConstants.CHARACTER_ASSETS_SUB_PATH
+		path := clientGlobals.CHARACTER_ASSETS_SUB_PATH
 		path += data.PortraitName + "/"
 		path += "portrait"
 
 		log.Println("Loading Portrait Sprite:", path)
-		LoadImage(path, (*portraitSprites)[i])
+		loaderUtil.LoadImage(path, (*portraitSprites)[i])
 
 	}
 }

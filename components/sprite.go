@@ -5,7 +5,7 @@ import (
 	"github.com/yohamta/donburi"
 )
 
-type AnimState string
+type CharState string
 
 type Sprite struct {
 	OffSetX, OffSetY float64
@@ -19,7 +19,7 @@ type Sprite struct {
 var SpriteComponent = donburi.NewComponentType[Sprite]()
 var SpritesMapComponent = donburi.NewComponentType[map[string]*Sprite]()
 var SpritesSliceComponent = donburi.NewComponentType[[]*Sprite]()
-var PlayerSpritesAnimMapComponent = donburi.NewComponentType[map[AnimState]*Sprite]()
+var SpritesAnimMapComponent = donburi.NewComponentType[map[CharState]*Sprite]()
 
 // This should work, but its not needed for now.
 // var MultipleSpritesSliceComponent = donburi.NewComponentType[map[string][]*Sprite]()

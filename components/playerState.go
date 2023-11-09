@@ -10,7 +10,7 @@ type PlayerCollisionState struct {
 }
 type PlayerTransformState struct {
 	direction               float64
-	JumpWindupStart         int // Tick.
+	JumpTriggered           bool
 	Jumping                 bool
 	BasicHorizontalMovement bool
 	Up                      bool
@@ -19,16 +19,21 @@ type PlayerTransformState struct {
 }
 
 type PlayerCombatState struct {
-	Attacking       bool
-	CurrentAttack   AnimState
-	AttackStartTick int
+	Attacking, IsHit, Defeated bool
+	CurrentAttack              CharState
+	Hits                       map[int]int
+
+	Health,
+	AttackStartTick,
+	LastHitTick,
+	DefeatedStartTick int
 }
 
 type PlayerState struct {
 	Collision     *PlayerCollisionState
 	Transform     *PlayerTransformState
 	Combat        *PlayerCombatState
-	Animation     AnimState
+	Animation     CharState
 	IsInteracting bool
 }
 
@@ -43,6 +48,8 @@ func NewPlayerState() *PlayerState {
 		},
 		Combat: &PlayerCombatState{
 			AttackStartTick: -1,
+			Health:          10,
+			Hits:            make(map[int]int),
 		},
 	}
 }

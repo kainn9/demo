@@ -1,7 +1,7 @@
 {
     "enabled": true,
     "animationName": "atkPrimary",
-    "frame": 10,
+    "frame": 4,
     "hitboxes": [
         {
             "width": 40,

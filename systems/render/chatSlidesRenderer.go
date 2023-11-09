@@ -7,7 +7,7 @@ import (
 
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	UIConstants "github.com/kainn9/demo/constants/UI"
+	UIGlobals "github.com/kainn9/demo/globalConfig/UI"
 	animUtil "github.com/kainn9/demo/systems/render/util/anim"
 	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
 	textUtil "github.com/kainn9/demo/systems/render/util/text"
@@ -53,7 +53,7 @@ func (sys ChatSlidesRendererSystem) Draw(screen *ebiten.Image, chatEntity *donbu
 
 	// If the chat box is not active, and the pop down animation is finished,
 	// then we don't need to render anything.
-	popDownFinished := sys.scene.Manager.TickHandler.TicksSinceNTicks(popDownSprite.StartTick) > UIConstants.CHAT_BOX_ANIM_SPEED*2
+	popDownFinished := sys.scene.Manager.TickHandler.TicksSinceNTicks(popDownSprite.StartTick) > UIGlobals.CHAT_BOX_ANIM_SPEED*2
 	if !configAndState.State.Active && popDownFinished {
 		return
 	}
@@ -72,7 +72,7 @@ func (sys ChatSlidesRendererSystem) Draw(screen *ebiten.Image, chatEntity *donbu
 		if finished {
 			// Handle the portrait.
 			portraitSprites := components.SpritesSliceComponent.Get(chatEntity)
-			sys.handlePortrait(configAndState.State.CurrentSlideIndex, camera, portraitSprites)
+			sys.handlePortrait(configAndState, camera, portraitSprites)
 
 			// Handle the text.
 			slideContent := configAndState.State.SlidesContent[configAndState.State.CurrentSlideIndex]
@@ -107,7 +107,7 @@ func (sys ChatSlidesRendererSystem) renderPopUpAnimation(chatBoxOpts *ebiten.Dra
 
 	cameraUtil.AddImage(camera, spriteAtFrameIndex, chatBoxOpts)
 
-	finished = sys.scene.Manager.TickHandler.TicksSinceNTicks(popUpSprite.StartTick) > UIConstants.CHAT_BOX_ANIM_SPEED*2
+	finished = sys.scene.Manager.TickHandler.TicksSinceNTicks(popUpSprite.StartTick) > UIGlobals.CHAT_BOX_ANIM_SPEED*2
 
 	return finished
 }
@@ -120,8 +120,19 @@ func (sys ChatSlidesRendererSystem) renderPopDownAnimation(popDownSprite *compon
 
 }
 
-func (sys ChatSlidesRendererSystem) handlePortrait(slideIndex int, camera *components.Camera, portraitSprites *[]*components.Sprite) {
+func (sys ChatSlidesRendererSystem) handlePortrait(configAndState *components.ChatStateAndConfig, camera *components.Camera, portraitSprites *[]*components.Sprite) {
 	portraitOpts := &ebiten.DrawImageOptions{}
-	portraitOpts.GeoM.Translate(35, 25)
-	cameraUtil.AddImage(camera, (*portraitSprites)[slideIndex].Image, portraitOpts)
+	index := configAndState.State.CurrentSlideIndex
+	image := (*portraitSprites)[index].Image
+	imgWidth := image.Bounds().Size()
+	xTrans := 35.0
+
+	if !configAndState.State.SlidesContent[index].FacingRight {
+		portraitOpts.GeoM.Scale(-1, 1)
+		portraitOpts.GeoM.Translate(float64(imgWidth.X)+xTrans, 25)
+	} else {
+		portraitOpts.GeoM.Translate(xTrans, 25)
+	}
+
+	cameraUtil.AddImage(camera, image, portraitOpts)
 }

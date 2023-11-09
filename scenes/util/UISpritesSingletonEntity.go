@@ -3,8 +3,8 @@ package scenesUtil
 import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	UIConstants "github.com/kainn9/demo/constants/UI"
-	fontConstants "github.com/kainn9/demo/constants/font"
+	UIGlobals "github.com/kainn9/demo/globalConfig/UI"
+	fontGlobals "github.com/kainn9/demo/globalConfig/font"
 
 	"github.com/kainn9/demo/tags"
 )
@@ -21,11 +21,11 @@ func AddUISpritesSingletonEntity(scene *coldBrew.Scene) {
 
 	// --------------------------------------------------------------------------------
 	// Default Font
-	keyDefault := fontConstants.FONT_DEFAULT_NAME
-	keyLower := keyDefault + fontConstants.FONT_LOWER_CASE_SPRITE_NAME
-	keyUpper := keyDefault + fontConstants.FONT_UPPER_CASE_SPRITE_NAME
-	keyNumbers := keyDefault + fontConstants.FONT_NUMBERS_SPRITE_NAME
-	keySpecial := keyDefault + fontConstants.FONT_SPECIAL_SPRITE_NAME
+	keyDefault := fontGlobals.FONT_DEFAULT_NAME
+	keyLower := keyDefault + fontGlobals.FONT_LOWER_CASE_SPRITE_NAME
+	keyUpper := keyDefault + fontGlobals.FONT_UPPER_CASE_SPRITE_NAME
+	keyNumbers := keyDefault + fontGlobals.FONT_NUMBERS_SPRITE_NAME
+	keySpecial := keyDefault + fontGlobals.FONT_SPECIAL_SPRITE_NAME
 
 	UISingletonSprites[keyLower] = components.NewSprite(0, 0)
 	UISingletonSprites[keyUpper] = components.NewSprite(0, 0)
@@ -34,16 +34,16 @@ func AddUISpritesSingletonEntity(scene *coldBrew.Scene) {
 
 	// --------------------------------------------------------------------------------
 	// Chat Box Sprites.
-	UISingletonSprites[UIConstants.CHAT_BOX_POP_UP_SPRITE_NAME] = components.NewSprite(0, 0)
-	UISingletonSprites[UIConstants.CHAT_BOX_POP_DOWN_SPRITE_NAME] = components.NewSprite(0, 0)
+	UISingletonSprites[UIGlobals.CHAT_BOX_POP_UP_SPRITE_NAME] = components.NewSprite(0, 0)
+	UISingletonSprites[UIGlobals.CHAT_BOX_POP_DOWN_SPRITE_NAME] = components.NewSprite(0, 0)
 
 	// --------------------------------------------------------------------------------
 	// Indicator Sprites.
-	UISingletonSprites[string(UIConstants.INDICATOR_JUMP)] = components.NewSprite(0, 0)
-	UISingletonSprites[string(UIConstants.INDICATOR_LADDER)] = components.NewSprite(0, 0)
-	UISingletonSprites[string(UIConstants.INDICATOR_MOVEMENT)] = components.NewSprite(0, 0)
-	UISingletonSprites[string(UIConstants.INDICATOR_INTERACT)] = components.NewSprite(0, 0)
-	UISingletonSprites[string(UIConstants.INDICATOR_DESCEND)] = components.NewSprite(0, 0)
+	UISingletonSprites[string(UIGlobals.INDICATOR_JUMP)] = components.NewSprite(0, 0)
+	UISingletonSprites[string(UIGlobals.INDICATOR_LADDER)] = components.NewSprite(0, 0)
+	UISingletonSprites[string(UIGlobals.INDICATOR_MOVEMENT)] = components.NewSprite(0, 0)
+	UISingletonSprites[string(UIGlobals.INDICATOR_INTERACT)] = components.NewSprite(0, 0)
+	UISingletonSprites[string(UIGlobals.INDICATOR_DESCEND)] = components.NewSprite(0, 0)
 
 	// --------------------------------------------------------------------------------
 

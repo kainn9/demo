@@ -20,6 +20,7 @@ type ChatStateAndConfig struct {
 
 type SlidesContent struct {
 	Text, PortraitName string
+	FacingRight        bool
 }
 
 var ChatStateAndConfigComponent = donburi.NewComponentType[ChatStateAndConfig]()

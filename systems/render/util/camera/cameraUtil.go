@@ -5,7 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kainn9/demo/components"
-	cameraConstants "github.com/kainn9/demo/constants/camera"
+	cameraGlobals "github.com/kainn9/demo/globalConfig/camera"
 )
 
 // Translates a image relative to the camera via its draw options(mutates), and x/y coordinates(args).
@@ -23,7 +23,9 @@ func AddImage(c *components.Camera, img *ebiten.Image, options *ebiten.DrawImage
 // Renders the camera's surface to the screen.
 // This is done in in the final render phase usually.
 func Render(c *components.Camera, screen *ebiten.Image) {
-	screen.DrawImage(c.Surface, &ebiten.DrawImageOptions{})
+	opts := &ebiten.DrawImageOptions{}
+	screen.DrawImage(c.Surface, opts)
+
 }
 
 // Sets the camera's position to the given x/y coordinates.
@@ -41,15 +43,15 @@ func SetPosition(c *components.Camera, x, y float64, smoothCam bool) {
 		return
 	}
 
-	incX := cameraConstants.CAMERA_MIN_SPEED
-	incY := cameraConstants.CAMERA_MIN_SPEED
+	incX := cameraGlobals.CAMERA_MIN_SPEED
+	incY := cameraGlobals.CAMERA_MIN_SPEED
 
-	if math.Abs(c.X-x) > cameraConstants.CAMERA_EPSILON {
-		incX = cameraConstants.CAMERA_MAX_SPEED
+	if math.Abs(c.X-x) > float64(cameraGlobals.CAMERA_EPSILON) {
+		incX = cameraGlobals.CAMERA_MAX_SPEED
 	}
 
-	if math.Abs(c.Y-y) > cameraConstants.CAMERA_EPSILON {
-		incY = cameraConstants.CAMERA_MAX_SPEED
+	if math.Abs(c.Y-y) > float64(cameraGlobals.CAMERA_EPSILON) {
+		incY = cameraGlobals.CAMERA_MAX_SPEED
 	}
 
 	c.X = smooth(c.X, x, incX)
