@@ -45,8 +45,8 @@ var FrontLayerQuery = donburi.NewQuery(
 	),
 )
 
-var FloorQuery = donburi.NewQuery(
-	filter.Contains(tags.FloorTag),
+var BlockQuery = donburi.NewQuery(
+	filter.Contains(tags.BlockTag),
 )
 
 var PlatformQuery = donburi.NewQuery(

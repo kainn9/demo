@@ -9,21 +9,21 @@ import (
 	"github.com/yohamta/donburi"
 )
 
-type PlayerFloorCollisionHandlerSystem struct {
+type PlayerBlockCollisionHandlerSystem struct {
 	scene *coldBrew.Scene
 }
 
-func NewPlayerFloorCollisionHandler(scene *coldBrew.Scene) *PlayerFloorCollisionHandlerSystem {
-	return &PlayerFloorCollisionHandlerSystem{
+func NewPlayerBlockCollisionHandler(scene *coldBrew.Scene) *PlayerBlockCollisionHandlerSystem {
+	return &PlayerBlockCollisionHandlerSystem{
 		scene: scene,
 	}
 }
 
-func (sys PlayerFloorCollisionHandlerSystem) Query() *donburi.Query {
-	return queries.FloorQuery
+func (sys PlayerBlockCollisionHandlerSystem) Query() *donburi.Query {
+	return queries.BlockQuery
 }
 
-func (sys PlayerFloorCollisionHandlerSystem) Run(dt float64, floorEntity *donburi.Entry) {
+func (sys PlayerBlockCollisionHandlerSystem) Run(dt float64, blockEntity *donburi.Entry) {
 
 	world := sys.scene.World
 
@@ -31,20 +31,20 @@ func (sys PlayerFloorCollisionHandlerSystem) Run(dt float64, floorEntity *donbur
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 
-	floorBody := components.RigidBodyComponent.Get(floorEntity)
+	blockBody := components.RigidBodyComponent.Get(blockEntity)
 
 	if playerState.Collision.Climbing {
 		return
 	}
 
-	if isColliding, contacts := tBokiPhysics.Detector.Detect(playerBody, floorBody, true); isColliding {
+	if isColliding, contacts := tBokiPhysics.Detector.Detect(playerBody, blockBody, true); isColliding {
 
-		tBokiPhysics.Resolver.Resolve(playerBody, floorBody, contacts[0])
+		tBokiPhysics.Resolver.Resolve(playerBody, blockBody, contacts[0])
 
 		playerBottom := playerBody.Pos.Y + playerBody.Polygon.Box.Height/2
-		floorTop := floorBody.Pos.Y - floorBody.Polygon.Box.Height/2
+		blockop := blockBody.Pos.Y - blockBody.Polygon.Box.Height/2
 
-		if playerBottom <= floorTop {
+		if playerBottom <= blockop {
 			playerState.Collision.OnGround = true
 		}
 

@@ -37,7 +37,7 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	})
 
 	// Floor.
-	scenesUtil.AddFloorEntity(scene, float64(scene.Width/2), float64(scene.Height-20), float64(scene.Width), 142, 0)
+	scenesUtil.AddBlockEntity(scene, float64(scene.Width/2), float64(scene.Height-20), float64(scene.Width), 142, 0)
 
 	// Interactables.
 

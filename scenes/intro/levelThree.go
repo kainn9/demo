@@ -1,12 +1,13 @@
 package introScenes
 
 import (
-	"log"
-
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
+	npcGlobals "github.com/kainn9/demo/globalConfig/npc"
+	"github.com/kainn9/demo/queries"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
 	"github.com/kainn9/demo/systems/systemInitializers"
+	"github.com/yohamta/donburi"
 )
 
 type LevelThreeScene struct{}
@@ -33,21 +34,31 @@ func (LevelThreeScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	// Entities ----------------------------------------------------------------------------------
 	scenesUtil.AddCameraEntity(scene, 0, 0)
 
+	// Background.
 	scenesUtil.AddParallaxBackgroundEntity(scene, []*components.ParallaxLayerConfig{
 		components.NewParallaxLayerConfig(LEVEL_THREE_SCENE_ASSET_PATH, 0, 0, 0, false),
 	})
 
-	scenesUtil.AddFloorEntity(scene, float64(scene.Width/2), float64(scene.Height-20), float64(scene.Width), 142, 0)
+	// Floor.
+	scenesUtil.AddBlockEntity(scene, float64(scene.Width/2), float64(scene.Height-20), float64(scene.Width), 142, 0)
+
+	// Bookshelf.
+	scenesUtil.AddBlockEntity(scene, 513, 212, 91, 101, 0)
 
 	// Chat.
 	content := []components.SlidesContent{
 		{
-			Text:         "Lorum yolo bolo polo",
-			PortraitName: "player",
+			Text:         "Ligma.",
+			PortraitName: "therapistOne",
 		},
 		{
-			Text:         "Ipsum wipsum bipsom",
-			PortraitName: "bigBoi",
+			Text:         "Ligma what?",
+			PortraitName: "player",
+			FacingRight:  true,
+		},
+		{
+			Text:         "Ligma balls.",
+			PortraitName: "therapistTwo",
 		},
 	}
 
@@ -72,6 +83,10 @@ func (LevelThreeScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		50,
 	)
 
+	// Off scene(gets moved later).
+	gravityMod := components.NewPhysicsConfig(0.25)
+	scenesUtil.AddNpcEntity(scene, -200, -200, npcGlobals.NPC_NAME_THERAPIST_TWO, gravityMod, false)
+
 	// Attaching unique chat callback.
 	systemInitializers.AttachChatCallback(scene, LevelThreeCallbackSystem{})
 
@@ -88,5 +103,13 @@ func (LevelThreeCallbackSystem) SlideIndex() int {
 }
 
 func (LevelThreeCallbackSystem) Callback(scene *coldBrew.Scene) {
-	log.Println("LevelThreeCallbackSystem Callback!")
+	query := queries.NpcQuery
+
+	query.Each(scene.World, func(entity *donburi.Entry) {
+
+		npcBody := components.RigidBodyComponent.Get(entity)
+		npcBody.Vel.Y = 0
+		npcBody.Pos.X = 480
+		npcBody.Pos.Y = -50
+	})
 }

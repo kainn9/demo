@@ -27,14 +27,11 @@ func (sys NpcGroundCollisionHandlerSystem) Run(dt float64, npcEntity *donburi.En
 	world := sys.scene.World
 	npcBody := components.RigidBodyComponent.Get(npcEntity)
 
-	// TEMP HACK!
-	npcBody.Vel.X = 0
+	queries.BlockQuery.Each(world, func(blockEntity *donburi.Entry) {
+		blockBody := components.RigidBodyComponent.Get(blockEntity)
 
-	queries.FloorQuery.Each(world, func(floorEntity *donburi.Entry) {
-		floorBody := components.RigidBodyComponent.Get(floorEntity)
-
-		if isColliding, contacts := tBokiPhysics.Detector.Detect(npcBody, floorBody, true); isColliding {
-			tBokiPhysics.Resolver.Resolve(npcBody, floorBody, contacts[0])
+		if isColliding, contacts := tBokiPhysics.Detector.Detect(npcBody, blockBody, true); isColliding {
+			tBokiPhysics.Resolver.Resolve(npcBody, blockBody, contacts[0])
 		}
 	})
 

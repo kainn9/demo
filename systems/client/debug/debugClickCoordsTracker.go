@@ -83,6 +83,12 @@ func (sys *DebugClickCoordsTrackerSystem) printCoords() {
 		log.Println(v)
 	}
 
+	log.Println("Debug Box Shape Width:")
+	log.Println(polyBody.Polygon.LocalVertices[1].X - polyBody.Polygon.LocalVertices[0].X)
+
+	log.Println("Debug Box Shape Height:")
+	log.Println(polyBody.Polygon.LocalVertices[2].Y - polyBody.Polygon.LocalVertices[1].Y)
+
 }
 
 func (sys *DebugClickCoordsTrackerSystem) clearShapes() {

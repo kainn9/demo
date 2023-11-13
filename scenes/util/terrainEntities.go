@@ -7,21 +7,21 @@ import (
 	tBokiComponents "github.com/kainn9/tteokbokki/components"
 )
 
-func AddFloorEntity(scene *coldBrew.Scene, x, y, w, h, rotation float64) {
+func AddBlockEntity(scene *coldBrew.Scene, x, y, w, h, rotation float64) {
 
-	floorEntity := scene.AddEntity(
+	blockEntity := scene.AddEntity(
 		components.RigidBodyComponent,
-		tags.FloorTag,
+		tags.BlockTag,
 	)
 
-	floorBody := tBokiComponents.NewRigidBodyBox(x, y, w, h, 0, true)
-	floorBody.Elasticity = 0
-	floorBody.Rotation = rotation
-	floorBody.UpdateVertices()
+	blockBody := tBokiComponents.NewRigidBodyBox(x, y, w, h, 0, true)
+	blockBody.Elasticity = 0
+	blockBody.Rotation = rotation
+	blockBody.UpdateVertices()
 
 	components.RigidBodyComponent.SetValue(
-		floorEntity,
-		*floorBody,
+		blockEntity,
+		*blockBody,
 	)
 }
 

@@ -18,8 +18,12 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 		components.PlayerStateComponent,
 		components.SpritesAnimMapComponent,
 		components.AttackHitboxConfigComponent,
+		components.PhysicsConfigComponent,
 		tags.PlayerTag,
 	)
+
+	// Physics Config/modifiers.
+	components.PhysicsConfigComponent.SetValue(playerEntity, *components.NewPhysicsConfig(0))
 
 	// RigidBody.
 	playerBody := *tBokiComponents.NewRigidBodyBox(x, y, playerGlobals.PLAYER_WIDTH, playerGlobals.PLAYER_HEIGHT, 1, false)

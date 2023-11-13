@@ -42,7 +42,7 @@ func InitStandardSystems(scene *coldBrew.Scene, indoor bool) {
 	scene.AddSystem(simPlayerSystems.NewPlayerNpcHitHandler(scene))
 	scene.AddSystem(simSystems.NewGravityAndIntegrationHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewClearOnGroundHandler(scene))
-	scene.AddSystem(simPlayerSystems.NewPlayerFloorCollisionHandler(scene))
+	scene.AddSystem(simPlayerSystems.NewPlayerBlockCollisionHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewPlayerPlatformCollisionHandler(scene))
 	scene.AddSystem(simNpcSystems.NewNpcGroundCollisionHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewLadderHandler(scene))
@@ -53,6 +53,7 @@ func InitStandardSystems(scene *coldBrew.Scene, indoor bool) {
 	scene.AddSystem(simPlayerSystems.NewPlayerDefeatedHandler(scene))
 	scene.AddSystem(simNpcSystems.NewNpcAttackedHandler(scene))
 	scene.AddSystem(simNpcSystems.NewNpcDefeatedHandler(scene))
+	scene.AddSystem(simNpcSystems.NewNpcSimpleAiHandler(scene))
 
 	// Render Systems.
 	scene.AddSystem(renderSystems.NewParallaxBackgroundRenderer(scene))

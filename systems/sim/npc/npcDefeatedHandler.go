@@ -26,11 +26,14 @@ func (sys NpcDefeatedHandlerSystem) Query() *donburi.Query {
 func (sys NpcDefeatedHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
 	ticksHandler := sys.scene.Manager.TickHandler
 	state := components.NpcStateComponent.Get(npcEntity)
+	body := components.RigidBodyComponent.Get(npcEntity)
 	config := components.NpcConfigComponent.Get(npcEntity)
 
 	if state.Combat.Health == 0 && !state.Combat.Defeated {
 		state.Combat.Defeated = true
 		state.Combat.DefeatedStartTick = ticksHandler.CurrentTick()
+		body.Vel.X = 0
+
 	}
 
 	if !state.Combat.Defeated {

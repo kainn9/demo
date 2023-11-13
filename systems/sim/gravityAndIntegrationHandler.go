@@ -28,11 +28,17 @@ func (sys GravityAndIntegrationHandlerSystem) Query() *donburi.Query {
 func (sys GravityAndIntegrationHandlerSystem) Run(dt float64, bodyEntity *donburi.Entry) {
 	body := components.RigidBodyComponent.Get(bodyEntity)
 
+	var physicsMod *components.PhysicsConfig
+
+	if bodyEntity.HasComponent(components.PhysicsConfigComponent) {
+		physicsMod = components.PhysicsConfigComponent.Get(bodyEntity)
+	}
+
 	if bodyEntity.HasComponent(components.PlayerStateComponent) {
 		state := components.PlayerStateComponent.Get(bodyEntity)
-		sys.gravityHandler(body, state)
+		sys.gravityHandler(body, physicsMod, state)
 	} else {
-		sys.gravityHandler(body, nil)
+		sys.gravityHandler(body, physicsMod, nil)
 	}
 
 	sys.integrateForces(body, dt)
@@ -40,13 +46,18 @@ func (sys GravityAndIntegrationHandlerSystem) Run(dt float64, bodyEntity *donbur
 
 // Probably worth moving this to a more general gravity system,
 // once we have more than one entity that needs gravity.
-func (sys GravityAndIntegrationHandlerSystem) gravityHandler(body *tBokiComponents.RigidBody, playerState *components.PlayerState) {
+func (sys GravityAndIntegrationHandlerSystem) gravityHandler(body *tBokiComponents.RigidBody, mod *components.PhysicsConfig, playerState *components.PlayerState) {
 
 	if playerState != nil && playerState.Collision.Climbing {
 		return
 	}
 
 	weightForce, _ := tBokiPhysics.ForceFactory.NewWeightForce(body.GetMass())
+
+	if mod != nil && mod.GravityCoefficient != 0 {
+		weightForce.Y = weightForce.Y * mod.GravityCoefficient
+	}
+
 	tBokiPhysics.Transformer.AddForce(body, weightForce)
 
 }

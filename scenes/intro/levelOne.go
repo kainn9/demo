@@ -55,13 +55,11 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	})
 
 	// Floors left to right.
-	scenesUtil.AddFloorEntity(scene, 255, float64(scene.Height), 514, 95, 0)
-	scenesUtil.AddFloorEntity(scene, 937, float64(scene.Height), 515, 95, 0)
-	scenesUtil.AddFloorEntity(scene, 3445, float64(scene.Height), 1180, 95, 0)
+	scenesUtil.AddBlockEntity(scene, 255, float64(scene.Height), 514, 95, 0)
+	scenesUtil.AddBlockEntity(scene, 937, float64(scene.Height), 515, 95, 0)
+	scenesUtil.AddBlockEntity(scene, 3445, float64(scene.Height), 1180, 95, 0)
 
-	// Trash Bins.
-	// Todo: make and change to block entity.
-	scenesUtil.AddFloorEntity(scene, 994, 290, 283, 130, 0)
+	scenesUtil.AddBlockEntity(scene, 994, 290, 283, 130, 0)
 
 	// Ladder.
 	scenesUtil.AddLadderEntity(scene, 1130, 180, 40, 360)
@@ -126,10 +124,10 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	)
 
 	// Thugs.
-	scenesUtil.AddNpcEntity(scene, 1071, 188, npcGlobals.NPC_NAME_BIG_BOI, true)
-	scenesUtil.AddNpcEntity(scene, 1636, 45, npcGlobals.NPC_NAME_BIG_BOI, true)
-	scenesUtil.AddNpcEntity(scene, 2095, 149, npcGlobals.NPC_NAME_BIG_BOI, true)
-	scenesUtil.AddNpcEntity(scene, 2606, 159, npcGlobals.NPC_NAME_BIG_BOI, true)
+	scenesUtil.AddNpcEntity(scene, 1071, 188, npcGlobals.NPC_NAME_BIG_BOI, nil, true)
+	scenesUtil.AddNpcEntity(scene, 1636, 45, npcGlobals.NPC_NAME_BIG_BOI, nil, true)
+	scenesUtil.AddNpcEntity(scene, 2095, 149, npcGlobals.NPC_NAME_BIG_BOI, nil, true)
+	scenesUtil.AddNpcEntity(scene, 2606, 159, npcGlobals.NPC_NAME_BIG_BOI, nil, true)
 
 	return scene
 }
