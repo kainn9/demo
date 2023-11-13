@@ -11,8 +11,16 @@ import (
 	"github.com/yohamta/donburi/filter"
 )
 
+type ChatCallBackSystem interface {
+	SlideIndex() int
+	Callback(*coldBrew.Scene)
+	ChatName() string
+}
+
 type ChatHandlerSystem struct {
 	scene *coldBrew.Scene
+
+	CallBackSystems []ChatCallBackSystem
 }
 
 func NewChatHandler(scene *coldBrew.Scene) *ChatHandlerSystem {
@@ -41,6 +49,8 @@ func (sys ChatHandlerSystem) Run(dt float64, chatEntity *donburi.Entry) {
 	if playerState.IsInteracting && configAndState.State.Active {
 		playerState.IsInteracting = false
 		sys.handleNextSlide(configAndState, popDownSprite, popUpSprite)
+		sys.handleCallback(configAndState)
+
 	}
 
 	sys.handleTransitionState(configAndState, popDownSprite)
@@ -63,6 +73,22 @@ func (sys ChatHandlerSystem) handleNextSlide(
 	// Reset the text counter, since it will be incremented in the popUp animation.
 	configAndState.State.TextAnimStartTick = -1
 	configAndState.State.CurrentSlideIndex++ // Increment the slide index.
+}
+
+func (sys ChatHandlerSystem) handleCallback(stateAndConfig *components.ChatStateAndConfig) {
+	if sys.CallBackSystems == nil {
+		return
+	}
+
+	for _, callback := range sys.CallBackSystems {
+		matchingNames := callback.ChatName() == stateAndConfig.Config.ChatName
+		matchingIndex := callback.SlideIndex() == stateAndConfig.State.CurrentSlideIndex
+
+		if matchingNames && matchingIndex {
+			callback.Callback(sys.scene)
+		}
+	}
+
 }
 
 func (sys ChatHandlerSystem) handleTransitionState(configAndState *components.ChatStateAndConfig, popDownSprite *components.Sprite) {

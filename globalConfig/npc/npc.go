@@ -9,7 +9,7 @@ import (
 const (
 	NPC_NAME_BIG_BOI components.NpcName = "bigBoi"
 
-	BIG_BOI_WIDTH  = 18
+	BIG_BOI_WIDTH  = 25
 	BIG_BOI_HEIGHT = 55
 
 	BIG_BOI_SPRITE_OFFSET_X = -45

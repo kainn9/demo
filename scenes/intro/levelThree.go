@@ -1,6 +1,8 @@
 package introScenes
 
 import (
+	"log"
+
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
@@ -69,5 +71,22 @@ func (LevelThreeScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		749,
 		50,
 	)
+
+	// Attaching unique chat callback.
+	systemInitializers.AttachChatCallback(scene, LevelThreeCallbackSystem{})
+
 	return scene
+}
+
+type LevelThreeCallbackSystem struct{}
+
+func (LevelThreeCallbackSystem) ChatName() string {
+	return "introChat"
+}
+func (LevelThreeCallbackSystem) SlideIndex() int {
+	return 1
+}
+
+func (LevelThreeCallbackSystem) Callback(scene *coldBrew.Scene) {
+	log.Println("LevelThreeCallbackSystem Callback!")
 }

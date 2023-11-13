@@ -1,6 +1,8 @@
 package systemInitializers
 
 import (
+	"log"
+
 	"github.com/kainn9/coldBrew"
 	clientSystems "github.com/kainn9/demo/systems/client"
 	clientDebugSystems "github.com/kainn9/demo/systems/client/debug"
@@ -65,4 +67,17 @@ func InitStandardSystems(scene *coldBrew.Scene, indoor bool) {
 	scene.AddSystem(renderDebugSystems.NewDebugRigidBodyRenderer(scene))
 	scene.AddSystem(renderDebugSystems.NewHitBoxPreviewer(scene))
 
+}
+
+func AttachChatCallback(scene *coldBrew.Scene, callback simChatSystems.ChatCallBackSystem) {
+
+	for _, sys := range scene.Systems {
+		switch sys.(type) {
+
+		case *simChatSystems.ChatHandlerSystem:
+			log.Println("Adding custom chat callback!")
+			chatSys := sys.(*simChatSystems.ChatHandlerSystem)
+			chatSys.CallBackSystems = append(chatSys.CallBackSystems, callback)
+		}
+	}
 }
