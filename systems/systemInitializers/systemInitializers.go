@@ -12,11 +12,12 @@ import (
 	renderNpcSystems "github.com/kainn9/demo/systems/render/npc"
 	renderPlayerSystems "github.com/kainn9/demo/systems/render/player"
 	simSystems "github.com/kainn9/demo/systems/sim"
+	simChatSystems "github.com/kainn9/demo/systems/sim/chat"
 	simNpcSystems "github.com/kainn9/demo/systems/sim/npc"
 	simPlayerSystems "github.com/kainn9/demo/systems/sim/player"
 )
 
-func InitStandardSystems(scene *coldBrew.Scene, zoomed bool) {
+func InitStandardSystems(scene *coldBrew.Scene, indoor bool) {
 	// Loader Systems.
 	scene.AddSystem(loaderPlayerSystems.NewPlayerAssetsLoader(scene))
 	scene.AddSystem(loaderNpcSystems.NewNpcAssetLoader(scene))
@@ -30,8 +31,12 @@ func InitStandardSystems(scene *coldBrew.Scene, zoomed bool) {
 
 	// Sim Systems.
 	scene.AddSystem(simPlayerSystems.NewPlayerPhysicsInputProcessor(scene))
-	scene.AddSystem(simSystems.NewChatHandler(scene))
-	scene.AddSystem(simPlayerSystems.NewPlayerMovementHandler(scene))
+
+	scene.AddSystem(simChatSystems.NewChatCollisionHandler(scene))
+	scene.AddSystem(simChatSystems.NewChatHandler(scene))
+	scene.AddSystem(simChatSystems.NewChatInteractableHandler(scene))
+
+	scene.AddSystem(simPlayerSystems.NewPlayerMovementHandler(scene, indoor))
 	scene.AddSystem(simPlayerSystems.NewPlayerNpcHitHandler(scene))
 	scene.AddSystem(simSystems.NewGravityAndIntegrationHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewClearOnGroundHandler(scene))
@@ -39,7 +44,7 @@ func InitStandardSystems(scene *coldBrew.Scene, zoomed bool) {
 	scene.AddSystem(simPlayerSystems.NewPlayerPlatformCollisionHandler(scene))
 	scene.AddSystem(simNpcSystems.NewNpcGroundCollisionHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewLadderHandler(scene))
-	scene.AddSystem(simSystems.NewCameraPositionHandler(scene, zoomed))
+	scene.AddSystem(simSystems.NewCameraPositionHandler(scene, indoor))
 	scene.AddSystem(simPlayerSystems.NewIndicatorCollisionHandler(scene))
 	scene.AddSystem(simSystems.NewSceneTransitionHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewPlayerMeleeAttackHandler(scene))
@@ -50,7 +55,7 @@ func InitStandardSystems(scene *coldBrew.Scene, zoomed bool) {
 	// Render Systems.
 	scene.AddSystem(renderSystems.NewParallaxBackgroundRenderer(scene))
 	scene.AddSystem(renderNpcSystems.NewNpcRenderer(scene))
-	scene.AddSystem(renderPlayerSystems.NewPlayerRenderer(scene))
+	scene.AddSystem(renderPlayerSystems.NewPlayerRenderer(scene, indoor))
 	scene.AddSystem(renderSystems.NewFrontLayerRenderer(scene))
 	scene.AddSystem(renderSystems.NewIndicatorRenderer(scene))
 	scene.AddSystem(renderSystems.NewChatSlidesRenderer(scene))

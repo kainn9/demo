@@ -17,7 +17,6 @@ type SceneTransitionConfig struct {
 	TargetScene    coldBrew.SceneFace
 	SpawnX, SpawnY float64
 	CamX, CamY     float64
-	ClickBased     bool
 }
 
 type SceneTransitionStateAndConfig struct {
@@ -27,7 +26,7 @@ type SceneTransitionStateAndConfig struct {
 
 var SceneTransitionStateAndConfigComponent = donburi.NewComponentType[SceneTransitionStateAndConfig]()
 
-func NewSceneTransitionStateAndConfig(spawnX, spawnY, camX, camY float64, targetScene coldBrew.SceneFace, clickBased bool) *SceneTransitionStateAndConfig {
+func NewSceneTransitionStateAndConfig(spawnX, spawnY, camX, camY float64, targetScene coldBrew.SceneFace) *SceneTransitionStateAndConfig {
 	return &SceneTransitionStateAndConfig{
 		State: &SceneTransitionState{},
 		Config: &SceneTransitionConfig{
@@ -36,7 +35,6 @@ func NewSceneTransitionStateAndConfig(spawnX, spawnY, camX, camY float64, target
 			CamX:        camX,
 			CamY:        camY,
 			TargetScene: targetScene,
-			ClickBased:  clickBased,
 		},
 	}
 }

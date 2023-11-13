@@ -1,4 +1,4 @@
-package simSystems
+package simChatSystems
 
 import (
 	"github.com/kainn9/coldBrew"
@@ -83,5 +83,6 @@ func (sys ChatHandlerSystem) handleClose(configAndState *components.ChatStateAnd
 		configAndState.State.CurrentSlideIndex = 0
 		animUtil.ResetAnimationConfig(popDownSprite)
 		animUtil.ResetAnimationConfig(popUpSprite)
+		configAndState.State.HasBeenRead = true
 	}
 }

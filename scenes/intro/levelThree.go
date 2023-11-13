@@ -10,7 +10,7 @@ import (
 type LevelThreeScene struct{}
 
 const (
-	LEVEL_THREE_SCENE_WIDTH      = 2185
+	LEVEL_THREE_SCENE_WIDTH      = 650
 	LEVEL_THREE_SCENE_HEIGHT     = 360
 	LEVEL_THREE_SCENE_NAME       = "levelThree"
 	LEVEL_THREE_SCENE_SECTION    = "intro"
@@ -37,5 +37,37 @@ func (LevelThreeScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 
 	scenesUtil.AddFloorEntity(scene, float64(scene.Width/2), float64(scene.Height-20), float64(scene.Width), 142, 0)
 
+	// Chat.
+	content := []components.SlidesContent{
+		{
+			Text:         "Lorum yolo bolo polo",
+			PortraitName: "player",
+		},
+		{
+			Text:         "Ipsum wipsum bipsom",
+			PortraitName: "bigBoi",
+		},
+	}
+
+	scenesUtil.AddOnCollideChatEntity(
+		scene,
+		"introChat",
+		content,
+		350, 231, 100, 50,
+	)
+
+	// Into Hallway.
+	scenesUtil.AddSceneTransitionEntity(
+		scene,
+		56,
+		208,
+		60,
+		110,
+		LevelTwoScene{},
+		1167,
+		231,
+		749,
+		50,
+	)
 	return scene
 }

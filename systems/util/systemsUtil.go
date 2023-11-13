@@ -108,6 +108,7 @@ func IsChatActive(world donburi.World) bool {
 	query.Each(world, func(chatEntity *donburi.Entry) {
 
 		configAndState := components.ChatStateAndConfigComponent.Get(chatEntity)
+
 		if configAndState.State.Active {
 			isChatActive = true
 		}

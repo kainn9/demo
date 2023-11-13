@@ -29,6 +29,7 @@ const (
 	PLAYER_ANIMATIONS_SPRITE_HEIGHT = 168
 
 	PLAYER_IDLE_ANIM_SPEED           = 20
+	PLAYER_WALK_ANIM_SPEED           = 20
 	PLAYER_RUN_ANIM_SPEED            = 12
 	PLAYER_JUMP_ANIM_SPEED           = 8
 	PLAYER_FALL_ANIM_SPEED           = 12
@@ -38,6 +39,7 @@ const (
 	PLAYER_DEFEATED_ANIM_SPEED       = 12
 
 	PLAYER_IDLE_FRAME_COUNT                = 7
+	PLAYER_WALK_FRAME_COUNT                = 8
 	PLAYER_RUN_FRAME_COUNT                 = 8
 	PLAYER_JUMP_FRAME_COUNT                = 5
 	PLAYER_FALL_FRAME_COUNT                = 3
@@ -58,6 +60,14 @@ var PLAYER_ANIMATION_CONFIGS = map[components.CharState]*components.AnimationCon
 		PLAYER_ANIMATIONS_SPRITE_HEIGHT,
 		PLAYER_IDLE_FRAME_COUNT,
 		PLAYER_IDLE_ANIM_SPEED,
+		false,
+	),
+
+	sharedAnimationConstants.CHAR_STATE_WALK: components.NewAnimationConfig(
+		PLAYER_ANIMATIONS_SPRITE_WIDTH,
+		PLAYER_ANIMATIONS_SPRITE_HEIGHT,
+		PLAYER_WALK_FRAME_COUNT,
+		PLAYER_WALK_ANIM_SPEED,
 		false,
 	),
 

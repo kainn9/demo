@@ -11,6 +11,7 @@ type ChatState struct {
 	Active, PopUpMode, PopDownMode       bool
 	CurrentSlideIndex, TextAnimStartTick int
 	SlidesContent                        []SlidesContent
+	HasBeenRead                          bool
 }
 
 type ChatStateAndConfig struct {
@@ -25,12 +26,12 @@ type SlidesContent struct {
 
 var ChatStateAndConfigComponent = donburi.NewComponentType[ChatStateAndConfig]()
 
-func NewChatStateAndConfig(chatName, sceneAssetsPath string, ticksPerWord int, content []SlidesContent) *ChatStateAndConfig {
+func NewChatStateAndConfig(chatName string, content []SlidesContent) *ChatStateAndConfig {
 	return &ChatStateAndConfig{
 
 		Config: &ChatConfig{
 			ChatName:     chatName,
-			TicksPerWord: ticksPerWord,
+			TicksPerWord: 15,
 		},
 
 		State: &ChatState{

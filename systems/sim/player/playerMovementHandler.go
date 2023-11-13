@@ -24,16 +24,21 @@ type PlayerMovementHandlerSystem struct {
 	yVelUnit    float64
 }
 
-func NewPlayerMovementHandler(scene *coldBrew.Scene) *PlayerMovementHandlerSystem {
+func NewPlayerMovementHandler(scene *coldBrew.Scene, indoor bool) *PlayerMovementHandlerSystem {
 	sys := &PlayerMovementHandlerSystem{
 		scene: scene,
 	}
-
 	sys.minVelocity = 3.0 // The minimum velocity to consider the player moving.
 	sys.maxVelY = 750.0   // Max speed up or down.
 	sys.maxVelX = 200.0   // Max speed left or right.
 	sys.xVelUnit = 18.0   // Left or right.
 	sys.yVelUnit = -310.0 // Jump.
+
+	if indoor {
+		sys.maxVelX = 100.0
+		sys.xVelUnit = 10.0
+	}
+
 	return sys
 }
 

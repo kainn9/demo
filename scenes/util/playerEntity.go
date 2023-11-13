@@ -102,13 +102,20 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 	playerSprites[sharedAnimationGlobals.CHAR_STATE_HURT].AnimationConfig = playerGlobals.PLAYER_ANIMATION_CONFIGS[sharedAnimationGlobals.CHAR_STATE_HURT]
 
 	// Defeated.
-
 	playerSprites[sharedAnimationGlobals.CHAR_STATE_DEFEATED] = components.NewSprite(
 		playerGlobals.PLAYER_SPRITE_OFFSET_X,
 		playerGlobals.PLAYER_SPRITE_OFFSET_Y,
 	)
 
 	playerSprites[sharedAnimationGlobals.CHAR_STATE_DEFEATED].AnimationConfig = playerGlobals.PLAYER_ANIMATION_CONFIGS[sharedAnimationGlobals.CHAR_STATE_DEFEATED]
+
+	// Walk.
+	playerSprites[sharedAnimationGlobals.CHAR_STATE_WALK] = components.NewSprite(
+		playerGlobals.PLAYER_SPRITE_OFFSET_X,
+		playerGlobals.PLAYER_SPRITE_OFFSET_Y,
+	)
+
+	playerSprites[sharedAnimationGlobals.CHAR_STATE_WALK].AnimationConfig = playerGlobals.PLAYER_ANIMATION_CONFIGS[sharedAnimationGlobals.CHAR_STATE_WALK]
 
 	components.SpritesAnimMapComponent.SetValue(playerEntity, playerSprites)
 

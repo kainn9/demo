@@ -8,6 +8,7 @@ import (
 	sharedAnimationGlobals "github.com/kainn9/demo/globalConfig/sharedAnimation"
 
 	scenesUtil "github.com/kainn9/demo/scenes/util"
+	systemsUtil "github.com/kainn9/demo/systems/util"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/filter"
 )
@@ -34,6 +35,10 @@ func (PlayerPhysicsInputProcessorSystem) Query() *donburi.Query {
 func (sys PlayerPhysicsInputProcessorSystem) Run(dt float64, playerEntity *donburi.Entry) {
 	inputs := components.InputsComponent.Get(playerEntity)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
+
+	if systemsUtil.IsChatActive(sys.scene.World) {
+		playerState.Transform.BasicHorizontalMovement = false
+	}
 
 	if playerState.Combat.IsHit {
 		return

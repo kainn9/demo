@@ -70,9 +70,15 @@ func (g *game) Update() error {
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.Key5) {
-		playerEntity := systemsUtil.GetPlayerEntity(g.manager.ActiveScene().World)
+		world := g.manager.ActiveScene().World
+		playerEntity := systemsUtil.GetPlayerEntity(world)
 		playerBody := components.RigidBodyComponent.Get(playerEntity)
-		log.Println("pos", playerBody.Pos.X, playerBody.Pos.Y)
+
+		cameraEntity := systemsUtil.GetCameraEntity(world)
+		camera := components.CameraComponent.Get(cameraEntity)
+
+		log.Println("cameraPos", camera.X, camera.Y)
+		log.Println("playerPos", playerBody.Pos.X, playerBody.Pos.Y)
 	}
 
 	// end of hack/test. ----------------------

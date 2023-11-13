@@ -60,11 +60,12 @@ func (sys SceneTransitionHandlerSystem) handleTransition(transitionEntity *donbu
 	transitionStateAndConfig := components.SceneTransitionStateAndConfigComponent.Get(transitionEntity)
 	newScene := transitionStateAndConfig.Config.TargetScene
 
-	if !playerState.IsInteracting && transitionStateAndConfig.Config.ClickBased {
+	if !playerState.IsInteracting {
 		return
 	}
 
 	playerState.IsInteracting = false
+
 	scenesUtil.ChangeScene(
 		m,
 		newScene,

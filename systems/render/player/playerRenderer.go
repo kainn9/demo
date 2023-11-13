@@ -19,12 +19,14 @@ import (
 )
 
 type PlayerRendererSystem struct {
-	scene *coldBrew.Scene
+	scene  *coldBrew.Scene
+	indoor bool
 }
 
-func NewPlayerRenderer(scene *coldBrew.Scene) *PlayerRendererSystem {
+func NewPlayerRenderer(scene *coldBrew.Scene, indoor bool) *PlayerRendererSystem {
 	return &PlayerRendererSystem{
-		scene: scene,
+		scene:  scene,
+		indoor: indoor,
 	}
 }
 
@@ -162,8 +164,12 @@ func (sys PlayerRendererSystem) determinePlayerAnimationState(playerState *compo
 		return sharedAnimationGlobals.CHAR_STATE_FALL
 	}
 
-	if playerState.Collision.OnGround && playerState.Transform.BasicHorizontalMovement {
+	if playerState.Collision.OnGround && playerState.Transform.BasicHorizontalMovement && !sys.indoor {
 		return sharedAnimationGlobals.CHAR_STATE_RUN
+	}
+
+	if playerState.Collision.OnGround && playerState.Transform.BasicHorizontalMovement && sys.indoor {
+		return sharedAnimationGlobals.CHAR_STATE_WALK
 	}
 
 	return sharedAnimationGlobals.CHAR_STATE_IDLE

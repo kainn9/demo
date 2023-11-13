@@ -118,16 +118,11 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		250,
 		60,
 		110,
-		UIGlobals.IndicatorPlayerOffsets[UIGlobals.CurrentLayout][UIGlobals.INDICATOR_INTERACT].X,
-		UIGlobals.IndicatorPlayerOffsets[UIGlobals.CurrentLayout][UIGlobals.INDICATOR_INTERACT].Y,
-		true,
-		UIGlobals.INDICATOR_INTERACT,
 		LevelTwoScene{},
 		66,
 		231,
 		0,
 		0,
-		true,
 	)
 
 	// Thugs.

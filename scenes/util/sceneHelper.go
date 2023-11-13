@@ -72,6 +72,16 @@ func transferPlayer(
 		(*newPlayerSpriteMap)[key] = value
 	}
 
+	// Preserve player direction.
+	prevPlayerState := components.PlayerStateComponent.Get(prevPlayerEntity)
+	newPlayerState := components.PlayerStateComponent.Get(newPlayerEntity)
+
+	if prevPlayerState.Direction() == -1 {
+		newPlayerState.SetDirectionLeft()
+	} else {
+		newPlayerState.SetDirectionRight()
+	}
+
 	// Remove player from old scene.
 	prevScene.World.Remove(prevPlayerEntity.Entity())
 
