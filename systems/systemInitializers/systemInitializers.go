@@ -46,14 +46,15 @@ func InitStandardSystems(scene *coldBrew.Scene, indoor bool) {
 	scene.AddSystem(simPlayerSystems.NewPlayerPlatformCollisionHandler(scene))
 	scene.AddSystem(simNpcSystems.NewNpcGroundCollisionHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewLadderHandler(scene))
-	scene.AddSystem(simSystems.NewCameraPositionHandler(scene, indoor))
+	scene.AddSystem(simSystems.NewCameraPositionHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewIndicatorCollisionHandler(scene))
-	scene.AddSystem(simSystems.NewSceneTransitionHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewPlayerMeleeAttackHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewPlayerDefeatedHandler(scene))
 	scene.AddSystem(simNpcSystems.NewNpcAttackedHandler(scene))
 	scene.AddSystem(simNpcSystems.NewNpcDefeatedHandler(scene))
 	scene.AddSystem(simNpcSystems.NewNpcSimpleAiHandler(scene))
+
+	scene.AddSystem(simSystems.NewSceneTransitionHandler(scene)) // Keep last.
 
 	// Render Systems.
 	scene.AddSystem(renderSystems.NewParallaxBackgroundRenderer(scene))

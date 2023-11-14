@@ -36,8 +36,10 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		components.NewParallaxLayerConfig(LEVEL_TWO_SCENE_ASSET_PATH, 0, 0, 0, false),
 	})
 
+	scenesUtil.AddFrontLayerEntity(scene, LEVEL_TWO_SCENE_ASSET_PATH)
+
 	// Floor.
-	scenesUtil.AddBlockEntity(scene, float64(scene.Width/2), float64(scene.Height-20), float64(scene.Width), 142, 0)
+	scenesUtil.AddBlockEntity(scene, 319, 366, LEVEL_ONE_SCENE_WIDTH*2, 31, 0)
 
 	// Interactables.
 
@@ -57,7 +59,7 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		scene,
 		"introChat",
 		content,
-		172, 231, 60, 50,
+		175, 276, 81, 110,
 	)
 
 	// Transition Entities Door.
@@ -65,7 +67,7 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scenesUtil.AddSceneTransitionEntity(
 		scene,
 		57,
-		209,
+		275,
 		60,
 		110,
 		LevelOneScene{},
@@ -79,7 +81,7 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scenesUtil.AddSceneTransitionEntity(
 		scene,
 		1171,
-		209,
+		275,
 		60,
 		110,
 		LevelThreeScene{},

@@ -81,6 +81,10 @@ func (sys NpcRendererSystem) determineNpcAnimationState(npcState *components.Npc
 		return sharedAnimationGlobals.CHAR_STATE_HURT
 	}
 
+	if npcState.Transform.BasicHorizontalMovement {
+		return sharedAnimationGlobals.CHAR_STATE_RUN
+	}
+
 	return sharedAnimationGlobals.CHAR_STATE_IDLE
 }
 

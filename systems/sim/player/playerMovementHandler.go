@@ -32,11 +32,13 @@ func NewPlayerMovementHandler(scene *coldBrew.Scene, indoor bool) *PlayerMovemen
 	sys.maxVelY = 750.0   // Max speed up or down.
 	sys.maxVelX = 200.0   // Max speed left or right.
 	sys.xVelUnit = 18.0   // Left or right.
-	sys.yVelUnit = -310.0 // Jump.
+	sys.yVelUnit = -340.0 // Jump.
 
 	if indoor {
-		sys.maxVelX = 100.0
-		sys.xVelUnit = 10.0
+		sys.maxVelX = 120.0
+		sys.xVelUnit = 15.0
+		sys.yVelUnit = -240.0
+
 	}
 
 	return sys

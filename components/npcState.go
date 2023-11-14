@@ -5,7 +5,8 @@ import (
 )
 
 type NpcTransformState struct {
-	direction float64
+	direction               float64
+	BasicHorizontalMovement bool
 }
 
 type NpcCombatState struct {

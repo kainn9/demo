@@ -41,7 +41,7 @@ func (sys ChatSlidesRendererSystem) Draw(screen *ebiten.Image, chatEntity *donbu
 
 	// Chat Box Draw options.
 	charBoxOpts := &ebiten.DrawImageOptions{}
-	charBoxOpts.GeoM.Translate(10, -200) // temp hack to offset the chat box until we replace asset.
+	charBoxOpts.GeoM.Translate(10, 10)
 	popDownSprite := systemsUtil.GetChatPopDownSprite(sys.scene.World)
 
 	// Handle the pop down animation one last time,

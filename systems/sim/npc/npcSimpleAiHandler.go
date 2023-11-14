@@ -30,17 +30,17 @@ func (sys NpcSimpleAiHandlerSystem) Query() *donburi.Query {
 }
 
 func (sys NpcSimpleAiHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
-
 	world := sys.scene.World
 	npcBody := components.RigidBodyComponent.Get(npcEntity)
 	npcState := components.NpcStateComponent.Get(npcEntity)
 
-	if npcState.Combat.Defeated {
-		return
-	}
-
 	playerEntity := systemsUtil.GetPlayerEntity(world)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
+	playerState := components.PlayerStateComponent.Get(playerEntity)
+
+	if npcState.Combat.Defeated || playerState.Combat.Defeated {
+		return
+	}
 
 	patrolRange := 200.0
 
@@ -49,12 +49,16 @@ func (sys NpcSimpleAiHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
 	if math.Abs(playerBody.Pos.Sub(npcBody.Pos).X) < patrolRange {
 
 		if npcBody.Pos.X < playerBody.Pos.X {
+			npcState.Transform.BasicHorizontalMovement = true
 			npcBody.Vel.X = tempFactor
 			npcState.SetDirectionRight()
 		} else {
+			npcState.Transform.BasicHorizontalMovement = true
 			npcBody.Vel.X = -tempFactor
-
 			npcState.SetDirectionLeft()
 		}
+	} else {
+		npcState.Transform.BasicHorizontalMovement = false
+		npcBody.Vel.X = 0
 	}
 }

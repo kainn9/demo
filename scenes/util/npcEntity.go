@@ -8,20 +8,38 @@ import (
 	"github.com/kainn9/demo/tags"
 	tBokiComponents "github.com/kainn9/tteokbokki/components"
 	tBokiVec "github.com/kainn9/tteokbokki/math/vec"
+	"github.com/yohamta/donburi"
 )
 
-func AddNpcEntity(scene *coldBrew.Scene, x, y float64, name components.NpcName, physicsMod *components.PhysicsConfig, hittable bool) {
+func AddNpcEntity(scene *coldBrew.Scene, x, y float64, name components.NpcName, physicsMod *components.PhysicsConfig, hittable bool, moveable bool) {
 
-	// Entity initialization
-	npcEntity := scene.AddEntity(
-		components.RigidBodyComponent,
-		components.SpritesAnimMapComponent,
-		components.NpcConfigComponent,
-		components.NpcStateComponent,
-		components.PhysicsConfigComponent,
-		tags.NpcTag,
-		npcGlobals.TAG_MAP[name],
-	)
+	tag := npcGlobals.TAG_MAP[name]
+
+	var npcEntity *donburi.Entry
+	// Todo: dry this if else so or change
+	// AddEntity() to account for nil tag scenario.
+	if tag != nil {
+		// Entity initialization
+		npcEntity = scene.AddEntity(
+			components.RigidBodyComponent,
+			components.SpritesAnimMapComponent,
+			components.NpcConfigComponent,
+			components.NpcStateComponent,
+			components.PhysicsConfigComponent,
+			tags.NpcTag,
+			tag,
+		)
+
+	} else {
+		npcEntity = scene.AddEntity(
+			components.RigidBodyComponent,
+			components.SpritesAnimMapComponent,
+			components.NpcConfigComponent,
+			components.NpcStateComponent,
+			components.PhysicsConfigComponent,
+			tags.NpcTag,
+		)
+	}
 
 	// Physics Config/modifiers.
 	if physicsMod != nil {
@@ -62,6 +80,11 @@ func AddNpcEntity(scene *coldBrew.Scene, x, y float64, name components.NpcName, 
 		prepCombatSpriteSheets(spriteOffset, npcSprites, animationConfigs)
 	}
 
+	if moveable {
+		prepTransformSprites(spriteOffset, npcSprites, animationConfigs)
+
+	}
+
 	components.SpritesAnimMapComponent.SetValue(npcEntity, npcSprites)
 }
 
@@ -88,5 +111,21 @@ func prepCombatSpriteSheets(
 
 	defeatedConfig := animationConfigs[sharedAnimationGlobals.CHAR_STATE_DEFEATED]
 	npcSprites[sharedAnimationGlobals.CHAR_STATE_DEFEATED].AnimationConfig = &defeatedConfig
+
+}
+
+func prepTransformSprites(
+	spriteOffset tBokiVec.Vec2,
+	npcSprites map[components.CharState]*components.Sprite,
+	animationConfigs map[components.CharState]components.AnimationConfig,
+) {
+
+	npcSprites[sharedAnimationGlobals.CHAR_STATE_RUN] = components.NewSprite(
+		spriteOffset.X,
+		spriteOffset.Y,
+	)
+
+	runConfig := animationConfigs[sharedAnimationGlobals.CHAR_STATE_RUN]
+	npcSprites[sharedAnimationGlobals.CHAR_STATE_RUN].AnimationConfig = &runConfig
 
 }

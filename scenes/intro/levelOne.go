@@ -124,10 +124,10 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	)
 
 	// Thugs.
-	scenesUtil.AddNpcEntity(scene, 1071, 188, npcGlobals.NPC_NAME_BIG_BOI, nil, true)
-	scenesUtil.AddNpcEntity(scene, 1636, 45, npcGlobals.NPC_NAME_BIG_BOI, nil, true)
-	scenesUtil.AddNpcEntity(scene, 2095, 149, npcGlobals.NPC_NAME_BIG_BOI, nil, true)
-	scenesUtil.AddNpcEntity(scene, 2606, 159, npcGlobals.NPC_NAME_BIG_BOI, nil, true)
+	scenesUtil.AddNpcEntity(scene, 1071, 188, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true)
+	scenesUtil.AddNpcEntity(scene, 1636, 45, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true)
+	scenesUtil.AddNpcEntity(scene, 2095, 149, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true)
+	scenesUtil.AddNpcEntity(scene, 2606, 159, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true)
 
 	return scene
 }

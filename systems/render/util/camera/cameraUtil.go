@@ -6,6 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kainn9/demo/components"
 	cameraGlobals "github.com/kainn9/demo/globalConfig/camera"
+	clientGlobals "github.com/kainn9/demo/globalConfig/client"
 )
 
 // Translates a image relative to the camera via its draw options(mutates), and x/y coordinates(args).
@@ -22,9 +23,19 @@ func AddImage(c *components.Camera, img *ebiten.Image, options *ebiten.DrawImage
 
 // Renders the camera's surface to the screen.
 // This is done in in the final render phase usually.
+// Renders the camera's surface to the screen.
+// This is done in in the final render phase usually.
 func Render(c *components.Camera, screen *ebiten.Image) {
-	opts := &ebiten.DrawImageOptions{}
-	screen.DrawImage(c.Surface, opts)
+
+	ops := &ebiten.DrawImageOptions{}
+	ops.GeoM.Scale(float64(c.Zoom), float64(c.Zoom))
+
+	tx := (1 - c.Zoom) * float64(clientGlobals.SCREEN_WIDTH) / 2
+	ty := (1 - c.Zoom) * float64(clientGlobals.SCREEN_HEIGHT) / 2
+
+	ops.GeoM.Translate(tx, ty)
+
+	screen.DrawImage(c.Surface, ops)
 
 }
 

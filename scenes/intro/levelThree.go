@@ -85,7 +85,7 @@ func (LevelThreeScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 
 	// Off scene(gets moved later).
 	gravityMod := components.NewPhysicsConfig(0.25)
-	scenesUtil.AddNpcEntity(scene, -200, -200, npcGlobals.NPC_NAME_THERAPIST_TWO, gravityMod, false)
+	scenesUtil.AddNpcEntity(scene, -200, -200, npcGlobals.NPC_NAME_THERAPIST_TWO, gravityMod, false, false)
 
 	// Attaching unique chat callback.
 	systemInitializers.AttachChatCallback(scene, LevelThreeCallbackSystem{})

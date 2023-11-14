@@ -34,13 +34,14 @@ func (sys PlayerNpcHitHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
 	npcBody := components.RigidBodyComponent.Get(npcEntity)
 	npcState := components.NpcStateComponent.Get(npcEntity)
 
-	if !npcState.Combat.Hittable || npcState.Combat.Defeated {
-		return
-	}
-
 	playerEntity := systemsUtil.GetPlayerEntity(world)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
+
+	if !npcState.Combat.Hittable || npcState.Combat.Defeated || playerState.Combat.Defeated {
+		return
+	}
+
 	id := int(npcEntity.Entity().Id())
 
 	isColliding, _ := tBokiPhysics.Detector.Detect(playerBody, npcBody, true)
