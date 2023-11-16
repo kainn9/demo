@@ -6,7 +6,7 @@ import (
 	clientGlobals "github.com/kainn9/demo/globalConfig/client"
 )
 
-func AddCameraEntity(scene *coldBrew.Scene, x, y float64) {
+func AddCameraEntity(scene *coldBrew.Scene, x, y, zoom float64) {
 
 	cameraEntity := scene.AddEntity(
 		components.CameraComponent,
@@ -14,7 +14,7 @@ func AddCameraEntity(scene *coldBrew.Scene, x, y float64) {
 
 	components.CameraComponent.SetValue(
 		cameraEntity,
-		*components.NewCamera(x, y, clientGlobals.SCREEN_WIDTH, clientGlobals.SCREEN_HEIGHT),
+		*components.NewCamera(x, y, clientGlobals.SCREEN_WIDTH, clientGlobals.SCREEN_HEIGHT, zoom),
 	)
 
 }

@@ -8,10 +8,10 @@ type ChatConfig struct {
 }
 
 type ChatState struct {
-	Active, PopUpMode, PopDownMode       bool
-	CurrentSlideIndex, TextAnimStartTick int
-	SlidesContent                        []SlidesContent
-	HasBeenRead                          bool
+	Active, PopUpMode, PopDownMode                              bool
+	CurrentSlideIndex, TextAnimStartTick, NameTextAnimStartTick int
+	SlidesContent                                               []SlidesContent
+	HasBeenRead                                                 bool
 }
 
 type ChatStateAndConfig struct {
@@ -20,8 +20,8 @@ type ChatStateAndConfig struct {
 }
 
 type SlidesContent struct {
-	Text, PortraitName string
-	FacingRight        bool
+	Text, PortraitName, CharName string
+	FacingRight                  bool
 }
 
 var ChatStateAndConfigComponent = donburi.NewComponentType[ChatStateAndConfig]()
@@ -35,8 +35,9 @@ func NewChatStateAndConfig(chatName string, content []SlidesContent) *ChatStateA
 		},
 
 		State: &ChatState{
-			TextAnimStartTick: -1,
-			SlidesContent:     content,
+			TextAnimStartTick:     -1,
+			NameTextAnimStartTick: -1,
+			SlidesContent:         content,
 		},
 	}
 }

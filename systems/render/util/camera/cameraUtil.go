@@ -30,8 +30,8 @@ func Render(c *components.Camera, screen *ebiten.Image) {
 	ops := &ebiten.DrawImageOptions{}
 	ops.GeoM.Scale(float64(c.Zoom), float64(c.Zoom))
 
-	tx := (1 - c.Zoom) * float64(clientGlobals.SCREEN_WIDTH) / 2
-	ty := (1 - c.Zoom) * float64(clientGlobals.SCREEN_HEIGHT) / 2
+	tx := ZoomSpacingX(c.Zoom)
+	ty := ZoomSpacingY(c.Zoom)
 
 	ops.GeoM.Translate(tx, ty)
 
@@ -90,4 +90,13 @@ func smooth(current, target, speed float64) float64 {
 	}
 
 	return current
+}
+
+func ZoomSpacingX(zoom float64) float64 {
+
+	return (1 - zoom) * float64(clientGlobals.SCREEN_WIDTH) / 2
+}
+
+func ZoomSpacingY(zoom float64) float64 {
+	return (1 - zoom) * float64(clientGlobals.SCREEN_HEIGHT) / 2
 }

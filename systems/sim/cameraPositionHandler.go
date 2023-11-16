@@ -34,18 +34,14 @@ func (sys *CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 	xBoundaryLeft := (float64(clientGlobals.SCREEN_WIDTH) / 2) / camera.Zoom
 	xBoundaryRight := float64(mapWidth) - xBoundaryLeft
 
-	tx := (1 - camera.Zoom) * float64(clientGlobals.SCREEN_WIDTH) / 2
-
-	xOffsetLeft := tx / float64(camera.Zoom)
+	xOffsetLeft := cameraUtil.ZoomSpacingX(camera.Zoom) / float64(camera.Zoom)
 	xOffsetCenter := playerBody.Pos.X - float64(clientGlobals.SCREEN_WIDTH/2)
 	xOffsetRight := xBoundaryRight - float64(clientGlobals.SCREEN_WIDTH)/2
 
 	yBoundaryTop := (float64(clientGlobals.SCREEN_HEIGHT) / 2) / camera.Zoom
 	yBoundaryBottom := float64(mapHeight) - yBoundaryTop
 
-	ty := (1 - camera.Zoom) * float64(clientGlobals.SCREEN_HEIGHT) / 2
-
-	yOffsetTop := ty / float64(camera.Zoom)
+	yOffsetTop := cameraUtil.ZoomSpacingY(camera.Zoom) / float64(camera.Zoom)
 	yOffsetCenter := playerBody.Pos.Y - float64(clientGlobals.SCREEN_HEIGHT/2)
 	yOffsetBottom := yBoundaryBottom - float64(clientGlobals.SCREEN_HEIGHT)/2
 

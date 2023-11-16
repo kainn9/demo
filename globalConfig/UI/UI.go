@@ -2,7 +2,6 @@ package UIGlobals
 
 import (
 	"github.com/kainn9/demo/components"
-	clientGlobals "github.com/kainn9/demo/globalConfig/client"
 	tBokiVec "github.com/kainn9/tteokbokki/math/vec"
 )
 
@@ -27,7 +26,7 @@ const (
 )
 
 var (
-	CHAT_BOX_FRAME_WIDTH = clientGlobals.SCREEN_WIDTH - 21
+	CHAT_BOX_FRAME_WIDTH = 480
 )
 
 const (

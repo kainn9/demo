@@ -10,7 +10,6 @@ import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	fontGlobals "github.com/kainn9/demo/globalConfig/font"
-	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	tBokiVec "github.com/kainn9/tteokbokki/math/vec"
 	"github.com/yohamta/donburi"
@@ -26,10 +25,10 @@ func RenderText(
 	text string,
 	x, y, maxWidth, charWidth, charHeight, spaceWidth float64,
 	startTick, ticksPerWord int,
-	camera *components.Camera,
 	lower, upper, numbers, special *components.Sprite,
 	adjustmentMap map[string]tBokiVec.Vec2,
 	manager *coldBrew.Manager,
+	screen *ebiten.Image,
 
 ) {
 
@@ -58,7 +57,7 @@ func RenderText(
 		}
 
 		word = StripInvalidCharacters(word)
-		PrintWord(word, currX, currY, charWidth, charHeight, animCoefficient, lower, upper, numbers, special, adjustmentMap, camera)
+		PrintWord(word, currX, currY, charWidth, charHeight, animCoefficient, lower, upper, numbers, special, adjustmentMap, screen)
 		currX, currY = NextWordPosition(currX, currY, charWidth, charHeight, maxWidth, startX, spaceWidth, word, adjustmentMap)
 
 	}
@@ -86,7 +85,7 @@ func PrintWord(
 	currentX, currentY, charWidth, charHeight, animCoefficient float64,
 	lower, upper, numbers, special *components.Sprite,
 	adjustmentMap map[string]tBokiVec.Vec2,
-	camera *components.Camera,
+	screen *ebiten.Image,
 ) {
 
 	var charSheet *ebiten.Image
@@ -138,7 +137,7 @@ func PrintWord(
 
 		charOpts.ColorScale.ScaleAlpha(float32(animCoefficient))
 
-		cameraUtil.AddImage(camera, charImage, charOpts)
+		screen.DrawImage(charImage, charOpts)
 
 		prevChar = char
 	}
@@ -181,9 +180,9 @@ func RenderTextDefault(
 	text string,
 	x, y, maxWidth float64,
 	startTick, ticksPerWord int,
-	camera *components.Camera,
 	world *donburi.World,
 	manager *coldBrew.Manager,
+	screen *ebiten.Image,
 ) {
 
 	lower, upper, numbers, special := systemsUtil.GetDefaultFontSpriteMap(*world)
@@ -192,9 +191,9 @@ func RenderTextDefault(
 		text,
 		x, y, maxWidth, fontGlobals.FONT_DEFAULT_WIDTH, fontGlobals.FONT_DEFAULT_HEIGHT, fontGlobals.FONT_DEFAULT_WIDTH-1,
 		startTick, ticksPerWord,
-		camera,
 		lower, upper, numbers, special,
 		fontGlobals.FONT_DEFAULT_ADJUSTMENT_MAP,
 		manager,
+		screen,
 	)
 }

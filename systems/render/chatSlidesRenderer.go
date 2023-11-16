@@ -1,7 +1,10 @@
 package renderSystems
 
 import (
+	"image/color"
+
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/filter"
 
@@ -9,7 +12,6 @@ import (
 	"github.com/kainn9/demo/components"
 	UIGlobals "github.com/kainn9/demo/globalConfig/UI"
 	animUtil "github.com/kainn9/demo/systems/render/util/anim"
-	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
 	textUtil "github.com/kainn9/demo/systems/render/util/text"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 )
@@ -35,19 +37,17 @@ func (sys ChatSlidesRendererSystem) Draw(screen *ebiten.Image, chatEntity *donbu
 	// Config/State.
 	configAndState := components.ChatStateAndConfigComponent.Get(chatEntity)
 
-	// Grab the camera.
-	cameraEntity := systemsUtil.GetCameraEntity(sys.scene.World)
-	camera := components.CameraComponent.Get(cameraEntity)
-
+	boxX := 80.0
+	boxY := 265.0
 	// Chat Box Draw options.
 	charBoxOpts := &ebiten.DrawImageOptions{}
-	charBoxOpts.GeoM.Translate(10, 10)
+	charBoxOpts.GeoM.Translate(boxX, boxY)
 	popDownSprite := systemsUtil.GetChatPopDownSprite(sys.scene.World)
 
 	// Handle the pop down animation one last time,
 	// when the chat box is no longer active.
 	if !configAndState.State.Active && animUtil.InactiveAnimation(popDownSprite.AnimationConfig) {
-		sys.renderPopDownAnimation(popDownSprite, charBoxOpts, camera)
+		sys.renderPopDownAnimation(popDownSprite, charBoxOpts, screen)
 		return
 	}
 
@@ -61,18 +61,18 @@ func (sys ChatSlidesRendererSystem) Draw(screen *ebiten.Image, chatEntity *donbu
 	// Handle the pop down animation, when the chat box is active,
 	// and where switching slides(pop down then pop up).
 	if configAndState.State.PopDownMode {
-		sys.renderPopDownAnimation(popDownSprite, charBoxOpts, camera)
+		sys.renderPopDownAnimation(popDownSprite, charBoxOpts, screen)
 		return
 	}
 
 	// Handle the pop up animation.
 	if configAndState.State.PopUpMode {
-		finished := sys.renderPopUpAnimation(charBoxOpts, camera)
+		finished := sys.renderPopUpAnimation(charBoxOpts, screen)
 
 		if finished {
 			// Handle the portrait.
 			portraitSprites := components.SpritesSliceComponent.Get(chatEntity)
-			sys.handlePortrait(configAndState, camera, portraitSprites)
+			sys.handlePortrait(configAndState, portraitSprites, screen)
 
 			// Handle the text.
 			slideContent := configAndState.State.SlidesContent[configAndState.State.CurrentSlideIndex]
@@ -81,17 +81,55 @@ func (sys ChatSlidesRendererSystem) Draw(screen *ebiten.Image, chatEntity *donbu
 				configAndState.State.TextAnimStartTick = sys.scene.Manager.TickHandler.CurrentTick()
 			}
 
+			if configAndState.State.NameTextAnimStartTick == -1 {
+				configAndState.State.NameTextAnimStartTick = sys.scene.Manager.TickHandler.CurrentTick()
+			}
+
+			paddingX := 72.0
+			paddingY := 48.0
+
+			// Text.
 			textUtil.RenderTextDefault(
 				slideContent.Text,
-				120,
-				45,
+				boxX+paddingX,
+				boxY+paddingY,
 				525,
 				configAndState.State.TextAnimStartTick,
 				configAndState.Config.TicksPerWord,
-				camera,
 				&sys.scene.World,
 				sys.scene.Manager,
+				screen,
 			)
+
+			nameX := 88.0
+			nameY := 345.0
+			nameText := configAndState.State.SlidesContent[configAndState.State.CurrentSlideIndex].CharName
+
+			// Name.
+			textUtil.RenderTextDefault(
+				nameText,
+				nameX,
+				nameY,
+				210,
+				configAndState.State.NameTextAnimStartTick,
+				configAndState.Config.TicksPerWord,
+				&sys.scene.World,
+				sys.scene.Manager,
+				screen,
+			)
+
+			nameWidth := float64(len(nameText) * 7)
+			nameLineSX := float32(nameX - 6)
+			nameLineEndX := float32(nameX+nameWidth) + 2
+			nameLineY := float32(nameY - 5)
+
+			cyan := color.RGBA{0, 254, 254, 255}
+
+			// Horizontal line.
+			vector.StrokeLine(screen, nameLineSX, nameLineY, nameLineEndX, nameLineY, 2, cyan, false)
+
+			// Vertical line.
+			vector.StrokeLine(screen, nameLineEndX, nameLineY, nameLineEndX, nameLineY+18, 2, cyan, false)
 		}
 
 		return
@@ -99,40 +137,42 @@ func (sys ChatSlidesRendererSystem) Draw(screen *ebiten.Image, chatEntity *donbu
 
 }
 
-func (sys ChatSlidesRendererSystem) renderPopUpAnimation(chatBoxOpts *ebiten.DrawImageOptions, camera *components.Camera) (finished bool) {
+func (sys ChatSlidesRendererSystem) renderPopUpAnimation(chatBoxOpts *ebiten.DrawImageOptions, screen *ebiten.Image) (finished bool) {
 
 	popUpSprite := systemsUtil.GetChatPopUpSprite(sys.scene.World)
 
 	spriteAtFrameIndex := animUtil.GetAnimFrame(sys.scene.Manager, popUpSprite)
 
-	cameraUtil.AddImage(camera, spriteAtFrameIndex, chatBoxOpts)
+	screen.DrawImage(spriteAtFrameIndex, chatBoxOpts)
 
 	finished = sys.scene.Manager.TickHandler.TicksSinceNTicks(popUpSprite.StartTick) > UIGlobals.CHAT_BOX_ANIM_SPEED*2
 
 	return finished
 }
 
-func (sys ChatSlidesRendererSystem) renderPopDownAnimation(popDownSprite *components.Sprite, chatBoxOpts *ebiten.DrawImageOptions, camera *components.Camera) {
+func (sys ChatSlidesRendererSystem) renderPopDownAnimation(popDownSprite *components.Sprite, chatBoxOpts *ebiten.DrawImageOptions, screen *ebiten.Image) {
 
 	spriteAtFrameIndex := animUtil.GetAnimFrame(sys.scene.Manager, popDownSprite)
 
-	cameraUtil.AddImage(camera, spriteAtFrameIndex, chatBoxOpts)
+	screen.DrawImage(spriteAtFrameIndex, chatBoxOpts)
 
 }
 
-func (sys ChatSlidesRendererSystem) handlePortrait(configAndState *components.ChatStateAndConfig, camera *components.Camera, portraitSprites *[]*components.Sprite) {
+func (sys ChatSlidesRendererSystem) handlePortrait(configAndState *components.ChatStateAndConfig, portraitSprites *[]*components.Sprite, screen *ebiten.Image) {
 	portraitOpts := &ebiten.DrawImageOptions{}
 	index := configAndState.State.CurrentSlideIndex
 	image := (*portraitSprites)[index].Image
 	imgWidth := image.Bounds().Size()
-	xTrans := 35.0
+
+	x := 80.0
+	y := 263.0
 
 	if !configAndState.State.SlidesContent[index].FacingRight {
 		portraitOpts.GeoM.Scale(-1, 1)
-		portraitOpts.GeoM.Translate(float64(imgWidth.X)+xTrans, 25)
+		portraitOpts.GeoM.Translate(float64(imgWidth.X)+x, y)
 	} else {
-		portraitOpts.GeoM.Translate(xTrans, 25)
+		portraitOpts.GeoM.Translate(x, y)
 	}
 
-	cameraUtil.AddImage(camera, image, portraitOpts)
+	screen.DrawImage(image, portraitOpts)
 }

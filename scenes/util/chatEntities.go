@@ -9,8 +9,7 @@ import (
 
 func AddAutomaticChatEntity(
 	scene *coldBrew.Scene,
-	chatName, sceneAssetPath string,
-	ticksPerWord int,
+	chatName string,
 	content []components.SlidesContent,
 ) {
 
@@ -21,6 +20,7 @@ func AddAutomaticChatEntity(
 
 	configAndState := components.NewChatStateAndConfig(chatName, content)
 	configAndState.State.Active = true
+	configAndState.State.PopUpMode = true
 
 	components.ChatStateAndConfigComponent.SetValue(
 		chatEntity,

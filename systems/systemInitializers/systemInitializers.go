@@ -62,10 +62,10 @@ func InitStandardSystems(scene *coldBrew.Scene, indoor bool) {
 	scene.AddSystem(renderPlayerSystems.NewPlayerRenderer(scene, indoor))
 	scene.AddSystem(renderSystems.NewFrontLayerRenderer(scene))
 	scene.AddSystem(renderSystems.NewIndicatorRenderer(scene))
-	scene.AddSystem(renderSystems.NewChatSlidesRenderer(scene))
-
-	// This must be the last Render system to be added for now(minus debug).
 	scene.AddSystem(renderSystems.NewCameraRenderer(scene))
+
+	// Post camera render systems.
+	scene.AddSystem(renderSystems.NewChatSlidesRenderer(scene))
 	scene.AddSystem(renderDebugSystems.NewDebugRigidBodyRenderer(scene))
 	scene.AddSystem(renderDebugSystems.NewHitBoxPreviewer(scene))
 

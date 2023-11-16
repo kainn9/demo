@@ -147,3 +147,8 @@ var PlayerAttackDataMap = map[components.CharState]*PlayerAttackData{
 		TicksPerFrame:   PLAYER_ATTACK_PRIMARY_ANIM_SPEED,
 	},
 }
+
+const (
+	PLAYER_PORTRAIT_INDEX = "player"
+	PLAYER_NAME           = "The Goodrich"
+)

@@ -33,7 +33,7 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 
 	// Entities ----------------------------------------------------------------------------------
 
-	scenesUtil.AddCameraEntity(scene, 0, 0)
+	scenesUtil.AddCameraEntity(scene, 0, 0, 1)
 
 	scenesUtil.AddParallaxBackgroundEntity(scene, []*components.ParallaxLayerConfig{
 		// Sky.
@@ -117,10 +117,7 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		60,
 		110,
 		LevelTwoScene{},
-		66,
-		231,
-		0,
-		0,
+		96, 313, -160, 90,
 	)
 
 	// Thugs.

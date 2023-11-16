@@ -11,6 +11,7 @@ import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	clientGlobals "github.com/kainn9/demo/globalConfig/client"
+	UIScenes "github.com/kainn9/demo/scenes/UI"
 	introScenes "github.com/kainn9/demo/scenes/intro"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
 	loaderUtil "github.com/kainn9/demo/systems/loader/util"
@@ -24,6 +25,17 @@ type game struct {
 func main() {
 	game := NewGame()
 
+	ebiten.SetWindowTitle("Demo!")
+	windowResizingMode := ebiten.WindowResizingModeEnabled
+	ebiten.SetWindowResizingMode(windowResizingMode)
+
+	screenWidth, screenHeight := ebiten.ScreenSizeInFullscreen()
+	ebiten.SetWindowSize(screenWidth, screenHeight)
+
+	x := (screenWidth - screenWidth) / 2
+	y := (screenHeight - screenHeight) / 2
+	ebiten.SetWindowPosition(x, y)
+
 	ebiten.RunGame(game)
 }
 
@@ -36,18 +48,13 @@ func NewGame() *game {
 
 	manager := coldBrew.NewManager(clientGlobals.SCENE_CACHE_LIMIT, clientGlobals.MAX_TICKS, loaderSprite.Image)
 
-	firstScene := introScenes.LevelOneScene{}
-	scenesUtil.InitFirstScene(manager, firstScene, 147, 275)
+	firstScene := UIScenes.TitleScene{}
+
+	scenesUtil.InitFirstScene(manager, firstScene, 0, 0)
 
 	g := &game{
 		manager: manager,
 	}
-
-	ebiten.SetWindowTitle("Demo!")
-	windowResizingMode := ebiten.WindowResizingModeEnabled
-	ebiten.SetWindowResizingMode(windowResizingMode)
-	ebiten.SetVsyncEnabled(true) // Experimental.
-	// ebiten.SetFullscreen(true)
 
 	return g
 
@@ -62,11 +69,15 @@ func (g *game) Update() error {
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.Key2) {
-		scenesUtil.ChangeScene(g.manager, introScenes.LevelTwoScene{}, 66, 231, 0, 0)
+		scenesUtil.ChangeScene(g.manager, introScenes.LevelTwoScene{}, 96, 313, -160, 90)
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.Key3) {
-		scenesUtil.ChangeScene(g.manager, introScenes.LevelThreeScene{}, 66, 231, 0, 0)
+		scenesUtil.ChangeScene(g.manager, introScenes.LevelThreeScene{}, 94, 313, -160, 90)
+	}
+
+	if inpututil.IsKeyJustPressed(ebiten.Key4) {
+		scenesUtil.ChangeScene(g.manager, UIScenes.TitleScene{}, -500, -500, 0, 0)
 	}
 
 	if inpututil.IsKeyJustPressed(ebiten.Key5) {

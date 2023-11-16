@@ -62,6 +62,27 @@ func (sys ChatHandlerSystem) handleNextSlide(
 	configAndState *components.ChatStateAndConfig,
 	popDownSprite, popUpSprite *components.Sprite,
 ) {
+	// Reset the text counter, since it will be incremented in the popUp animation.
+	configAndState.State.TextAnimStartTick = -1
+	configAndState.State.CurrentSlideIndex++ // Increment the slide index.
+
+	// Exit early and don't reset slide animations if speaker does not change.
+	slideIndex := configAndState.State.CurrentSlideIndex
+	prevSlideIndex := slideIndex - 1
+	slides := configAndState.State.SlidesContent
+
+	if prevSlideIndex >= 0 && slideIndex < len(slides) {
+
+		currentSlidePortName := slides[slideIndex].PortraitName
+		prevSlideName := slides[prevSlideIndex].PortraitName
+
+		if currentSlidePortName == prevSlideName {
+			return
+		}
+
+	}
+
+	configAndState.State.NameTextAnimStartTick = -1
 
 	// Switch to the PopDown animation.
 	configAndState.State.PopDownMode = true
@@ -70,9 +91,6 @@ func (sys ChatHandlerSystem) handleNextSlide(
 	// Reset the pop up animation(since it will play after popDown finishes).
 	animUtil.ResetAnimationConfig(popUpSprite)
 
-	// Reset the text counter, since it will be incremented in the popUp animation.
-	configAndState.State.TextAnimStartTick = -1
-	configAndState.State.CurrentSlideIndex++ // Increment the slide index.
 }
 
 func (sys ChatHandlerSystem) handleCallback(stateAndConfig *components.ChatStateAndConfig) {
@@ -93,7 +111,8 @@ func (sys ChatHandlerSystem) handleCallback(stateAndConfig *components.ChatState
 
 func (sys ChatHandlerSystem) handleTransitionState(configAndState *components.ChatStateAndConfig, popDownSprite *components.Sprite) {
 	// Once the pop down animation is finished, switch to the pop up animation.
-	popDownFinished := sys.scene.Manager.TickHandler.TicksSinceNTicks(popDownSprite.StartTick) > UIGlobals.CHAT_BOX_ANIM_SPEED*2
+	popDownFinished := sys.scene.Manager.TickHandler.TicksSinceNTicks(popDownSprite.StartTick) > UIGlobals.CHAT_BOX_ANIM_SPEED*3
+
 	if popDownFinished {
 		configAndState.State.PopDownMode = false
 		configAndState.State.PopUpMode = true

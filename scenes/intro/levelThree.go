@@ -4,6 +4,7 @@ import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	npcGlobals "github.com/kainn9/demo/globalConfig/npc"
+	playerGlobals "github.com/kainn9/demo/globalConfig/player"
 	"github.com/kainn9/demo/queries"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
 	"github.com/kainn9/demo/systems/systemInitializers"
@@ -32,7 +33,7 @@ func (LevelThreeScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	systemInitializers.InitStandardSystems(scene, true)
 
 	// Entities ----------------------------------------------------------------------------------
-	scenesUtil.AddCameraEntity(scene, 0, 0)
+	scenesUtil.AddCameraEntity(scene, 0, 0, 2)
 
 	// Background.
 	scenesUtil.AddParallaxBackgroundEntity(scene, []*components.ParallaxLayerConfig{
@@ -40,47 +41,68 @@ func (LevelThreeScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	})
 
 	// Floor.
-	scenesUtil.AddBlockEntity(scene, float64(scene.Width/2), float64(scene.Height-20), float64(scene.Width), 142, 0)
+	scenesUtil.AddBlockEntity(scene, float64(scene.Width/2), float64(scene.Height), float64(scene.Width), 20, 0)
 
 	// Bookshelf.
-	scenesUtil.AddBlockEntity(scene, 513, 212, 91, 101, 0)
+	scenesUtil.AddPlatformEntity(scene, 439, 250, 91, 11)
 
 	// Chat.
 	content := []components.SlidesContent{
 		{
-			Text:         "Ligma.",
+			Text:         "Lorem ipsum lala something something something...",
 			PortraitName: "therapistOne",
+			CharName:     "Dr. Relapse",
 		},
 		{
-			Text:         "Ligma what?",
+			Text:         "Lorem ipsum lala something something something?",
 			PortraitName: "player",
 			FacingRight:  true,
+			CharName:     playerGlobals.PLAYER_NAME,
 		},
 		{
-			Text:         "Ligma balls.",
+			Text:         "Lorem ipsum lala something something something!",
 			PortraitName: "therapistTwo",
+			CharName:     "Dr. Refeed",
+		},
+		{
+			Text:         "Blah blah blah blah.",
+			PortraitName: "therapistTwo",
+			CharName:     "Dr. Refeed",
+		},
+		{
+			Text:         "Blah blah blah blah.",
+			PortraitName: "therapistTwo",
+			CharName:     "Dr. Refeed",
+		},
+		{
+			Text:         "Blah blah blah blah.",
+			PortraitName: "therapistTwo",
+			CharName:     "Dr. Refeed",
+		},
+		{
+			Text:         "Blah blah blah blah.",
+			PortraitName: "therapistTwo",
+			CharName:     "Dr. Refeed",
 		},
 	}
+	// Note: Release is third the way therapist.
 
 	scenesUtil.AddOnCollideChatEntity(
 		scene,
 		"introChat",
 		content,
-		350, 231, 100, 50,
+		330, 315, 100, 50,
 	)
 
 	// Into Hallway.
 	scenesUtil.AddSceneTransitionEntity(
 		scene,
 		56,
-		208,
+		295,
 		60,
 		110,
 		LevelTwoScene{},
-		1167,
-		231,
-		749,
-		50,
+		1131, 313, 749, 90,
 	)
 
 	// Off scene(gets moved later).
@@ -109,7 +131,7 @@ func (LevelThreeCallbackSystem) Callback(scene *coldBrew.Scene) {
 
 		npcBody := components.RigidBodyComponent.Get(entity)
 		npcBody.Vel.Y = 0
-		npcBody.Pos.X = 480
+		npcBody.Pos.X = 410
 		npcBody.Pos.Y = -50
 	})
 }

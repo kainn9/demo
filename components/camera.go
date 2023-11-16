@@ -13,11 +13,11 @@ type Camera struct {
 	Surface       *ebiten.Image
 }
 
-func NewCamera(x, y float64, w, h int) *Camera {
+func NewCamera(x, y float64, w, h int, zoom float64) *Camera {
 	return &Camera{
 		X:       x,
 		Y:       y,
 		Surface: ebiten.NewImage(w, h),
-		Zoom:    1,
+		Zoom:    zoom,
 	}
 }

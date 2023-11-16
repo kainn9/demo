@@ -3,7 +3,7 @@ package introScenes
 import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	clientGlobals "github.com/kainn9/demo/globalConfig/client"
+	playerGlobals "github.com/kainn9/demo/globalConfig/player"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
 	"github.com/kainn9/demo/systems/systemInitializers"
 )
@@ -30,7 +30,7 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	systemInitializers.InitStandardSystems(scene, true)
 
 	// Entities ----------------------------------------------------------------------------------
-	scenesUtil.AddCameraEntity(scene, 0, 0)
+	scenesUtil.AddCameraEntity(scene, 0, 0, 2)
 
 	scenesUtil.AddParallaxBackgroundEntity(scene, []*components.ParallaxLayerConfig{
 		components.NewParallaxLayerConfig(LEVEL_TWO_SCENE_ASSET_PATH, 0, 0, 0, false),
@@ -46,12 +46,10 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	// Chat.
 	content := []components.SlidesContent{
 		{
-			Text:         "Lorum yolo bolo polo",
-			PortraitName: "player",
-		},
-		{
-			Text:         "Ipsum wipsum bipsom",
-			PortraitName: "bigBoi",
+			Text:         "Its a flier for some kind of CBT Therapy.",
+			PortraitName: playerGlobals.PLAYER_PORTRAIT_INDEX,
+			CharName:     playerGlobals.PLAYER_NAME,
+			FacingRight:  true,
 		},
 	}
 
@@ -71,9 +69,9 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		60,
 		110,
 		LevelOneScene{},
-		3654,
+		3622,
 		275,
-		3654-float64(clientGlobals.SCREEN_WIDTH/2),
+		3302,
 		0,
 	)
 
@@ -85,10 +83,7 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		60,
 		110,
 		LevelThreeScene{},
-		66,
-		231,
-		0,
-		0,
+		94, 313, -160, 90,
 	)
 
 	return scene
