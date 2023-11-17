@@ -29,7 +29,7 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scene := coldBrew.NewScene(m, LEVEL_ONE_SCENE_WIDTH, LEVEL_ONE_SCENE_HEIGHT)
 
 	// Systems ----------------------------------------------------------------------------------
-	systemInitializers.InitStandardSystems(scene, false)
+	systemInitializers.InitStandardSystems(scene, "The Outskirts.", false)
 
 	// Entities ----------------------------------------------------------------------------------
 
@@ -125,6 +125,10 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scenesUtil.AddNpcEntity(scene, 1636, 45, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true)
 	scenesUtil.AddNpcEntity(scene, 2095, 149, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true)
 	scenesUtil.AddNpcEntity(scene, 2606, 159, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true)
+
+	scenesUtil.AddNpcEntity(scene, 3052, 275, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true)
+	scenesUtil.AddNpcEntity(scene, 3152, 275, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true)
+	scenesUtil.AddNpcEntity(scene, 3202, 275, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true)
 
 	return scene
 }

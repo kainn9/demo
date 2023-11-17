@@ -42,11 +42,19 @@ func (sys NpcSimpleAiHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
 		return
 	}
 
-	patrolRange := 200.0
+	patrolRange := 230.0
 
-	tempFactor := 50.0
+	tempFactor := 60.0
 
-	if math.Abs(playerBody.Pos.Sub(npcBody.Pos).X) < patrolRange {
+	dist := math.Abs(playerBody.Pos.Sub(npcBody.Pos).X)
+
+	if dist < npcBody.Polygon.Width/2+playerBody.Polygon.Width/2 {
+		npcState.Transform.BasicHorizontalMovement = false
+		npcBody.Vel.X = 0
+		return
+	}
+
+	if dist < patrolRange {
 
 		if npcBody.Pos.X < playerBody.Pos.X {
 			npcState.Transform.BasicHorizontalMovement = true

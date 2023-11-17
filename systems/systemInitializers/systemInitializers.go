@@ -21,7 +21,7 @@ import (
 	systemsUtil "github.com/kainn9/demo/systems/util"
 )
 
-func InitStandardSystems(scene *coldBrew.Scene, indoor bool) {
+func InitStandardSystems(scene *coldBrew.Scene, title string, indoor bool) {
 	// Loader Systems.
 	scene.AddSystem(loaderPlayerSystems.NewPlayerAssetsLoader(scene))
 	scene.AddSystem(loaderNpcSystems.NewNpcAssetLoader(scene))
@@ -70,6 +70,7 @@ func InitStandardSystems(scene *coldBrew.Scene, indoor bool) {
 
 	// Post camera render systems.
 	scene.AddSystem(renderSystems.NewChatSlidesRenderer(scene))
+	scene.AddSystem(renderSystems.NewSceneTitleRenderer(scene, title))
 	scene.AddSystem(renderDebugSystems.NewDebugRigidBodyRenderer(scene))
 	scene.AddSystem(renderDebugSystems.NewHitBoxPreviewer(scene))
 

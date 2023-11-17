@@ -24,7 +24,7 @@ import (
 func RenderText(
 	text string,
 	x, y, maxWidth, charWidth, charHeight, spaceWidth float64,
-	startTick, ticksPerWord int,
+	startTick, ticksPerWord, scale int,
 	lower, upper, numbers, special *components.Sprite,
 	adjustmentMap map[string]tBokiVec.Vec2,
 	tickHandler *coldBrew.TickHandler,
@@ -55,8 +55,8 @@ func RenderText(
 		}
 
 		word = StripInvalidCharacters(word)
-		PrintWord(word, currX, currY, charWidth, charHeight, animCoefficient, lower, upper, numbers, special, adjustmentMap, screen)
-		currX, currY = NextWordPosition(currX, currY, charWidth, charHeight, maxWidth, startX, spaceWidth, word, adjustmentMap)
+		PrintWord(word, currX, currY, charWidth, charHeight, animCoefficient, lower, upper, numbers, special, adjustmentMap, screen, scale)
+		currX, currY = NextWordPosition(currX, currY, charWidth, charHeight, maxWidth, startX, spaceWidth, word, adjustmentMap, scale)
 
 	}
 }
@@ -84,7 +84,10 @@ func PrintWord(
 	lower, upper, numbers, special *components.Sprite,
 	adjustmentMap map[string]tBokiVec.Vec2,
 	screen *ebiten.Image,
+	scale int,
 ) {
+
+	floatScale := float64(scale)
 
 	var charSheet *ebiten.Image
 	var charSheetIndex int
@@ -127,10 +130,12 @@ func PrintWord(
 		charImage := charSheet.SubImage(rect).(*ebiten.Image)
 
 		adjustmentX += adjustmentMap[prevChar].X
-		xPos := currentX + float64(i)*charWidth + adjustmentX
+
+		xPos := currentX + (float64(i)*charWidth+adjustmentX)*floatScale
 		yPos := currentY + adjustmentMap[char].Y - ((charHeight / 2) * (1 - animCoefficient))
 
 		charOpts := &ebiten.DrawImageOptions{}
+		charOpts.GeoM.Scale(floatScale, floatScale)
 		charOpts.GeoM.Translate(xPos, yPos)
 
 		charOpts.ColorScale.ScaleAlpha(float32(animCoefficient))
@@ -147,8 +152,10 @@ func NextWordPosition(
 	currX, currY, charWidth, charHeight, maxWidth, startX, spaceWidth float64,
 	word string,
 	adjustmentMap map[string]tBokiVec.Vec2,
+	scale int,
 ) (nextX, nextY float64) {
 
+	floatScale := float64(scale)
 	nextX = currX
 	nextY = currY
 
@@ -156,18 +163,18 @@ func NextWordPosition(
 
 		char := string(charRune)
 		adjustment := adjustmentMap[char]
-		nextX += charWidth + adjustment.X
+		nextX += (charWidth + adjustment.X) * floatScale
 
 	}
 
 	// New line.
 	if nextX >= maxWidth {
 		factor := math.Floor(nextX / maxWidth)
-		nextY = nextY + (charHeight * factor)
+		nextY = nextY + ((charHeight * floatScale) * factor)
 		nextX = startX
 	} else {
 		// Space.
-		nextX += spaceWidth
+		nextX += (spaceWidth * floatScale)
 	}
 
 	return nextX, nextY
@@ -177,7 +184,7 @@ func NextWordPosition(
 func RenderTextDefault(
 	text string,
 	x, y, maxWidth float64,
-	startTick, ticksPerWord int,
+	startTick, ticksPerWord, scale int,
 	world *donburi.World,
 	tickHandler *coldBrew.TickHandler,
 	screen *ebiten.Image,
@@ -188,10 +195,26 @@ func RenderTextDefault(
 	RenderText(
 		text,
 		x, y, maxWidth, fontGlobals.FONT_DEFAULT_WIDTH, fontGlobals.FONT_DEFAULT_HEIGHT, fontGlobals.FONT_DEFAULT_WIDTH-1,
-		startTick, ticksPerWord,
+		startTick, ticksPerWord, scale,
 		lower, upper, numbers, special,
 		fontGlobals.FONT_DEFAULT_ADJUSTMENT_MAP,
 		tickHandler,
 		screen,
 	)
+}
+
+func GetWidth(text string, charWidth, spaceWidth, maxWidth float64, scale int) int {
+	words := strings.Split(text, " ")
+
+	width := (len(text) * int(charWidth) * scale) + ((len(words) - 1) * int(spaceWidth) * scale)
+
+	if width > int(maxWidth) {
+		return int(maxWidth)
+	}
+	return width
+}
+
+func GetDefaultFontWidth(text string, maxWidth, scale int) int {
+
+	return GetWidth(text, fontGlobals.FONT_DEFAULT_WIDTH, fontGlobals.FONT_DEFAULT_WIDTH-1, float64(maxWidth), scale)
 }

@@ -26,7 +26,7 @@ func (sys PlayerDefeatedHandlerSystem) Run(dt float64, npcEntity *donburi.Entry)
 	ticksHandler := sys.scene.Manager.TickHandler
 	state := components.PlayerStateComponent.Get(npcEntity)
 
-	if state.Combat.Health == 0 && !state.Combat.Defeated {
+	if state.Combat.Health <= 0 && !state.Combat.Defeated {
 		state.Combat.Defeated = true
 		state.Combat.DefeatedStartTick = ticksHandler.CurrentTick()
 	}

@@ -27,7 +27,7 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scene := coldBrew.NewScene(m, LEVEL_TWO_SCENE_WIDTH, LEVEL_TWO_SCENE_HEIGHT)
 
 	// Systems ----------------------------------------------------------------------------------
-	systemInitializers.InitStandardSystems(scene, true)
+	systemInitializers.InitStandardSystems(scene, "The Zap Clinic.", true)
 
 	// Entities ----------------------------------------------------------------------------------
 	scenesUtil.AddCameraEntity(scene, 0, 0, 2)

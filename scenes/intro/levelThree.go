@@ -30,7 +30,7 @@ func (LevelThreeScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scene := coldBrew.NewScene(m, LEVEL_THREE_SCENE_WIDTH, LEVEL_THREE_SCENE_HEIGHT)
 
 	// Systems ----------------------------------------------------------------------------------
-	systemInitializers.InitStandardSystems(scene, true)
+	systemInitializers.InitStandardSystems(scene, "Therapists Office.", true)
 
 	// Entities ----------------------------------------------------------------------------------
 	scenesUtil.AddCameraEntity(scene, 0, 0, 2)

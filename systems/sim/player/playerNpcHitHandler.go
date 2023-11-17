@@ -15,7 +15,8 @@ import (
 )
 
 type PlayerNpcHitHandlerSystem struct {
-	scene *coldBrew.Scene
+	scene   *coldBrew.Scene
+	currNpc int
 }
 
 func NewPlayerNpcHitHandler(scene *coldBrew.Scene) *PlayerNpcHitHandlerSystem {
@@ -24,38 +25,52 @@ func NewPlayerNpcHitHandler(scene *coldBrew.Scene) *PlayerNpcHitHandlerSystem {
 	}
 }
 
-func (sys PlayerNpcHitHandlerSystem) Query() *donburi.Query {
+func (PlayerNpcHitHandlerSystem) NpcQuery() *donburi.Query {
 	return queries.NpcQuery
 }
 
-func (sys PlayerNpcHitHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
+func (sys PlayerNpcHitHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 	world := sys.scene.World
 	tickHandler := sys.scene.Manager.TickHandler
-
-	npcBody := components.RigidBodyComponent.Get(npcEntity)
-	npcState := components.NpcStateComponent.Get(npcEntity)
 
 	playerEntity := systemsUtil.GetPlayerEntity(world)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 
-	if !npcState.Combat.Hittable || npcState.Combat.Defeated {
-		return
-	}
+	query := sys.NpcQuery()
+	count := query.Count(world)
 
-	id := int(npcEntity.Entity().Id())
+	query.Each(world, func(npcEntity *donburi.Entry) {
 
-	isColliding, _ := tBokiPhysics.Detector.Detect(playerBody, npcBody, true)
+		npcBody := components.RigidBodyComponent.Get(npcEntity)
+		npcState := components.NpcStateComponent.Get(npcEntity)
+
+		if !npcState.Combat.Hittable || npcState.Combat.Defeated {
+			return
+		}
+
+		id := int(npcEntity.Entity().Id())
+
+		isColliding, _ := tBokiPhysics.Detector.Detect(playerBody, npcBody, true)
+
+		sys.handleCollision(isColliding, id, playerBody, npcBody, playerState, tickHandler)
+
+		sys.clearHitState(playerState, tickHandler, id, count)
+
+	})
+
+}
+
+func (sys PlayerNpcHitHandlerSystem) handleCollision(
+	isColliding bool,
+	id int,
+	playerBody, npcBody *tBokiComponents.RigidBody,
+	playerState *components.PlayerState,
+	tickHandler *coldBrew.TickHandler,
+) {
 
 	if isColliding && playerState.Combat.Hits[id] == 0 {
 		sys.processAttack(playerBody, npcBody, playerState, tickHandler, id)
-	} else {
-		delete(playerState.Combat.Hits, id)
-	}
-
-	if tickHandler.TicksSinceNTicks(playerState.Combat.LastHitTick) > playerGlobals.PLAYER_HURT_DURATION_TICKS {
-		playerState.Combat.Hit = false
-		playerState.Combat.LastHitTick = -1
 	}
 
 }
@@ -83,11 +98,10 @@ func (sys PlayerNpcHitHandlerSystem) processAttack(
 
 	playerState.Combat.Hit = true
 	playerState.Combat.Health -= 1
-	playerState.Combat.Hits[id] = id
-	playerState.Combat.LastHitTick = tickHandler.CurrentTick()
 
-	// Starting Iframe(handled in separate system).
-	playerState.Combat.Invincible = true
+	playerState.Combat.Hits[id] = id
+
+	playerState.Combat.LastHitTick = tickHandler.CurrentTick()
 
 	log.Println("player hit, health:", playerState.Combat.Health)
 
@@ -95,4 +109,22 @@ func (sys PlayerNpcHitHandlerSystem) processAttack(
 
 func (sys PlayerNpcHitHandlerSystem) playerNotHittable(playerState *components.PlayerState) bool {
 	return playerState.Combat.Defeated || playerState.Combat.Invincible
+}
+
+func (sys *PlayerNpcHitHandlerSystem) clearHitState(playerState *components.PlayerState, tickHandler *coldBrew.TickHandler, id, count int) {
+
+	if tickHandler.TicksSinceNTicks(playerState.Combat.LastHitTick) > playerGlobals.PLAYER_HURT_DURATION_TICKS {
+		playerState.Combat.Hit = false
+
+		playerState.Combat.Invincible = true
+
+		playerState.Combat.Hits[id] = 0
+
+		if count-1 == sys.currNpc {
+			playerState.Combat.LastHitTick = -1
+			sys.currNpc = 0
+		}
+
+	}
+	sys.currNpc++
 }
