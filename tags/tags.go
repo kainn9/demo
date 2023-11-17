@@ -16,6 +16,7 @@ var NpcTag = donburi.NewTag()
 
 var UISingletonTag = donburi.NewTag()
 
-// NPC TAGS:
+var EmptyTag = donburi.NewTag()
 
+// NPC TAGS:
 var NpcBigBoiTag = donburi.NewTag()

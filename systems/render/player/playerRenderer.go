@@ -106,7 +106,7 @@ func (sys PlayerRendererSystem) configureDrawOptions(
 	opts.GeoM.Scale(playerState.Direction(), 1)
 
 	flashWhite := sys.scene.Manager.TickHandler.CurrentTick()%20 > 15
-	if playerState.Combat.IsHit && flashWhite {
+	if playerState.Combat.Hit && flashWhite {
 		red := color.RGBA{255, 0, 0, 255}
 		opts.ColorScale.ScaleWithColor(red)
 	} else {
@@ -127,7 +127,7 @@ func (sys PlayerRendererSystem) configureDrawOptions(
 
 func (sys PlayerRendererSystem) renderPlayerSpriteOnCamera(currentSpriteSheet *components.Sprite, camera *components.Camera, opts *ebiten.DrawImageOptions) {
 	// Selecting correct sprite frame to render.
-	spriteAtFrameIndex := animUtil.GetAnimFrame(sys.scene.Manager, currentSpriteSheet)
+	spriteAtFrameIndex := animUtil.GetAnimFrame(sys.scene.Manager.TickHandler, currentSpriteSheet)
 	// Adding sprite frame to camera.
 	cameraUtil.AddImage(camera, spriteAtFrameIndex, opts)
 
@@ -135,11 +135,16 @@ func (sys PlayerRendererSystem) renderPlayerSpriteOnCamera(currentSpriteSheet *c
 
 func (sys PlayerRendererSystem) determinePlayerAnimationState(playerState *components.PlayerState) components.CharState {
 
+	if playerState.Animation == playerGlobals.PLAYER_CHAR_STATE_SIT {
+
+		return playerGlobals.PLAYER_CHAR_STATE_SIT
+	}
+
 	if playerState.Combat.Defeated {
 		return sharedAnimationGlobals.CHAR_STATE_DEFEATED
 	}
 
-	if playerState.Combat.IsHit {
+	if playerState.Combat.Hit {
 		return sharedAnimationGlobals.CHAR_STATE_HURT
 	}
 	// Todo: Handler func for specific attacks once theres more than one.

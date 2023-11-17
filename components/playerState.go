@@ -19,13 +19,14 @@ type PlayerTransformState struct {
 }
 
 type PlayerCombatState struct {
-	Attacking, IsHit, Defeated bool
-	CurrentAttack              CharState
-	Hits                       map[int]int
+	Attacking, Hit, Defeated, Invincible bool
+	CurrentAttack                        CharState
+	Hits                                 map[int]int
 
 	Health,
 	AttackStartTick,
 	LastHitTick,
+	InvincibleStartTick,
 	DefeatedStartTick int
 }
 
@@ -47,9 +48,11 @@ func NewPlayerState() *PlayerState {
 			direction: 1,
 		},
 		Combat: &PlayerCombatState{
-			AttackStartTick: -1,
-			Health:          10,
-			Hits:            make(map[int]int),
+			AttackStartTick:     -1,
+			LastHitTick:         -1,
+			InvincibleStartTick: 1,
+			Health:              10,
+			Hits:                make(map[int]int),
 		},
 	}
 }

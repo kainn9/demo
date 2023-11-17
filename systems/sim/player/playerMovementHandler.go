@@ -58,7 +58,7 @@ func (sys PlayerMovementHandlerSystem) Run(dt float64, playerEntity *donburi.Ent
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 
-	if playerState.Combat.IsHit {
+	if playerState.Combat.Hit {
 		return
 	}
 

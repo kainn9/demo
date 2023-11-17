@@ -5,6 +5,7 @@ import (
 	"github.com/kainn9/demo/components"
 
 	UIGlobals "github.com/kainn9/demo/globalConfig/UI"
+	sharedAnimationGlobals "github.com/kainn9/demo/globalConfig/sharedAnimation"
 	animUtil "github.com/kainn9/demo/systems/render/util/anim"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	"github.com/yohamta/donburi"
@@ -49,12 +50,15 @@ func (sys ChatHandlerSystem) Run(dt float64, chatEntity *donburi.Entry) {
 	if playerState.IsInteracting && configAndState.State.Active {
 		playerState.IsInteracting = false
 		sys.handleNextSlide(configAndState, popDownSprite, popUpSprite)
-		sys.handleCallback(configAndState)
 
 	}
 
 	sys.handleTransitionState(configAndState, popDownSprite)
-	sys.handleClose(configAndState, popDownSprite, popUpSprite)
+	sys.handleClose(configAndState, popDownSprite, popUpSprite, playerState)
+
+	if configAndState.State.Active {
+		sys.handleCallback(configAndState)
+	}
 
 }
 
@@ -119,7 +123,12 @@ func (sys ChatHandlerSystem) handleTransitionState(configAndState *components.Ch
 	}
 }
 
-func (sys ChatHandlerSystem) handleClose(configAndState *components.ChatStateAndConfig, popDownSprite, popUpSprite *components.Sprite) {
+func (sys ChatHandlerSystem) handleClose(
+	configAndState *components.ChatStateAndConfig,
+	popDownSprite,
+	popUpSprite *components.Sprite,
+	playerState *components.PlayerState,
+) {
 	// If we are out of chat slides, time to close the chat box and
 	// reset the state(incase we ever want to re-open it).
 	chatFinished := configAndState.State.CurrentSlideIndex > len(configAndState.State.SlidesContent)-1
@@ -129,5 +138,6 @@ func (sys ChatHandlerSystem) handleClose(configAndState *components.ChatStateAnd
 		animUtil.ResetAnimationConfig(popDownSprite)
 		animUtil.ResetAnimationConfig(popUpSprite)
 		configAndState.State.HasBeenRead = true
+		playerState.Animation = sharedAnimationGlobals.CHAR_STATE_IDLE
 	}
 }

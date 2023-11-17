@@ -97,7 +97,7 @@ func (sys ChatSlidesRendererSystem) Draw(screen *ebiten.Image, chatEntity *donbu
 				configAndState.State.TextAnimStartTick,
 				configAndState.Config.TicksPerWord,
 				&sys.scene.World,
-				sys.scene.Manager,
+				sys.scene.Manager.TickHandler,
 				screen,
 			)
 
@@ -114,7 +114,7 @@ func (sys ChatSlidesRendererSystem) Draw(screen *ebiten.Image, chatEntity *donbu
 				configAndState.State.NameTextAnimStartTick,
 				configAndState.Config.TicksPerWord,
 				&sys.scene.World,
-				sys.scene.Manager,
+				sys.scene.Manager.TickHandler,
 				screen,
 			)
 
@@ -141,7 +141,7 @@ func (sys ChatSlidesRendererSystem) renderPopUpAnimation(chatBoxOpts *ebiten.Dra
 
 	popUpSprite := systemsUtil.GetChatPopUpSprite(sys.scene.World)
 
-	spriteAtFrameIndex := animUtil.GetAnimFrame(sys.scene.Manager, popUpSprite)
+	spriteAtFrameIndex := animUtil.GetAnimFrame(sys.scene.Manager.TickHandler, popUpSprite)
 
 	screen.DrawImage(spriteAtFrameIndex, chatBoxOpts)
 
@@ -152,7 +152,7 @@ func (sys ChatSlidesRendererSystem) renderPopUpAnimation(chatBoxOpts *ebiten.Dra
 
 func (sys ChatSlidesRendererSystem) renderPopDownAnimation(popDownSprite *components.Sprite, chatBoxOpts *ebiten.DrawImageOptions, screen *ebiten.Image) {
 
-	spriteAtFrameIndex := animUtil.GetAnimFrame(sys.scene.Manager, popDownSprite)
+	spriteAtFrameIndex := animUtil.GetAnimFrame(sys.scene.Manager.TickHandler, popDownSprite)
 
 	screen.DrawImage(spriteAtFrameIndex, chatBoxOpts)
 

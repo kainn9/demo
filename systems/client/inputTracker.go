@@ -150,7 +150,7 @@ func (sys InputTrackerSystem) addUniqueKey(slice *[]ebiten.Key, element ebiten.K
 func (sys InputTrackerSystem) playerCannotAcceptMovementInputs(world donburi.World, playerState *components.PlayerState) bool {
 
 	return systemsUtil.IsChatActive(world) ||
-		playerState.Combat.IsHit ||
+		playerState.Combat.Hit ||
 		playerState.Combat.Attacking ||
 		playerState.Combat.Defeated
 }

@@ -36,7 +36,14 @@ const (
 )
 
 const (
-	NPC_NAME_THERAPIST_TWO components.NpcName = "therapistTwo"
+	NPC_PORTRAIT_NAME_THERAPIST_ONE  = "Dr. Relapse"
+	NPC_PORTRAIT_INDEX_THERAPIST_ONE = "therapistOne"
+)
+
+const (
+	NPC_NAME_THERAPIST_TWO           components.NpcName = "therapistTwo"
+	NPC_PORTRAIT_NAME_THERAPIST_TWO                     = "Dr. Refeed"
+	NPC_PORTRAIT_INDEX_THERAPIST_TWO                    = "therapistTwo"
 
 	THERAPIST_TWO_WIDTH  = 25
 	THERAPIST_TWO_HEIGHT = 55
@@ -49,6 +56,11 @@ const (
 
 	THERAPIST_TWO_IDLE_FRAME_COUNT = 1
 	THERAPIST_TWO_IDLE_ANIM_SPEED  = 1
+)
+
+const (
+	NPC_PORTRAIT_NAME_THERAPIST_THREE  = "Dr. Release"
+	NPC_PORTRAIT_INDEX_THERAPIST_THREE = "therapistThree"
 )
 
 // RigidBody dimensions

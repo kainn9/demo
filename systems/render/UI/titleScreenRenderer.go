@@ -44,10 +44,10 @@ func (sys *TitleRendererSystem) Draw(screen *ebiten.Image, bgEntity *donburi.Ent
 		sys.runSetup = false
 	}
 
-	frame := animUtil.GetAnimFrame(sys.scene.Manager, sprite)
+	frame := animUtil.GetAnimFrame(sys.scene.Manager.TickHandler, sprite)
 
 	opts := &ebiten.DrawImageOptions{}
 	screen.DrawImage(frame, opts)
 
-	textUtil.RenderTextDefault("Press Enter to Start", 400, 100, 700, 0, 60, &sys.scene.World, sys.scene.Manager, screen)
+	textUtil.RenderTextDefault("Press Enter to Start", 400, 100, 700, 0, 60, &sys.scene.World, sys.scene.Manager.TickHandler, screen)
 }

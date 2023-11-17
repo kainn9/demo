@@ -40,7 +40,7 @@ func (sys PlayerPhysicsInputProcessorSystem) Run(dt float64, playerEntity *donbu
 		playerState.Transform.BasicHorizontalMovement = false
 	}
 
-	if playerState.Combat.IsHit {
+	if playerState.Combat.Hit {
 		return
 	}
 

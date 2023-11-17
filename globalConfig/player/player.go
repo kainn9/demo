@@ -21,6 +21,7 @@ const (
 const (
 	PLAYER_HURT_DURATION_TICKS   = 20
 	PLAYER_DEFEAT_DURATION_TICKS = 200
+	PLAYER_IFRAME_DURATION_TICKS = PLAYER_HURT_DURATION_TICKS + 60
 )
 
 // ANIMATIONS.
@@ -37,6 +38,7 @@ const (
 	PLAYER_ATTACK_PRIMARY_ANIM_SPEED = 6
 	PLAYER_HURT_ANIM_SPEED           = 60
 	PLAYER_DEFEATED_ANIM_SPEED       = 12
+	PLAYER_SIT_ANIM_SPEED            = 12
 
 	PLAYER_IDLE_FRAME_COUNT                = 7
 	PLAYER_WALK_FRAME_COUNT                = 8
@@ -48,9 +50,11 @@ const (
 	PLAYER_ATTACK_PRIMARY_FRAME_COUNT      = 8
 	PLAYER_HURT_FRAME_COUNT                = 1
 	PLAYER_DEFEATED_FRAME_COUNT            = 9
+	PLAYER_SIT_FRAME_COUNT                 = 1
 
 	PLAYER_CHAR_STATE_CLIMB_LADDER_IDLE   components.CharState = "climbLadderIdle"
 	PLAYER_CHAR_STATE_CLIMB_LADDER_ACTIVE components.CharState = "climbLadderActive"
+	PLAYER_CHAR_STATE_SIT                 components.CharState = "sit"
 )
 
 var PLAYER_ANIMATION_CONFIGS = map[components.CharState]*components.AnimationConfig{
@@ -132,6 +136,13 @@ var PLAYER_ANIMATION_CONFIGS = map[components.CharState]*components.AnimationCon
 		PLAYER_ANIMATIONS_SPRITE_HEIGHT,
 		PLAYER_DEFEATED_FRAME_COUNT,
 		PLAYER_DEFEATED_ANIM_SPEED,
+		true,
+	),
+	PLAYER_CHAR_STATE_SIT: components.NewAnimationConfig(
+		PLAYER_ANIMATIONS_SPRITE_WIDTH,
+		PLAYER_ANIMATIONS_SPRITE_HEIGHT,
+		PLAYER_SIT_FRAME_COUNT,
+		PLAYER_SIT_ANIM_SPEED,
 		true,
 	),
 }

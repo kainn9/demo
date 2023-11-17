@@ -28,13 +28,7 @@ func main() {
 	ebiten.SetWindowTitle("Demo!")
 	windowResizingMode := ebiten.WindowResizingModeEnabled
 	ebiten.SetWindowResizingMode(windowResizingMode)
-
-	screenWidth, screenHeight := ebiten.ScreenSizeInFullscreen()
-	ebiten.SetWindowSize(screenWidth, screenHeight)
-
-	x := (screenWidth - screenWidth) / 2
-	y := (screenHeight - screenHeight) / 2
-	ebiten.SetWindowPosition(x, y)
+	//ebiten.SetFullscreen(true)
 
 	ebiten.RunGame(game)
 }

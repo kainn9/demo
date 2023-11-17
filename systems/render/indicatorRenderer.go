@@ -65,7 +65,7 @@ func (sys IndicatorRendererSystem) renderIndicator(
 		indicatorOpts := &ebiten.DrawImageOptions{}
 
 		currentFrame := animUtil.GetAnimFrame(
-			sys.scene.Manager,
+			sys.scene.Manager.TickHandler,
 			indicatorSprite,
 		)
 

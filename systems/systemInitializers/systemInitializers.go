@@ -1,9 +1,10 @@
 package systemInitializers
 
 import (
-	"log"
-
 	"github.com/kainn9/coldBrew"
+	"github.com/kainn9/demo/components"
+	playerGlobals "github.com/kainn9/demo/globalConfig/player"
+	sharedAnimationGlobals "github.com/kainn9/demo/globalConfig/sharedAnimation"
 	clientSystems "github.com/kainn9/demo/systems/client"
 	clientDebugSystems "github.com/kainn9/demo/systems/client/debug"
 	loaderSystems "github.com/kainn9/demo/systems/loader"
@@ -17,6 +18,7 @@ import (
 	simChatSystems "github.com/kainn9/demo/systems/sim/chat"
 	simNpcSystems "github.com/kainn9/demo/systems/sim/npc"
 	simPlayerSystems "github.com/kainn9/demo/systems/sim/player"
+	systemsUtil "github.com/kainn9/demo/systems/util"
 )
 
 func InitStandardSystems(scene *coldBrew.Scene, indoor bool) {
@@ -39,7 +41,7 @@ func InitStandardSystems(scene *coldBrew.Scene, indoor bool) {
 	scene.AddSystem(simChatSystems.NewChatInteractableHandler(scene))
 
 	scene.AddSystem(simPlayerSystems.NewPlayerMovementHandler(scene, indoor))
-	scene.AddSystem(simPlayerSystems.NewPlayerNpcHitHandler(scene))
+
 	scene.AddSystem(simSystems.NewGravityAndIntegrationHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewClearOnGroundHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewPlayerBlockCollisionHandler(scene))
@@ -49,6 +51,8 @@ func InitStandardSystems(scene *coldBrew.Scene, indoor bool) {
 	scene.AddSystem(simSystems.NewCameraPositionHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewIndicatorCollisionHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewPlayerMeleeAttackHandler(scene))
+	scene.AddSystem(simPlayerSystems.NewPlayerNpcHitHandler(scene))
+	scene.AddSystem(simPlayerSystems.NewPlayerIframeHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewPlayerDefeatedHandler(scene))
 	scene.AddSystem(simNpcSystems.NewNpcAttackedHandler(scene))
 	scene.AddSystem(simNpcSystems.NewNpcDefeatedHandler(scene))
@@ -77,9 +81,50 @@ func AttachChatCallback(scene *coldBrew.Scene, callback simChatSystems.ChatCallB
 		switch sys.(type) {
 
 		case *simChatSystems.ChatHandlerSystem:
-			log.Println("Adding custom chat callback!")
 			chatSys := sys.(*simChatSystems.ChatHandlerSystem)
 			chatSys.CallBackSystems = append(chatSys.CallBackSystems, callback)
 		}
 	}
+}
+
+type SitCallBackStart struct {
+	name  string
+	index int
+}
+type SitCallBackEnd struct {
+	name  string
+	index int
+}
+
+func (cb SitCallBackStart) ChatName() string {
+	return cb.name
+}
+
+func (cb SitCallBackStart) SlideIndex() int {
+	return cb.index
+}
+
+func (cb SitCallBackStart) Callback(scene *coldBrew.Scene) {
+	playerEntity := systemsUtil.GetPlayerEntity(scene.World)
+	playerState := components.PlayerStateComponent.Get(playerEntity)
+	playerState.Animation = playerGlobals.PLAYER_CHAR_STATE_SIT
+}
+
+func (cb SitCallBackEnd) ChatName() string {
+	return cb.name
+}
+
+func (cb SitCallBackEnd) SlideIndex() int {
+	return cb.index
+}
+
+func (cb SitCallBackEnd) Callback(scene *coldBrew.Scene) {
+	playerEntity := systemsUtil.GetPlayerEntity(scene.World)
+	playerState := components.PlayerStateComponent.Get(playerEntity)
+	playerState.Animation = sharedAnimationGlobals.CHAR_STATE_IDLE
+}
+
+func AttachSitCallbackToChat(scene *coldBrew.Scene, chatName string, slideCount int) {
+	AttachChatCallback(scene, SitCallBackStart{chatName, 0})
+	AttachChatCallback(scene, SitCallBackEnd{chatName, slideCount})
 }

@@ -2,9 +2,25 @@
 A Metroidvania-lite/Platformer game written in Go.
 
 
+# To Run:
+- When using mac: 
+    ```bash
+        EBITENGINE_GRAPHICS_LIBRARY="opengl" go run .
+    ```
+- When using windows: 
+    ```bash
+    go run.
+    ```
+- Notes: 
+    - Using `opengl` option for mac resolves issue where invoking `ebiten.SetFullscreen(true)` results in a lower frame rate then when setting fullscreen via mac UI.
+    
+    - Also resolves issue where fps decreases when running OBS while game is in fullscreen too.
+
+
+
 LA-TODOs:
 - Change interaction markers to be on the object themselves
-- Empty TAG 
+- Delay for rereading, interaction marker
 - Iframe after hit
 - Dodge/Roll
 - "Better" enemy "ai"

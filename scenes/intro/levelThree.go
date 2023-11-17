@@ -50,49 +50,41 @@ func (LevelThreeScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	content := []components.SlidesContent{
 		{
 			Text:         "Lorem ipsum lala something something something...",
-			PortraitName: "therapistOne",
-			CharName:     "Dr. Relapse",
+			PortraitName: npcGlobals.NPC_PORTRAIT_INDEX_THERAPIST_ONE,
+			CharName:     npcGlobals.NPC_PORTRAIT_NAME_THERAPIST_ONE,
 		},
 		{
 			Text:         "Lorem ipsum lala something something something?",
-			PortraitName: "player",
+			PortraitName: playerGlobals.PLAYER_PORTRAIT_INDEX,
 			FacingRight:  true,
 			CharName:     playerGlobals.PLAYER_NAME,
 		},
 		{
 			Text:         "Lorem ipsum lala something something something!",
-			PortraitName: "therapistTwo",
-			CharName:     "Dr. Refeed",
+			PortraitName: npcGlobals.NPC_PORTRAIT_INDEX_THERAPIST_TWO,
+			CharName:     npcGlobals.NPC_PORTRAIT_NAME_THERAPIST_TWO,
 		},
 		{
 			Text:         "Blah blah blah blah.",
-			PortraitName: "therapistTwo",
-			CharName:     "Dr. Refeed",
+			PortraitName: npcGlobals.NPC_PORTRAIT_INDEX_THERAPIST_TWO,
+			CharName:     npcGlobals.NPC_PORTRAIT_NAME_THERAPIST_TWO,
 		},
 		{
 			Text:         "Blah blah blah blah.",
-			PortraitName: "therapistTwo",
-			CharName:     "Dr. Refeed",
-		},
-		{
-			Text:         "Blah blah blah blah.",
-			PortraitName: "therapistTwo",
-			CharName:     "Dr. Refeed",
-		},
-		{
-			Text:         "Blah blah blah blah.",
-			PortraitName: "therapistTwo",
-			CharName:     "Dr. Refeed",
+			PortraitName: npcGlobals.NPC_PORTRAIT_INDEX_THERAPIST_TWO,
+			CharName:     npcGlobals.NPC_PORTRAIT_NAME_THERAPIST_TWO,
 		},
 	}
-	// Note: Release is third the way therapist.
 
+	chatName := "introChat"
 	scenesUtil.AddOnCollideChatEntity(
 		scene,
-		"introChat",
+		chatName,
 		content,
 		330, 315, 100, 50,
 	)
+
+	systemInitializers.AttachSitCallbackToChat(scene, chatName, len(content))
 
 	// Into Hallway.
 	scenesUtil.AddSceneTransitionEntity(
@@ -110,21 +102,22 @@ func (LevelThreeScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scenesUtil.AddNpcEntity(scene, -200, -200, npcGlobals.NPC_NAME_THERAPIST_TWO, gravityMod, false, false)
 
 	// Attaching unique chat callback.
-	systemInitializers.AttachChatCallback(scene, LevelThreeCallbackSystem{})
+	systemInitializers.AttachChatCallback(scene, IntroChatSpawnTherapistTwoCallBack{})
 
 	return scene
 }
 
-type LevelThreeCallbackSystem struct{}
+// Unique:
+type IntroChatSpawnTherapistTwoCallBack struct{}
 
-func (LevelThreeCallbackSystem) ChatName() string {
+func (IntroChatSpawnTherapistTwoCallBack) ChatName() string {
 	return "introChat"
 }
-func (LevelThreeCallbackSystem) SlideIndex() int {
+func (IntroChatSpawnTherapistTwoCallBack) SlideIndex() int {
 	return 1
 }
 
-func (LevelThreeCallbackSystem) Callback(scene *coldBrew.Scene) {
+func (IntroChatSpawnTherapistTwoCallBack) Callback(scene *coldBrew.Scene) {
 	query := queries.NpcQuery
 
 	query.Each(scene.World, func(entity *donburi.Entry) {

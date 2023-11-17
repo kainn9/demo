@@ -27,9 +27,9 @@ func InactiveAnimation(spriteSheet *components.AnimationConfig) bool {
 // PlayAnim returns the current frame of the animation.
 // If the Animation has not been "initialized", it will initialize it,
 // by setting the start tick to the current tick.
-func GetAnimFrame(m *coldBrew.Manager, spriteSheet *components.Sprite) *ebiten.Image {
+func GetAnimFrame(tickHandler *coldBrew.TickHandler, spriteSheet *components.Sprite) *ebiten.Image {
 
-	currentTick := m.TickHandler.CurrentTick()
+	currentTick := tickHandler.CurrentTick()
 	animConfig := spriteSheet.AnimationConfig
 
 	// Anim has just started playing.
@@ -39,7 +39,7 @@ func GetAnimFrame(m *coldBrew.Manager, spriteSheet *components.Sprite) *ebiten.I
 
 	// Anim has been played before, but has finished.
 	totalAnimationTicks := animConfig.FrameCount * animConfig.AnimationFramesPerTick
-	ticksSinceAnimationStart := m.TickHandler.TicksSinceNTicks(animConfig.StartTick)
+	ticksSinceAnimationStart := tickHandler.TicksSinceNTicks(animConfig.StartTick)
 
 	// If animation has finished, and does not have freeze bool,
 	// allow the animation to loop. Otherwise, freeze the animation

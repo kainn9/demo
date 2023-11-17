@@ -129,31 +129,3 @@ func AddOnInteractChatEntity(
 	components.IndicatorStateAndConfigComponent.SetValue(chatEntity, *indicatorState)
 
 }
-
-// func AddChatIndicatorEntity(
-// 	scene *coldBrew.Scene,
-// 	x, y, width, height float64,
-// ) {
-
-// 	indicatorEntity := scene.AddEntity(
-// 		components.RigidBodyComponent,
-// 		components.IndicatorStateAndConfigComponent,
-// 		components.SceneTransitionStateAndConfigComponent,
-// 	)
-
-// 	body := tBokiComponents.NewRigidBodyBox(x, y, width, height, 0, false)
-// 	components.RigidBodyComponent.SetValue(indicatorEntity, *body)
-
-// 	offX := UIGlobals.IndicatorPlayerOffsets[UIGlobals.CurrentLayout][UIGlobals.INDICATOR_INTERACT].X
-// 	offY := UIGlobals.IndicatorPlayerOffsets[UIGlobals.CurrentLayout][UIGlobals.INDICATOR_INTERACT].Y
-
-// 	indicatorState := components.NewIndicatorStateAndConfig(
-// 		offX, offY,
-// 		false,
-// 		true,
-// 		UIGlobals.INDICATOR_INTERACT,
-// 	)
-
-// 	components.IndicatorStateAndConfigComponent.SetValue(indicatorEntity, *indicatorState)
-
-// }

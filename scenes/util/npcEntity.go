@@ -8,38 +8,25 @@ import (
 	"github.com/kainn9/demo/tags"
 	tBokiComponents "github.com/kainn9/tteokbokki/components"
 	tBokiVec "github.com/kainn9/tteokbokki/math/vec"
-	"github.com/yohamta/donburi"
 )
 
 func AddNpcEntity(scene *coldBrew.Scene, x, y float64, name components.NpcName, physicsMod *components.PhysicsConfig, hittable bool, moveable bool) {
 
 	tag := npcGlobals.TAG_MAP[name]
 
-	var npcEntity *donburi.Entry
-	// Todo: dry this if else so or change
-	// AddEntity() to account for nil tag scenario.
-	if tag != nil {
-		// Entity initialization
-		npcEntity = scene.AddEntity(
-			components.RigidBodyComponent,
-			components.SpritesAnimMapComponent,
-			components.NpcConfigComponent,
-			components.NpcStateComponent,
-			components.PhysicsConfigComponent,
-			tags.NpcTag,
-			tag,
-		)
-
-	} else {
-		npcEntity = scene.AddEntity(
-			components.RigidBodyComponent,
-			components.SpritesAnimMapComponent,
-			components.NpcConfigComponent,
-			components.NpcStateComponent,
-			components.PhysicsConfigComponent,
-			tags.NpcTag,
-		)
+	if tag == nil {
+		tag = tags.EmptyTag
 	}
+
+	npcEntity := scene.AddEntity(
+		components.RigidBodyComponent,
+		components.SpritesAnimMapComponent,
+		components.NpcConfigComponent,
+		components.NpcStateComponent,
+		components.PhysicsConfigComponent,
+		tags.NpcTag,
+		tag,
+	)
 
 	// Physics Config/modifiers.
 	if physicsMod != nil {

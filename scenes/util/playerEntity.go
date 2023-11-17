@@ -121,6 +121,13 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 
 	playerSprites[sharedAnimationGlobals.CHAR_STATE_WALK].AnimationConfig = playerGlobals.PLAYER_ANIMATION_CONFIGS[sharedAnimationGlobals.CHAR_STATE_WALK]
 
+	// Sit.
+	playerSprites[playerGlobals.PLAYER_CHAR_STATE_SIT] = components.NewSprite(
+		playerGlobals.PLAYER_SPRITE_OFFSET_X,
+		playerGlobals.PLAYER_SPRITE_OFFSET_Y,
+	)
+	playerSprites[playerGlobals.PLAYER_CHAR_STATE_SIT].AnimationConfig = playerGlobals.PLAYER_ANIMATION_CONFIGS[playerGlobals.PLAYER_CHAR_STATE_SIT]
+
 	components.SpritesAnimMapComponent.SetValue(playerEntity, playerSprites)
 
 	// Hitboxes

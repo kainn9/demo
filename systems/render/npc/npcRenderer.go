@@ -50,7 +50,7 @@ func (sys NpcRendererSystem) Draw(screen *ebiten.Image, npcEntity *donburi.Entry
 	opts := sys.configureDrawOptions(state, body, currentSpriteSheet, camera)
 
 	// Selecting correct sprite frame to render.
-	spriteAtFrameIndex := animUtil.GetAnimFrame(sys.scene.Manager, currentSpriteSheet)
+	spriteAtFrameIndex := animUtil.GetAnimFrame(sys.scene.Manager.TickHandler, currentSpriteSheet)
 	// Adding sprite frame to camera.
 	cameraUtil.AddImage(camera, spriteAtFrameIndex, opts)
 }

@@ -27,7 +27,7 @@ func RenderText(
 	startTick, ticksPerWord int,
 	lower, upper, numbers, special *components.Sprite,
 	adjustmentMap map[string]tBokiVec.Vec2,
-	manager *coldBrew.Manager,
+	tickHandler *coldBrew.TickHandler,
 	screen *ebiten.Image,
 
 ) {
@@ -39,8 +39,6 @@ func RenderText(
 	startX := x
 	currX := x
 	currY := y
-
-	tickHandler := manager.TickHandler
 
 	ticksSinceStart := tickHandler.TicksSinceNTicks(startTick)
 
@@ -181,7 +179,7 @@ func RenderTextDefault(
 	x, y, maxWidth float64,
 	startTick, ticksPerWord int,
 	world *donburi.World,
-	manager *coldBrew.Manager,
+	tickHandler *coldBrew.TickHandler,
 	screen *ebiten.Image,
 ) {
 
@@ -193,7 +191,7 @@ func RenderTextDefault(
 		startTick, ticksPerWord,
 		lower, upper, numbers, special,
 		fontGlobals.FONT_DEFAULT_ADJUSTMENT_MAP,
-		manager,
+		tickHandler,
 		screen,
 	)
 }
