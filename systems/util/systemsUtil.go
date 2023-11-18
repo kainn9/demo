@@ -8,7 +8,6 @@ import (
 	fontGlobals "github.com/kainn9/demo/globalConfig/font"
 	"github.com/kainn9/demo/queries"
 	"github.com/yohamta/donburi"
-	"github.com/yohamta/donburi/filter"
 )
 
 func GetCameraEntity(world donburi.World) *donburi.Entry {
@@ -97,9 +96,7 @@ func IsChatActive(world donburi.World) bool {
 
 	var isChatActive bool
 
-	query := donburi.NewQuery(
-		filter.Contains(components.ChatStateAndConfigComponent),
-	)
+	query := queries.ChatQuery
 
 	if query.Count(world) == 0 {
 		return false

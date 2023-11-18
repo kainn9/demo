@@ -18,9 +18,8 @@ A Metroidvania-lite/Platformer game written in Go.
 
 
 
-LA-TODOs:
-- Change interaction markers to be on the object themselves
-- Delay for rereading, interaction marker
-- Iframe after hit
+Todos:
+- Delay for re-interacting interaction markers
+- Emphasis font options for dialogue
 - Dodge/Roll
 - "Better" enemy "ai"

@@ -85,7 +85,7 @@ func AddOnInteractChatEntity(
 	scene *coldBrew.Scene,
 	chatName string,
 	content []components.SlidesContent,
-	x, y, width, height float64,
+	x, y, width, height, offX, offY float64,
 ) {
 
 	// Chat Entity.
@@ -119,14 +119,10 @@ func AddOnInteractChatEntity(
 	body := tBokiComponents.NewRigidBodyBox(x, y, width, height, 0, false)
 	components.RigidBodyComponent.SetValue(chatEntity, *body)
 
-	// Indicator State
-	offX := UIGlobals.IndicatorPlayerOffsets[UIGlobals.CurrentLayout][UIGlobals.INDICATOR_INTERACT].X
-	offY := UIGlobals.IndicatorPlayerOffsets[UIGlobals.CurrentLayout][UIGlobals.INDICATOR_INTERACT].Y
-
 	indicatorState := components.NewIndicatorStateAndConfig(
-		offX, offY,
+		x+offX, y+offY,
 		false,
-		true,
+		false,
 		UIGlobals.INDICATOR_INTERACT,
 	)
 

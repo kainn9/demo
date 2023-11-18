@@ -43,10 +43,10 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 
 	// Interactables.
 
-	// Chat.
-	content := []components.SlidesContent{
+	// Backpacks.
+	levelOneBackpacksChatContent := []components.SlidesContent{
 		{
-			Text:         "Its a flier for some kind of CBT Therapy.",
+			Text:         "What is this? Homeroom? I remember when she'd show up late. Hair all drippy and shampooy.",
 			PortraitName: playerGlobals.PLAYER_PORTRAIT_INDEX,
 			CharName:     playerGlobals.PLAYER_GOOD_NAME,
 			FacingRight:  true,
@@ -55,9 +55,68 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 
 	scenesUtil.AddOnInteractChatEntity(
 		scene,
-		"introChat",
-		content,
-		175, 276, 81, 110,
+		"levelOneBackpacksChat",
+		levelOneBackpacksChatContent,
+		318, 287,
+		88, 132,
+		-10, -60,
+	)
+
+	// Landscape.
+	levelOneLandscapeChatContent := []components.SlidesContent{
+		{
+			Text:         "The woods decay, the woods decay and fall.",
+			PortraitName: playerGlobals.PLAYER_PORTRAIT_INDEX,
+			CharName:     playerGlobals.PLAYER_GOOD_NAME,
+			FacingRight:  true,
+		},
+	}
+
+	scenesUtil.AddOnInteractChatEntity(
+		scene,
+		"levelOneLandscapeChat",
+		levelOneLandscapeChatContent,
+		480, 291,
+		55, 135,
+		-13, -60,
+	)
+
+	// Book.
+	levelOneBookContent := []components.SlidesContent{
+		{
+			Text:         "Two roads diverged in a yellow wood.",
+			PortraitName: playerGlobals.PLAYER_PORTRAIT_INDEX,
+			CharName:     playerGlobals.PLAYER_GOOD_NAME,
+			FacingRight:  true,
+		},
+	}
+
+	scenesUtil.AddOnInteractChatEntity(
+		scene,
+		"levelOneBookChat",
+		levelOneBookContent,
+		698, 320,
+		42, 111,
+		-14, -50,
+	)
+
+	// Radiator.
+	levelOneRadiatorContent := []components.SlidesContent{
+		{
+			Text:         "Dad's house had these. At mom's we'd use extra blankets.",
+			PortraitName: playerGlobals.PLAYER_PORTRAIT_INDEX,
+			CharName:     playerGlobals.PLAYER_GOOD_NAME,
+			FacingRight:  true,
+		},
+	}
+
+	scenesUtil.AddOnInteractChatEntity(
+		scene,
+		"levelOneRadiatorChat",
+		levelOneRadiatorContent,
+		813, 330,
+		53, 30,
+		-12, -40,
 	)
 
 	// Transition Entities Door.

@@ -5,7 +5,6 @@ import (
 	"github.com/kainn9/demo/components"
 
 	UIGlobals "github.com/kainn9/demo/globalConfig/UI"
-	sharedAnimationGlobals "github.com/kainn9/demo/globalConfig/sharedAnimation"
 	animUtil "github.com/kainn9/demo/systems/render/util/anim"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	"github.com/yohamta/donburi"
@@ -119,7 +118,7 @@ func (sys ChatHandlerSystem) handleTransitionState(configAndState *components.Ch
 
 	if popDownFinished {
 		configAndState.State.PopDownMode = false
-		configAndState.State.PopUpMode = true
+
 	}
 }
 
@@ -133,11 +132,18 @@ func (sys ChatHandlerSystem) handleClose(
 	// reset the state(incase we ever want to re-open it).
 	chatFinished := configAndState.State.CurrentSlideIndex > len(configAndState.State.SlidesContent)-1
 	if chatFinished {
+		// Also handle the callback when chat is finished.
+		// For post chat callbacks(aka slide length index).
+		sys.handleCallback(configAndState)
+
 		configAndState.State.Active = false
 		configAndState.State.CurrentSlideIndex = 0
+
+		configAndState.State.PopUpMode = false
 		animUtil.ResetAnimationConfig(popDownSprite)
 		animUtil.ResetAnimationConfig(popUpSprite)
+
 		configAndState.State.HasBeenRead = true
-		playerState.Animation = sharedAnimationGlobals.CHAR_STATE_IDLE
+
 	}
 }

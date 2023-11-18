@@ -71,3 +71,7 @@ var IndicatorQuery = donburi.NewQuery(
 		filter.Contains(components.RigidBodyComponent),
 	),
 )
+
+var ChatQuery = donburi.NewQuery(
+	filter.Contains(components.ChatStateAndConfigComponent),
+)

@@ -16,7 +16,6 @@ type sceneTitleRendererSystem struct {
 	scene                    *coldBrew.Scene
 	title                    string
 	enabled, displayingTitle bool
-	fadeTimer                int
 	startTick                int
 }
 

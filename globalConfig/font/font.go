@@ -87,4 +87,6 @@ var FONT_DEFAULT_ADJUSTMENT_MAP = map[string]tBokiVec.Vec2{
 	"'": {X: -2, Y: 0},
 	"g": {X: 1, Y: 1},
 	"l": {X: -3, Y: 0},
+	"M": {X: 1, Y: 0},
+	"W": {X: 1, Y: 0},
 }

@@ -37,16 +37,15 @@ func (sys ChatCollisionHandlerSystem) Run(dt float64, chatEntity *donburi.Entry)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 
 	chatBody := components.RigidBodyComponent.Get(chatEntity)
-	chatState := components.ChatStateAndConfigComponent.Get(chatEntity).State
+	chatStateAndConfig := components.ChatStateAndConfigComponent.Get(chatEntity)
 
 	if isColliding, _ := tBokiPhysics.Detector.Detect(playerBody, chatBody, true); isColliding {
 
-		if chatState.HasBeenRead {
+		if chatStateAndConfig.State.HasBeenRead {
 			return
 		}
 
-		chatState.Active = true
-		chatState.PopUpMode = true
+		chatStateAndConfig.Enable()
 	}
 
 }

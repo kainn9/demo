@@ -43,3 +43,8 @@ func NewChatStateAndConfig(chatName string, content []SlidesContent) *ChatStateA
 		},
 	}
 }
+
+func (stateAndConfig *ChatStateAndConfig) Enable() {
+	stateAndConfig.State.Active = true
+	stateAndConfig.State.PopUpMode = true
+}

@@ -7,6 +7,7 @@ import (
 	"github.com/kainn9/demo/components"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	"github.com/kainn9/demo/tags"
+	tBokiComponents "github.com/kainn9/tteokbokki/components"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/filter"
 )
@@ -38,7 +39,8 @@ func (sys NpcSimpleAiHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 
-	if npcState.Combat.Defeated || playerState.Combat.Defeated {
+	if npcState.Combat.Defeated || playerState.Combat.Defeated || systemsUtil.IsChatActive(world) {
+		sys.idleNpc(npcState, npcBody)
 		return
 	}
 
@@ -49,8 +51,7 @@ func (sys NpcSimpleAiHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
 	dist := math.Abs(playerBody.Pos.Sub(npcBody.Pos).X)
 
 	if dist < npcBody.Polygon.Width/2+playerBody.Polygon.Width/2 {
-		npcState.Transform.BasicHorizontalMovement = false
-		npcBody.Vel.X = 0
+		sys.idleNpc(npcState, npcBody)
 		return
 	}
 
@@ -66,7 +67,11 @@ func (sys NpcSimpleAiHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
 			npcState.SetDirectionLeft()
 		}
 	} else {
-		npcState.Transform.BasicHorizontalMovement = false
-		npcBody.Vel.X = 0
+		sys.idleNpc(npcState, npcBody)
 	}
+}
+
+func (sys NpcSimpleAiHandlerSystem) idleNpc(npcState *components.NpcState, npcBody *tBokiComponents.RigidBody) {
+	npcState.Transform.BasicHorizontalMovement = false
+	npcBody.Vel.X = 0
 }

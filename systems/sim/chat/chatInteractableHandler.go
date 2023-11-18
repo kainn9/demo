@@ -43,10 +43,10 @@ func (sys ChatInteractableHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 
 	sys.ChatInteractableQuery().Each(world, func(chatEntity *donburi.Entry) {
 		chatBody := components.RigidBodyComponent.Get(chatEntity)
-		chatState := components.ChatStateAndConfigComponent.Get(chatEntity).State
+		chatStateAndConfig := components.ChatStateAndConfigComponent.Get(chatEntity)
 
 		if isColliding, _ := tBokiPhysics.Detector.Detect(playerBody, chatBody, true); isColliding {
-			sys.handleInteraction(playerState, chatState)
+			sys.handleInteraction(playerState, chatStateAndConfig)
 		}
 
 	})
@@ -55,7 +55,7 @@ func (sys ChatInteractableHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 
 func (sys ChatInteractableHandlerSystem) handleInteraction(
 	playerState *components.PlayerState,
-	chatState *components.ChatState,
+	chatState *components.ChatStateAndConfig,
 ) {
 
 	if !playerState.IsInteracting {
@@ -63,7 +63,5 @@ func (sys ChatInteractableHandlerSystem) handleInteraction(
 	}
 
 	playerState.IsInteracting = false
-	chatState.Active = true
-	chatState.PopUpMode = true
-
+	chatState.Enable()
 }

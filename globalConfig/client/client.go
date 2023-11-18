@@ -30,4 +30,4 @@ const (
 	DEBUG_HITBOX_PREVIEW_JSON_PATH = "./debugConfigs/hitboxPreview.json"
 )
 
-var DEBUG_MODE = true
+var DEBUG_MODE = false

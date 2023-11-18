@@ -106,6 +106,5 @@ func (sys SceneTransitionHandlerSystem) allowedToTransition(transitionStateAndCo
 func (sys SceneTransitionHandlerSystem) showRestrictedMessage(callback SceneTransitionPermissionCallback) {
 	chatEntity := callback.ChatEntity()
 	chatStateAndConfig := components.ChatStateAndConfigComponent.Get(chatEntity)
-	chatStateAndConfig.State.Active = true
-	chatStateAndConfig.State.PopUpMode = true
+	chatStateAndConfig.Enable()
 }

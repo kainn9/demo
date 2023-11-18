@@ -47,7 +47,6 @@ func (sys ChatSlidesRendererSystem) Draw(screen *ebiten.Image, chatEntity *donbu
 	// Handle the pop down animation one last time,
 	// when the chat box is no longer active.
 	if !configAndState.State.Active && animUtil.InactiveAnimation(popDownSprite.AnimationConfig) {
-
 		sys.renderPopDownAnimation(popDownSprite, charBoxOpts, screen)
 		return
 	}
@@ -87,14 +86,14 @@ func (sys ChatSlidesRendererSystem) Draw(screen *ebiten.Image, chatEntity *donbu
 			}
 
 			paddingX := 72.0
-			paddingY := 48.0
+			paddingY := 35.0
 
 			// Text.
 			textUtil.RenderTextDefault(
 				slideContent.Text,
 				boxX+paddingX,
 				boxY+paddingY,
-				525,
+				490,
 				configAndState.State.TextAnimStartTick,
 				configAndState.Config.TicksPerWord,
 				1,
@@ -141,7 +140,6 @@ func (sys ChatSlidesRendererSystem) Draw(screen *ebiten.Image, chatEntity *donbu
 }
 
 func (sys ChatSlidesRendererSystem) renderPopUpAnimation(chatBoxOpts *ebiten.DrawImageOptions, screen *ebiten.Image) (finished bool) {
-
 	popUpSprite := systemsUtil.GetChatPopUpSprite(sys.scene.World)
 
 	spriteAtFrameIndex := animUtil.GetAnimFrame(sys.scene.Manager.TickHandler, popUpSprite)

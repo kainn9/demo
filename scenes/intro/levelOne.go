@@ -3,6 +3,7 @@ package introScenes
 import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
+	"github.com/kainn9/demo/queries"
 	inventoryUtil "github.com/kainn9/demo/systems/sim/util/inventory"
 	"github.com/kainn9/demo/systems/systemInitializers"
 	systemsUtil "github.com/kainn9/demo/systems/util"
@@ -24,6 +25,11 @@ const (
 	LEVEL_ONE_SCENE_NAME       = "levelOne"
 	LEVEL_ONE_SCENE_SECTION    = "intro"
 	LEVEL_ONE_SCENE_ASSET_PATH = LEVEL_ONE_SCENE_SECTION + "/" + LEVEL_ONE_SCENE_NAME + "/"
+)
+
+var (
+	levelOneFirstMobDefeated         = false
+	levelOneFirstMobDefeatedChatName = "firstThugDefeat"
 )
 
 func (LevelOneScene) Index() string {
@@ -141,8 +147,18 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	}
 
 	for _, npc := range thugs {
-		callbacksUtil.AttachNpcDefeatCallback(scene, ThugsUniqueDropCallback{npc: npc})
+		callbacksUtil.AttachNpcDefeatCallback(scene, LevelOneThugsUniqueDropCallback{npc: npc})
 	}
+	firstThugDefeatChat := []components.SlidesContent{
+		{
+			Text:         "HA! Deadzo Mcgee.",
+			PortraitName: playerGlobals.PLAYER_PORTRAIT_INDEX,
+			CharName:     playerGlobals.PLAYER_BAD_NAME,
+			FacingRight:  true,
+		},
+	}
+
+	scenesUtil.AddBasicChatEntity(scene, levelOneFirstMobDefeatedChatName, firstThugDefeatChat, false)
 
 	// Transition Entity Door.
 	zapClinicRestrictionChatContent := []components.SlidesContent{
@@ -177,24 +193,34 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 }
 
 // Unique Drop Callbacks.
-type ThugsUniqueDropCallback struct {
+type LevelOneThugsUniqueDropCallback struct {
 	npc *donburi.Entry
 }
 
-func (cb ThugsUniqueDropCallback) Npc() *donburi.Entry {
+func (cb LevelOneThugsUniqueDropCallback) Npc() *donburi.Entry {
 	return cb.npc
 }
 
-func (cb ThugsUniqueDropCallback) OnDefeat(scene *coldBrew.Scene, npcEntity *donburi.Entry) {
+func (cb LevelOneThugsUniqueDropCallback) OnDefeat(scene *coldBrew.Scene, npcEntity *donburi.Entry) {
 	world := scene.World
-
 	playerEntity := systemsUtil.GetPlayerEntity(world)
 
 	inventory := components.InventoryComponent.Get(playerEntity)
-
 	itemToAdd := components.NewInventoryItem(inventoryGlobals.ITEM_NAME_ZAP_CLINIC_UNLOCK, 1)
-
 	inventoryUtil.AddItemToInventory(inventory, itemToAdd)
+
+	queries.ChatQuery.Each(world, func(chatEntity *donburi.Entry) {
+		stateAndConfig := components.ChatStateAndConfigComponent.Get(chatEntity)
+		config := stateAndConfig.Config
+
+		chatName := config.ChatName
+
+		if levelOneFirstMobDefeatedChatName == chatName && !levelOneFirstMobDefeated {
+			levelOneFirstMobDefeated = true
+			stateAndConfig.Enable()
+		}
+
+	})
 }
 
 // Transition Permission Callbacks.
