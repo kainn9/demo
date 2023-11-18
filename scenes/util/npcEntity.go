@@ -8,9 +8,16 @@ import (
 	"github.com/kainn9/demo/tags"
 	tBokiComponents "github.com/kainn9/tteokbokki/components"
 	tBokiVec "github.com/kainn9/tteokbokki/math/vec"
+	"github.com/yohamta/donburi"
 )
 
-func AddNpcEntity(scene *coldBrew.Scene, x, y float64, name components.NpcName, physicsMod *components.PhysicsConfig, hittable bool, moveable bool) {
+func AddNpcEntity(
+	scene *coldBrew.Scene,
+	x, y float64,
+	name components.NpcName,
+	physicsMod *components.PhysicsConfig,
+	hittable, moveable bool,
+) *donburi.Entry {
 
 	tag := npcGlobals.TAG_MAP[name]
 
@@ -73,6 +80,8 @@ func AddNpcEntity(scene *coldBrew.Scene, x, y float64, name components.NpcName, 
 	}
 
 	components.SpritesAnimMapComponent.SetValue(npcEntity, npcSprites)
+
+	return npcEntity
 }
 
 func prepCombatSpriteSheets(

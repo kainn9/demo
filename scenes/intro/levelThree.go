@@ -8,6 +8,7 @@ import (
 	"github.com/kainn9/demo/queries"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
 	"github.com/kainn9/demo/systems/systemInitializers"
+	callbacksUtil "github.com/kainn9/demo/systems/util/callbacks"
 	"github.com/yohamta/donburi"
 )
 
@@ -57,7 +58,7 @@ func (LevelThreeScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 			Text:         "Lorem ipsum lala something something something?",
 			PortraitName: playerGlobals.PLAYER_PORTRAIT_INDEX,
 			FacingRight:  true,
-			CharName:     playerGlobals.PLAYER_NAME,
+			CharName:     playerGlobals.PLAYER_GOOD_NAME,
 		},
 		{
 			Text:         "Lorem ipsum lala something something something!",
@@ -84,7 +85,7 @@ func (LevelThreeScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		330, 315, 100, 50,
 	)
 
-	systemInitializers.AttachSitCallbackToChat(scene, chatName, len(content))
+	callbacksUtil.AttachSitCallbackToChat(scene, chatName, len(content))
 
 	// Into Hallway.
 	scenesUtil.AddSceneTransitionEntity(
@@ -102,7 +103,7 @@ func (LevelThreeScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scenesUtil.AddNpcEntity(scene, -200, -200, npcGlobals.NPC_NAME_THERAPIST_TWO, gravityMod, false, false)
 
 	// Attaching unique chat callback.
-	systemInitializers.AttachChatCallback(scene, IntroChatSpawnTherapistTwoCallBack{})
+	callbacksUtil.AttachChatCallback(scene, IntroChatSpawnTherapistTwoCallBack{})
 
 	return scene
 }

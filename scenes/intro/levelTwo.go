@@ -48,7 +48,7 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		{
 			Text:         "Its a flier for some kind of CBT Therapy.",
 			PortraitName: playerGlobals.PLAYER_PORTRAIT_INDEX,
-			CharName:     playerGlobals.PLAYER_NAME,
+			CharName:     playerGlobals.PLAYER_GOOD_NAME,
 			FacingRight:  true,
 		},
 	}

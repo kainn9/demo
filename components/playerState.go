@@ -4,6 +4,16 @@ import (
 	"github.com/yohamta/donburi"
 )
 
+var PlayerStateComponent = donburi.NewComponentType[PlayerState]()
+
+type PlayerState struct {
+	Collision     *PlayerCollisionState
+	Transform     *PlayerTransformState
+	Combat        *PlayerCombatState
+	Animation     CharState
+	IsInteracting bool
+}
+
 type PlayerCollisionState struct {
 	OnGround bool
 	Climbing bool
@@ -29,16 +39,6 @@ type PlayerCombatState struct {
 	InvincibleStartTick,
 	DefeatedStartTick int
 }
-
-type PlayerState struct {
-	Collision     *PlayerCollisionState
-	Transform     *PlayerTransformState
-	Combat        *PlayerCombatState
-	Animation     CharState
-	IsInteracting bool
-}
-
-var PlayerStateComponent = donburi.NewComponentType[PlayerState]()
 
 func NewPlayerState() *PlayerState {
 

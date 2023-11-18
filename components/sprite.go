@@ -5,7 +5,10 @@ import (
 	"github.com/yohamta/donburi"
 )
 
-type CharState string
+var SpriteComponent = donburi.NewComponentType[Sprite]()
+var SpritesMapComponent = donburi.NewComponentType[map[string]*Sprite]()
+var SpritesSliceComponent = donburi.NewComponentType[[]*Sprite]()
+var SpritesAnimMapComponent = donburi.NewComponentType[map[CharState]*Sprite]()
 
 type Sprite struct {
 	OffSetX, OffSetY float64
@@ -16,13 +19,21 @@ type Sprite struct {
 	*AnimationConfig
 }
 
-var SpriteComponent = donburi.NewComponentType[Sprite]()
-var SpritesMapComponent = donburi.NewComponentType[map[string]*Sprite]()
-var SpritesSliceComponent = donburi.NewComponentType[[]*Sprite]()
-var SpritesAnimMapComponent = donburi.NewComponentType[map[CharState]*Sprite]()
+type CharState string
 
-// This should work, but its not needed for now.
-// var MultipleSpritesSliceComponent = donburi.NewComponentType[map[string][]*Sprite]()
+type AnimationConfig struct {
+	FrameWidth,
+	FrameHeight,
+	FrameCount,
+	AnimationFramesPerTick int
+	Freeze bool
+
+	// This is technically "state", but it's used to track the animation.
+	// It is the only that is allowed to be mutated in the render phase,
+	// to begin/start the animation.
+	// -1 is the default value, and means the animation is not active.
+	StartTick int
+}
 
 func NewSprite(offX, offY float64) *Sprite {
 	return &Sprite{
@@ -30,5 +41,24 @@ func NewSprite(offX, offY float64) *Sprite {
 		OffSetY:   offY,
 		Image:     &ebiten.Image{},
 		AssetData: &AssetData{},
+	}
+}
+
+func NewAnimationConfig(
+	frameWidth,
+	frameHeight,
+	frameCount,
+	animationFramesPerTick int,
+	freeze bool,
+
+) *AnimationConfig {
+
+	return &AnimationConfig{
+		FrameWidth:             frameWidth,
+		FrameHeight:            frameHeight,
+		FrameCount:             frameCount,
+		AnimationFramesPerTick: animationFramesPerTick,
+		Freeze:                 freeze,
+		StartTick:              -1,
 	}
 }

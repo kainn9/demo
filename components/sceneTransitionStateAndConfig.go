@@ -5,6 +5,8 @@ import (
 	"github.com/yohamta/donburi"
 )
 
+var SceneTransitionStateAndConfigComponent = donburi.NewComponentType[SceneTransitionStateAndConfig]()
+
 type SceneTransitionState struct {
 	// Not used yet, but intend to use for a potential fade out effect or
 	// to wait for transition animations to finish in the future...
@@ -23,8 +25,9 @@ type SceneTransitionStateAndConfig struct {
 	State  *SceneTransitionState
 	Config *SceneTransitionConfig
 }
-
-var SceneTransitionStateAndConfigComponent = donburi.NewComponentType[SceneTransitionStateAndConfig]()
+type PermissionMessageData struct {
+	Portrait, Name, Message string
+}
 
 func NewSceneTransitionStateAndConfig(spawnX, spawnY, camX, camY float64, targetScene coldBrew.SceneFace) *SceneTransitionStateAndConfig {
 	return &SceneTransitionStateAndConfig{

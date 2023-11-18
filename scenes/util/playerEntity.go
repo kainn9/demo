@@ -19,6 +19,7 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 		components.SpritesAnimMapComponent,
 		components.AttackHitboxConfigComponent,
 		components.PhysicsConfigComponent,
+		components.InventoryComponent,
 		tags.PlayerTag,
 	)
 
@@ -150,6 +151,9 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 	)
 
 	components.AttackHitboxConfigComponent.SetValue(playerEntity, *hitboxes)
+
+	// Inventory.
+	components.InventoryComponent.SetValue(playerEntity, make([]*components.InventoryItem, 0))
 
 	return playerBody
 }

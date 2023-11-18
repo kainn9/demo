@@ -11,7 +11,14 @@ import (
 )
 
 type SceneTransitionHandlerSystem struct {
-	scene *coldBrew.Scene
+	scene               *coldBrew.Scene
+	PermissionCallbacks []SceneTransitionPermissionCallback
+}
+
+type SceneTransitionPermissionCallback interface {
+	Index() string
+	AllowedToTransition(*coldBrew.Scene) bool
+	ChatEntity() *donburi.Entry
 }
 
 func NewSceneTransitionHandler(scene *coldBrew.Scene) *SceneTransitionHandlerSystem {
@@ -64,6 +71,10 @@ func (sys SceneTransitionHandlerSystem) handleTransition(transitionEntity *donbu
 		return
 	}
 
+	if !sys.allowedToTransition(transitionStateAndConfig) {
+		return
+	}
+
 	playerState.IsInteracting = false
 
 	scenesUtil.ChangeScene(
@@ -75,4 +86,26 @@ func (sys SceneTransitionHandlerSystem) handleTransition(transitionEntity *donbu
 		transitionStateAndConfig.Config.CamY,
 	)
 
+}
+
+func (sys SceneTransitionHandlerSystem) allowedToTransition(transitionStateAndConfig *components.SceneTransitionStateAndConfig) bool {
+
+	for _, callback := range sys.PermissionCallbacks {
+		index := callback.Index()
+
+		if index == transitionStateAndConfig.Config.TargetScene.Index() && !callback.AllowedToTransition(sys.scene) {
+			sys.showRestrictedMessage(callback)
+			return false
+		}
+
+	}
+
+	return true
+}
+
+func (sys SceneTransitionHandlerSystem) showRestrictedMessage(callback SceneTransitionPermissionCallback) {
+	chatEntity := callback.ChatEntity()
+	chatStateAndConfig := components.ChatStateAndConfigComponent.Get(chatEntity)
+	chatStateAndConfig.State.Active = true
+	chatStateAndConfig.State.PopUpMode = true
 }

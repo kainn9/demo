@@ -2,9 +2,6 @@ package systemInitializers
 
 import (
 	"github.com/kainn9/coldBrew"
-	"github.com/kainn9/demo/components"
-	playerGlobals "github.com/kainn9/demo/globalConfig/player"
-	sharedAnimationGlobals "github.com/kainn9/demo/globalConfig/sharedAnimation"
 	clientSystems "github.com/kainn9/demo/systems/client"
 	clientDebugSystems "github.com/kainn9/demo/systems/client/debug"
 	loaderSystems "github.com/kainn9/demo/systems/loader"
@@ -18,7 +15,6 @@ import (
 	simChatSystems "github.com/kainn9/demo/systems/sim/chat"
 	simNpcSystems "github.com/kainn9/demo/systems/sim/npc"
 	simPlayerSystems "github.com/kainn9/demo/systems/sim/player"
-	systemsUtil "github.com/kainn9/demo/systems/util"
 )
 
 func InitStandardSystems(scene *coldBrew.Scene, title string, indoor bool) {
@@ -74,58 +70,4 @@ func InitStandardSystems(scene *coldBrew.Scene, title string, indoor bool) {
 	scene.AddSystem(renderDebugSystems.NewDebugRigidBodyRenderer(scene))
 	scene.AddSystem(renderDebugSystems.NewHitBoxPreviewer(scene))
 
-}
-
-func AttachChatCallback(scene *coldBrew.Scene, callback simChatSystems.ChatCallBackSystem) {
-
-	for _, sys := range scene.Systems {
-		switch sys.(type) {
-
-		case *simChatSystems.ChatHandlerSystem:
-			chatSys := sys.(*simChatSystems.ChatHandlerSystem)
-			chatSys.CallBackSystems = append(chatSys.CallBackSystems, callback)
-		}
-	}
-}
-
-type SitCallBackStart struct {
-	name  string
-	index int
-}
-type SitCallBackEnd struct {
-	name  string
-	index int
-}
-
-func (cb SitCallBackStart) ChatName() string {
-	return cb.name
-}
-
-func (cb SitCallBackStart) SlideIndex() int {
-	return cb.index
-}
-
-func (cb SitCallBackStart) Callback(scene *coldBrew.Scene) {
-	playerEntity := systemsUtil.GetPlayerEntity(scene.World)
-	playerState := components.PlayerStateComponent.Get(playerEntity)
-	playerState.Animation = playerGlobals.PLAYER_CHAR_STATE_SIT
-}
-
-func (cb SitCallBackEnd) ChatName() string {
-	return cb.name
-}
-
-func (cb SitCallBackEnd) SlideIndex() int {
-	return cb.index
-}
-
-func (cb SitCallBackEnd) Callback(scene *coldBrew.Scene) {
-	playerEntity := systemsUtil.GetPlayerEntity(scene.World)
-	playerState := components.PlayerStateComponent.Get(playerEntity)
-	playerState.Animation = sharedAnimationGlobals.CHAR_STATE_IDLE
-}
-
-func AttachSitCallbackToChat(scene *coldBrew.Scene, chatName string, slideCount int) {
-	AttachChatCallback(scene, SitCallBackStart{chatName, 0})
-	AttachChatCallback(scene, SitCallBackEnd{chatName, slideCount})
 }

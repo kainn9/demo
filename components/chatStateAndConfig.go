@@ -1,6 +1,15 @@
 package components
 
-import "github.com/yohamta/donburi"
+import (
+	"github.com/yohamta/donburi"
+)
+
+var ChatStateAndConfigComponent = donburi.NewComponentType[ChatStateAndConfig]()
+
+type ChatStateAndConfig struct {
+	Config *ChatConfig
+	State  *ChatState
+}
 
 type ChatConfig struct {
 	ChatName     string
@@ -14,17 +23,10 @@ type ChatState struct {
 	HasBeenRead                                                 bool
 }
 
-type ChatStateAndConfig struct {
-	Config *ChatConfig
-	State  *ChatState
-}
-
 type SlidesContent struct {
 	Text, PortraitName, CharName string
 	FacingRight                  bool
 }
-
-var ChatStateAndConfigComponent = donburi.NewComponentType[ChatStateAndConfig]()
 
 func NewChatStateAndConfig(chatName string, content []SlidesContent) *ChatStateAndConfig {
 	return &ChatStateAndConfig{

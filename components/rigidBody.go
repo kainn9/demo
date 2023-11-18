@@ -6,5 +6,4 @@ import (
 )
 
 var RigidBodyComponent = donburi.NewComponentType[tBokiComponents.RigidBody]()
-
 var AttackBoxesComponent = donburi.NewComponentType[[]*tBokiComponents.RigidBody]()

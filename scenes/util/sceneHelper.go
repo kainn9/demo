@@ -5,7 +5,7 @@ import (
 
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
-	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
+	cameraSimUtil "github.com/kainn9/demo/systems/sim/util/camera"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	"github.com/yohamta/donburi"
 )
@@ -82,6 +82,10 @@ func transferPlayer(
 		newPlayerState.SetDirectionRight()
 	}
 
+	// Preserve inventory.
+	prevInventory := components.InventoryComponent.Get(prevPlayerEntity)
+	components.InventoryComponent.SetValue(newPlayerEntity, *prevInventory)
+
 	// Remove player from old scene.
 	prevScene.World.Remove(prevPlayerEntity.Entity())
 
@@ -89,7 +93,7 @@ func transferPlayer(
 	currCameraEntity := systemsUtil.GetCameraEntity(newScene.World)
 	currCamera := components.CameraComponent.Get(currCameraEntity)
 
-	cameraUtil.SetPosition(currCamera, camX, camY, false)
+	cameraSimUtil.SetPosition(currCamera, camX, camY, false)
 }
 
 func transferUISingleton(

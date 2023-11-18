@@ -161,5 +161,6 @@ var PlayerAttackDataMap = map[components.CharState]*PlayerAttackData{
 
 const (
 	PLAYER_PORTRAIT_INDEX = "player"
-	PLAYER_NAME           = "The Goodrich"
+	PLAYER_GOOD_NAME      = "The Goodrich"
+	PLAYER_BAD_NAME       = "The Badrich"
 )

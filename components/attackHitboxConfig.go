@@ -2,17 +2,17 @@ package components
 
 import "github.com/yohamta/donburi"
 
-type HitboxData struct {
-	Width, Height, Rotation, OffsetX, OffsetY float64
-}
+var AttackHitboxConfigComponent = donburi.NewComponentType[AttackHitboxConfig]()
 
 type AttackHitboxConfig struct {
 	Hitboxes []HitBoxDataCluster
 }
 
-type HitBoxDataCluster []HitboxData
+type HitboxData struct {
+	Width, Height, Rotation, OffsetX, OffsetY float64
+}
 
-var AttackHitboxConfigComponent = donburi.NewComponentType[AttackHitboxConfig]()
+type HitBoxDataCluster []HitboxData
 
 func NewHitboxData(width, height, rotation, offsetX, offsetY float64) HitboxData {
 	return HitboxData{
@@ -25,7 +25,6 @@ func NewHitboxData(width, height, rotation, offsetX, offsetY float64) HitboxData
 }
 
 func NewAttackHitboxConfig(cluster ...HitBoxDataCluster) *AttackHitboxConfig {
-
 	return &AttackHitboxConfig{
 		Hitboxes: cluster,
 	}

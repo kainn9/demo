@@ -5,13 +5,15 @@ import (
 	"github.com/kainn9/demo/components"
 	UIGlobals "github.com/kainn9/demo/globalConfig/UI"
 	tBokiComponents "github.com/kainn9/tteokbokki/components"
+	"github.com/yohamta/donburi"
 )
 
-func AddAutomaticChatEntity(
+func AddBasicChatEntity(
 	scene *coldBrew.Scene,
 	chatName string,
 	content []components.SlidesContent,
-) {
+	auto bool,
+) *donburi.Entry {
 
 	chatEntity := scene.AddEntity(
 		components.ChatStateAndConfigComponent,
@@ -19,8 +21,8 @@ func AddAutomaticChatEntity(
 	)
 
 	configAndState := components.NewChatStateAndConfig(chatName, content)
-	configAndState.State.Active = true
-	configAndState.State.PopUpMode = true
+	configAndState.State.Active = auto
+	configAndState.State.PopUpMode = auto
 
 	components.ChatStateAndConfigComponent.SetValue(
 		chatEntity,
@@ -37,6 +39,8 @@ func AddAutomaticChatEntity(
 		chatEntity,
 		portraitSprites,
 	)
+
+	return chatEntity
 
 }
 

@@ -5,11 +5,11 @@ import (
 	"github.com/yohamta/donburi"
 )
 
+var InputsComponent = donburi.NewComponentType[Inputs]()
+
 type Inputs struct {
 	Queue []ebiten.Key
 }
-
-var InputsComponent = donburi.NewComponentType[Inputs]()
 
 func NewInputs() *Inputs {
 	return &Inputs{

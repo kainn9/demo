@@ -5,8 +5,9 @@ import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	clientGlobals "github.com/kainn9/demo/globalConfig/client"
-	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
+	cameraSimUtil "github.com/kainn9/demo/systems/sim/util/camera"
 	systemsUtil "github.com/kainn9/demo/systems/util"
+	cameraSharedUtil "github.com/kainn9/demo/systems/util/camera"
 	"github.com/yohamta/donburi"
 )
 
@@ -34,14 +35,14 @@ func (sys *CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 	xBoundaryLeft := (float64(clientGlobals.SCREEN_WIDTH) / 2) / camera.Zoom
 	xBoundaryRight := float64(mapWidth) - xBoundaryLeft
 
-	xOffsetLeft := cameraUtil.ZoomSpacingX(camera.Zoom) / float64(camera.Zoom)
+	xOffsetLeft := cameraSharedUtil.ZoomSpacingX(camera.Zoom) / float64(camera.Zoom)
 	xOffsetCenter := playerBody.Pos.X - float64(clientGlobals.SCREEN_WIDTH/2)
 	xOffsetRight := xBoundaryRight - float64(clientGlobals.SCREEN_WIDTH)/2
 
 	yBoundaryTop := (float64(clientGlobals.SCREEN_HEIGHT) / 2) / camera.Zoom
 	yBoundaryBottom := float64(mapHeight) - yBoundaryTop
 
-	yOffsetTop := cameraUtil.ZoomSpacingY(camera.Zoom) / float64(camera.Zoom)
+	yOffsetTop := cameraSharedUtil.ZoomSpacingY(camera.Zoom) / float64(camera.Zoom)
 	yOffsetCenter := playerBody.Pos.Y - float64(clientGlobals.SCREEN_HEIGHT/2)
 	yOffsetBottom := yBoundaryBottom - float64(clientGlobals.SCREEN_HEIGHT)/2
 
@@ -56,21 +57,21 @@ func (sys *CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 	// Handle X-axis
 	switch {
 	case playerInsideXBoundsLeft:
-		cameraUtil.SetPosition(camera, xOffsetLeft, camera.Y, useSmoothCam)
+		cameraSimUtil.SetPosition(camera, xOffsetLeft, camera.Y, useSmoothCam)
 	case playerInsideXBoundsRight:
-		cameraUtil.SetPosition(camera, xOffsetRight, camera.Y, useSmoothCam)
+		cameraSimUtil.SetPosition(camera, xOffsetRight, camera.Y, useSmoothCam)
 	default:
-		cameraUtil.SetPosition(camera, xOffsetCenter, camera.Y, useSmoothCam)
+		cameraSimUtil.SetPosition(camera, xOffsetCenter, camera.Y, useSmoothCam)
 	}
 
 	// Handle Y-axis
 	switch {
 	case playerInsideYBoundsTop:
-		cameraUtil.SetPosition(camera, camera.X, yOffsetTop, useSmoothCam)
+		cameraSimUtil.SetPosition(camera, camera.X, yOffsetTop, useSmoothCam)
 	case playerInsideYBoundsBottom:
-		cameraUtil.SetPosition(camera, camera.X, yOffsetBottom, useSmoothCam)
+		cameraSimUtil.SetPosition(camera, camera.X, yOffsetBottom, useSmoothCam)
 	default:
-		cameraUtil.SetPosition(camera, camera.X, yOffsetCenter, useSmoothCam)
+		cameraSimUtil.SetPosition(camera, camera.X, yOffsetCenter, useSmoothCam)
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyF) {

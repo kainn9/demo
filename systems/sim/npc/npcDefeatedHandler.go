@@ -10,7 +10,13 @@ import (
 )
 
 type NpcDefeatedHandlerSystem struct {
-	scene *coldBrew.Scene
+	scene           *coldBrew.Scene
+	DefeatCallbacks []DefeatCallback
+}
+
+type DefeatCallback interface {
+	Npc() *donburi.Entry
+	OnDefeat(scene *coldBrew.Scene, npcEntity *donburi.Entry)
 }
 
 func NewNpcDefeatedHandler(scene *coldBrew.Scene) *NpcDefeatedHandlerSystem {
@@ -34,6 +40,7 @@ func (sys NpcDefeatedHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
 		state.Combat.DefeatedStartTick = ticksHandler.CurrentTick()
 		body.Vel.X = 0
 
+		sys.handleCallbacks(npcEntity)
 	}
 
 	if !state.Combat.Defeated {
@@ -45,4 +52,14 @@ func (sys NpcDefeatedHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
 		sys.scene.World.Remove(npcEntity.Entity())
 	}
 
+}
+
+func (sys *NpcDefeatedHandlerSystem) handleCallbacks(npcEntity *donburi.Entry) {
+	for _, callback := range sys.DefeatCallbacks {
+
+		if callback.Npc() == npcEntity {
+			callback.OnDefeat(sys.scene, callback.Npc())
+		}
+
+	}
 }

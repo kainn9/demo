@@ -1,8 +1,13 @@
 package components
 
-import (
-	"github.com/yohamta/donburi"
-)
+import "github.com/yohamta/donburi"
+
+var IndicatorStateAndConfigComponent = donburi.NewComponentType[IndicatorStateAndConfig]()
+
+type IndicatorStateAndConfig struct {
+	State  *IndicatorState
+	Config *IndicatorConfig
+}
 
 // Indicator Constants.
 type IndicatorType string
@@ -16,13 +21,6 @@ type IndicatorConfig struct {
 	Type     IndicatorType
 	OnPlayer bool
 }
-
-type IndicatorStateAndConfig struct {
-	State  *IndicatorState
-	Config *IndicatorConfig
-}
-
-var IndicatorStateAndConfigComponent = donburi.NewComponentType[IndicatorStateAndConfig]()
 
 // If onPlayer is true, then x,y is relative to the player,
 // otherwise, it global/relative to the scene.

@@ -12,16 +12,16 @@ import (
 	"github.com/yohamta/donburi/filter"
 )
 
-type ChatCallBackSystem interface {
-	SlideIndex() int
-	Callback(*coldBrew.Scene)
-	ChatName() string
-}
-
 type ChatHandlerSystem struct {
 	scene *coldBrew.Scene
 
-	CallBackSystems []ChatCallBackSystem
+	CallBackSystems []ChatCallBack
+}
+
+type ChatCallBack interface {
+	SlideIndex() int
+	Callback(*coldBrew.Scene)
+	ChatName() string
 }
 
 func NewChatHandler(scene *coldBrew.Scene) *ChatHandlerSystem {

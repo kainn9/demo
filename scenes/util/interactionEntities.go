@@ -37,6 +37,7 @@ func AddSceneTransitionEntity(
 	x, y, width, height float64,
 	targetScene coldBrew.SceneFace,
 	spawnX, spawnY, camX, camY float64,
+
 ) {
 
 	transitionEntity := scene.AddEntity(
@@ -60,5 +61,7 @@ func AddSceneTransitionEntity(
 
 	components.IndicatorStateAndConfigComponent.SetValue(transitionEntity, *indicatorState)
 	transitionState := components.NewSceneTransitionStateAndConfig(spawnX, spawnY, camX, camY, targetScene)
+
 	components.SceneTransitionStateAndConfigComponent.SetValue(transitionEntity, *transitionState)
+
 }

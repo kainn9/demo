@@ -4,6 +4,13 @@ import (
 	"github.com/yohamta/donburi"
 )
 
+var NpcStateComponent = donburi.NewComponentType[NpcState]()
+
+type NpcState struct {
+	Animation CharState
+	Transform *NpcTransformState
+	Combat    *NpcCombatState
+}
 type NpcTransformState struct {
 	direction               float64
 	BasicHorizontalMovement bool
@@ -14,14 +21,6 @@ type NpcCombatState struct {
 	Health, LastHitTick, DefeatedStartTick int
 	Hittable, IsHit, Defeated              bool
 }
-
-type NpcState struct {
-	Animation CharState
-	Transform *NpcTransformState
-	Combat    *NpcCombatState
-}
-
-var NpcStateComponent = donburi.NewComponentType[NpcState]()
 
 func NewNpcState(hittable bool) *NpcState {
 

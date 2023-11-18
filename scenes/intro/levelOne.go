@@ -3,10 +3,16 @@ package introScenes
 import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
+	inventoryUtil "github.com/kainn9/demo/systems/sim/util/inventory"
 	"github.com/kainn9/demo/systems/systemInitializers"
+	systemsUtil "github.com/kainn9/demo/systems/util"
+	callbacksUtil "github.com/kainn9/demo/systems/util/callbacks"
+	"github.com/yohamta/donburi"
 
 	UIGlobals "github.com/kainn9/demo/globalConfig/UI"
+	inventoryGlobals "github.com/kainn9/demo/globalConfig/inventory"
 	npcGlobals "github.com/kainn9/demo/globalConfig/npc"
+	playerGlobals "github.com/kainn9/demo/globalConfig/player"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
 )
 
@@ -32,7 +38,6 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	systemInitializers.InitStandardSystems(scene, "The Outskirts.", false)
 
 	// Entities ----------------------------------------------------------------------------------
-
 	scenesUtil.AddCameraEntity(scene, 0, 0, 1)
 
 	scenesUtil.AddParallaxBackgroundEntity(scene, []*components.ParallaxLayerConfig{
@@ -109,7 +114,48 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		UIGlobals.INDICATOR_LADDER,
 	)
 
+	// Auto Chat.
+
+	introLevelOneGetClinicContent := []components.SlidesContent{
+		{
+			Text:         "Get to the clinic. I need to figure this out.",
+			PortraitName: playerGlobals.PLAYER_PORTRAIT_INDEX,
+			CharName:     playerGlobals.PLAYER_BAD_NAME,
+			FacingRight:  true,
+		},
+	}
+
+	scenesUtil.AddBasicChatEntity(scene, "introLevelOneGetClinic", introLevelOneGetClinicContent, true)
+
+	// Thugs.
+
+	thugs := []*donburi.Entry{
+		scenesUtil.AddNpcEntity(scene, 1071, 188, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true),
+		scenesUtil.AddNpcEntity(scene, 1636, 45, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true),
+		scenesUtil.AddNpcEntity(scene, 2095, 149, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true),
+		scenesUtil.AddNpcEntity(scene, 2606, 159, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true),
+
+		scenesUtil.AddNpcEntity(scene, 3052, 275, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true),
+		scenesUtil.AddNpcEntity(scene, 3152, 275, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true),
+		scenesUtil.AddNpcEntity(scene, 3202, 275, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true),
+	}
+
+	for _, npc := range thugs {
+		callbacksUtil.AttachNpcDefeatCallback(scene, ThugsUniqueDropCallback{npc: npc})
+	}
+
 	// Transition Entity Door.
+	zapClinicRestrictionChatContent := []components.SlidesContent{
+		{
+			Text:         "I can't until I hurt.",
+			PortraitName: playerGlobals.PLAYER_PORTRAIT_INDEX,
+			CharName:     playerGlobals.PLAYER_BAD_NAME,
+			FacingRight:  true,
+		},
+	}
+
+	zapClinicRestrictionChatEntity := scenesUtil.AddBasicChatEntity(scene, "zapClinicRestrictionChat", zapClinicRestrictionChatContent, false)
+
 	scenesUtil.AddSceneTransitionEntity(
 		scene,
 		3661,
@@ -120,15 +166,56 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		96, 313, -160, 90,
 	)
 
-	// Thugs.
-	scenesUtil.AddNpcEntity(scene, 1071, 188, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true)
-	scenesUtil.AddNpcEntity(scene, 1636, 45, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true)
-	scenesUtil.AddNpcEntity(scene, 2095, 149, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true)
-	scenesUtil.AddNpcEntity(scene, 2606, 159, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true)
-
-	scenesUtil.AddNpcEntity(scene, 3052, 275, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true)
-	scenesUtil.AddNpcEntity(scene, 3152, 275, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true)
-	scenesUtil.AddNpcEntity(scene, 3202, 275, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true)
+	callbacksUtil.AttachTransitionCallback(
+		scene,
+		ZapClinicDoorRequirements{
+			chatEntity: zapClinicRestrictionChatEntity,
+		},
+	)
 
 	return scene
+}
+
+// Unique Drop Callbacks.
+type ThugsUniqueDropCallback struct {
+	npc *donburi.Entry
+}
+
+func (cb ThugsUniqueDropCallback) Npc() *donburi.Entry {
+	return cb.npc
+}
+
+func (cb ThugsUniqueDropCallback) OnDefeat(scene *coldBrew.Scene, npcEntity *donburi.Entry) {
+	world := scene.World
+
+	playerEntity := systemsUtil.GetPlayerEntity(world)
+
+	inventory := components.InventoryComponent.Get(playerEntity)
+
+	itemToAdd := components.NewInventoryItem(inventoryGlobals.ITEM_NAME_ZAP_CLINIC_UNLOCK, 1)
+
+	inventoryUtil.AddItemToInventory(inventory, itemToAdd)
+}
+
+// Transition Permission Callbacks.
+type ZapClinicDoorRequirements struct {
+	chatEntity *donburi.Entry
+}
+
+func (ZapClinicDoorRequirements) AllowedToTransition(scene *coldBrew.Scene) bool {
+
+	playerEntity := systemsUtil.GetPlayerEntity(scene.World)
+	inventory := components.InventoryComponent.Get(playerEntity)
+
+	doorKey := inventoryUtil.GetItemFromInventory(*inventory, inventoryGlobals.ITEM_NAME_ZAP_CLINIC_UNLOCK)
+
+	return doorKey != nil
+}
+
+func (cb ZapClinicDoorRequirements) ChatEntity() *donburi.Entry {
+	return cb.chatEntity
+}
+
+func (req ZapClinicDoorRequirements) Index() string {
+	return LevelTwoScene{}.Index()
 }

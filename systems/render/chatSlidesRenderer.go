@@ -2,7 +2,6 @@ package renderSystems
 
 import (
 	"image/color"
-	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
@@ -48,7 +47,7 @@ func (sys ChatSlidesRendererSystem) Draw(screen *ebiten.Image, chatEntity *donbu
 	// Handle the pop down animation one last time,
 	// when the chat box is no longer active.
 	if !configAndState.State.Active && animUtil.InactiveAnimation(popDownSprite.AnimationConfig) {
-		log.Println("Chat box is no longer active, and pop down animation is finished.")
+
 		sys.renderPopDownAnimation(popDownSprite, charBoxOpts, screen)
 		return
 	}

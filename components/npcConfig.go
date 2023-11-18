@@ -2,13 +2,13 @@ package components
 
 import "github.com/yohamta/donburi"
 
-type NpcName string
+var NpcConfigComponent = donburi.NewComponentType[NpcConfig]()
 
 type NpcConfig struct {
 	Name NpcName
 }
 
-var NpcConfigComponent = donburi.NewComponentType[NpcConfig]()
+type NpcName string
 
 func NewNpcConfig(name NpcName) *NpcConfig {
 
