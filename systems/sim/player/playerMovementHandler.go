@@ -92,7 +92,7 @@ func (sys PlayerMovementHandlerSystem) horizontalMovementHandler(playerState *co
 		sys.handlePlayerBasicHorizontalMovement(playerBody, playerState)
 	}
 
-	if playerState.Transform.BasicHorizontalMovement == false {
+	if !playerState.Transform.BasicHorizontalMovement {
 		sys.haltPlayerMovement(playerBody, playerState)
 	}
 
@@ -129,7 +129,7 @@ func (sys PlayerMovementHandlerSystem) haltPlayerMovement(playerBody *tBokiCompo
 
 func (sys PlayerMovementHandlerSystem) jumpHandler(playerBody *tBokiComponents.RigidBody, playerState *components.PlayerState) {
 
-	playerJumpTriggeredAndGrounded := playerState.Transform.JumpTriggered == true && (playerState.Collision.OnGround == true || playerState.Collision.Climbing == true)
+	playerJumpTriggeredAndGrounded := playerState.Transform.JumpTriggered && (playerState.Collision.OnGround || playerState.Collision.Climbing)
 
 	if playerJumpTriggeredAndGrounded {
 		tBokiPhysics.Transformer.ApplyImpulseLinear(playerBody, tBokiVec.Vec2{X: 0, Y: sys.yVelUnit})

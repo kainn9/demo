@@ -4,21 +4,20 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/kainn9/coldBrew"
 	inputGlobals "github.com/kainn9/demo/globalConfig/input"
-	introScenes "github.com/kainn9/demo/scenes/intro"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
 
 	"github.com/yohamta/donburi"
 )
 
 type TitleSceneHandlerSystem struct {
-	scene                   *coldBrew.Scene
-	tickLeftKeyLastPressed  int
-	tickRightKeyLastPressed int
+	scene         *coldBrew.Scene
+	nextSceneFace coldBrew.SceneFace
 }
 
-func NewTitleSceneHandler(scene *coldBrew.Scene) *TitleSceneHandlerSystem {
+func NewTitleSceneHandler(scene *coldBrew.Scene, nextSceneFace coldBrew.SceneFace) *TitleSceneHandlerSystem {
 	return &TitleSceneHandlerSystem{
-		scene: scene,
+		scene:         scene,
+		nextSceneFace: nextSceneFace,
 	}
 }
 
@@ -27,7 +26,7 @@ func (sys *TitleSceneHandlerSystem) Sync(_ *donburi.Entry) {
 	_, _, _, _, _, interact, _ := inputGlobals.ALL_BINDS()
 
 	if inpututil.IsKeyJustPressed(interact) {
-		scenesUtil.ChangeScene(sys.scene.Manager, introScenes.LevelOneScene{}, 147, 275, 0, 0)
+		scenesUtil.ChangeScene(sys.scene.Manager, sys.nextSceneFace, 147, 275, 0, 0)
 	}
 
 }

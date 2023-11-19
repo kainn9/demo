@@ -5,16 +5,16 @@ import (
 	"github.com/kainn9/demo/components"
 	playerGlobals "github.com/kainn9/demo/globalConfig/player"
 	sharedAnimationGlobals "github.com/kainn9/demo/globalConfig/sharedAnimation"
-	simChatSystems "github.com/kainn9/demo/systems/sim/chat"
+	clientUISystems "github.com/kainn9/demo/systems/client/UI"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 )
 
-func AttachChatCallback(scene *coldBrew.Scene, callback simChatSystems.ChatCallBack) {
+func AttachChatCallback(scene *coldBrew.Scene, callback clientUISystems.ChatCallBack) {
 
 	for _, sys := range scene.Systems {
 		switch cSys := sys.(type) {
 
-		case *simChatSystems.ChatHandlerSystem:
+		case *clientUISystems.ChatHandlerSystem:
 
 			cSys.CallBackSystems = append(cSys.CallBackSystems, callback)
 		}

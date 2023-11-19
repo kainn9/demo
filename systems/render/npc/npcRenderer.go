@@ -36,7 +36,7 @@ func (sys NpcRendererSystem) Draw(screen *ebiten.Image, npcEntity *donburi.Entry
 	// Get relevant entities and components.
 	world := sys.scene.World
 
-	sprites := components.SpritesAnimMapComponent.Get(npcEntity)
+	sprites := components.SpritesCharStateMapComponent.Get(npcEntity)
 	state := components.NpcStateComponent.Get(npcEntity)
 	body := components.RigidBodyComponent.Get(npcEntity)
 

@@ -32,7 +32,8 @@ func (sys IndicatorRendererSystem) Draw(screen *ebiten.Image, _ *donburi.Entry) 
 
 	world := sys.scene.World
 
-	if systemsUtil.IsChatActive(sys.scene.World) {
+	chatIsActive, _ := systemsUtil.IsChatActive(sys.scene.World)
+	if chatIsActive {
 		return
 	}
 
@@ -42,7 +43,7 @@ func (sys IndicatorRendererSystem) Draw(screen *ebiten.Image, _ *donburi.Entry) 
 	playerEntity := systemsUtil.GetPlayerEntity(world)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 
-	uiSingletonEntity := systemsUtil.GetUISingletonEntity(world)
+	uiSingletonEntity := systemsUtil.GetUISpritesSingletonEntity(world)
 	UISpritesMap := components.SpritesMapComponent.Get(uiSingletonEntity)
 
 	sys.IndicatorQuery().Each(world, func(indicatorEntity *donburi.Entry) {

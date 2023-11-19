@@ -12,8 +12,7 @@ import (
 )
 
 type CameraPositionHandlerSystem struct {
-	scene    *coldBrew.Scene
-	zoomHack float64
+	scene *coldBrew.Scene
 }
 
 func NewCameraPositionHandler(scene *coldBrew.Scene) *CameraPositionHandlerSystem {

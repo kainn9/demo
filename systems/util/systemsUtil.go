@@ -31,9 +31,21 @@ func GetPlayerEntity(world donburi.World) *donburi.Entry {
 	return entity
 }
 
-func GetUISingletonEntity(world donburi.World) *donburi.Entry {
+func GetUISpritesSingletonEntity(world donburi.World) *donburi.Entry {
 
-	entity, ok := queries.UISingletonQuery.First(world)
+	entity, ok := queries.UISingletonSpritesQuery.First(world)
+
+	if !ok {
+		log.Fatal("UISpritesSingletonQuery query failed.")
+	}
+
+	return entity
+
+}
+
+func GetUISoundsSingletonEntity(world donburi.World) *donburi.Entry {
+
+	entity, ok := queries.UISingletonSoundsQuery.First(world)
 
 	if !ok {
 		log.Fatal("UISpritesSingletonQuery query failed.")
@@ -44,7 +56,7 @@ func GetUISingletonEntity(world donburi.World) *donburi.Entry {
 }
 
 func GetChatPopUpSprite(world donburi.World) *components.Sprite {
-	entity, ok := queries.UISingletonQuery.First(world)
+	entity, ok := queries.UISingletonSpritesQuery.First(world)
 
 	if !ok {
 		log.Fatal("UISpritesSingletonQuery query failed, when getting chat pop up sprite.")
@@ -57,7 +69,7 @@ func GetChatPopUpSprite(world donburi.World) *components.Sprite {
 }
 
 func GetChatPopDownSprite(world donburi.World) *components.Sprite {
-	entity, ok := queries.UISingletonQuery.First(world)
+	entity, ok := queries.UISingletonSpritesQuery.First(world)
 
 	if !ok {
 		log.Fatal("UISpritesSingletonQuery query failed, when getting chat pop down sprite.")
@@ -70,7 +82,7 @@ func GetChatPopDownSprite(world donburi.World) *components.Sprite {
 }
 
 func GetDefaultFontSpriteMap(world donburi.World) (lower, upper, numbers, special *components.Sprite) {
-	entity, ok := queries.UISingletonQuery.First(world)
+	entity, ok := queries.UISingletonSpritesQuery.First(world)
 
 	if !ok {
 		log.Fatal("UISpritesSingletonQuery query failed.")
@@ -92,14 +104,15 @@ func GetDefaultFontSpriteMap(world donburi.World) (lower, upper, numbers, specia
 	return lower, upper, numbers, special
 }
 
-func IsChatActive(world donburi.World) bool {
+func IsChatActive(world donburi.World) (bool, *donburi.Entry) {
 
 	var isChatActive bool
+	var matchedChatEntity *donburi.Entry
 
 	query := queries.ChatQuery
 
 	if query.Count(world) == 0 {
-		return false
+		return false, matchedChatEntity
 	}
 
 	query.Each(world, func(chatEntity *donburi.Entry) {
@@ -107,9 +120,10 @@ func IsChatActive(world donburi.World) bool {
 		configAndState := components.ChatStateAndConfigComponent.Get(chatEntity)
 
 		if configAndState.State.Active {
+			matchedChatEntity = chatEntity
 			isChatActive = true
 		}
 	})
 
-	return isChatActive
+	return isChatActive, matchedChatEntity
 }

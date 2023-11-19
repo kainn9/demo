@@ -46,6 +46,9 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	// Entities ----------------------------------------------------------------------------------
 	scenesUtil.AddCameraEntity(scene, 0, 0, 1)
 
+	// Todo: consider saving duration in a global config thingy
+	scenesUtil.AddBgSoundEntity(scene, LEVEL_ONE_SCENE_ASSET_PATH, 1800)
+
 	scenesUtil.AddParallaxBackgroundEntity(scene, []*components.ParallaxLayerConfig{
 		// Sky.
 		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 0, 0, 0, false),
@@ -64,6 +67,9 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		// Front.
 		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 5, 0, 0, false),
 	})
+
+	// Walls.
+	scenesUtil.AddWalls(scene, LEVEL_ONE_SCENE_WIDTH, LEVEL_ONE_SCENE_HEIGHT)
 
 	// Floors left to right.
 	scenesUtil.AddBlockEntity(scene, 255, float64(scene.Height), 514, 95, 0)

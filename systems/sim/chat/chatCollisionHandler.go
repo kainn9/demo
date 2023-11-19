@@ -45,6 +45,7 @@ func (sys ChatCollisionHandlerSystem) Run(dt float64, chatEntity *donburi.Entry)
 			return
 		}
 
+		chatStateAndConfig.State.HasBeenRead = true
 		chatStateAndConfig.Enable()
 	}
 

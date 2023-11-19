@@ -12,9 +12,9 @@ import (
 func AddUISpritesSingletonEntity(scene *coldBrew.Scene) {
 
 	// Initialize UI Singleton SpritesMap.
-	UISingletonSpritesMapEntity := scene.AddEntity(
+	UISingletonSpritesEntity := scene.AddEntity(
 		components.SpritesMapComponent,
-		tags.UISingletonTag,
+		tags.UISingletonSpritesTag,
 	)
 
 	UISingletonSprites := make(map[string]*components.Sprite)
@@ -48,6 +48,6 @@ func AddUISpritesSingletonEntity(scene *coldBrew.Scene) {
 	// --------------------------------------------------------------------------------
 
 	// Register.
-	components.SpritesMapComponent.SetValue(UISingletonSpritesMapEntity, UISingletonSprites)
+	components.SpritesMapComponent.SetValue(UISingletonSpritesEntity, UISingletonSprites)
 
 }

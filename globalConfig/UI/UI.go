@@ -23,6 +23,8 @@ const (
 	CHAT_BOX_POP_UP_SPRITE_NAME   = "chatPopUp"
 	CHAT_BOX_POP_DOWN_SPRITE_NAME = "chatPopDown"
 	CHAT_BOX_ANIM_SPEED           = 12
+
+	CHAT_BOX_NEW_SOUND_NAME = "new"
 )
 
 var (

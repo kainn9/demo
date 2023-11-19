@@ -33,7 +33,8 @@ func (sys ChatInteractableHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 
 	world := sys.scene.World
 
-	if systemsUtil.IsChatActive(world) {
+	isChatActive, _ := systemsUtil.IsChatActive(sys.scene.World)
+	if isChatActive {
 		return
 	}
 

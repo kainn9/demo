@@ -44,6 +44,9 @@ func (LevelThreeScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 		components.NewParallaxLayerConfig(LEVEL_THREE_SCENE_ASSET_PATH, 0, 0, 0, false),
 	})
 
+	// Walls.
+	scenesUtil.AddWalls(scene, LEVEL_THREE_SCENE_WIDTH, LEVEL_THREE_SCENE_HEIGHT)
+
 	// Floor.
 	scenesUtil.AddBlockEntity(scene, float64(scene.Width/2), float64(scene.Height), float64(scene.Width), 20, 0)
 

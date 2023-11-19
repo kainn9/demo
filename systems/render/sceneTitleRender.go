@@ -38,7 +38,8 @@ func (sys *sceneTitleRendererSystem) Draw(screen *ebiten.Image, _ *donburi.Entry
 		return
 	}
 
-	if systemsUtil.IsChatActive(sys.scene.World) && !sys.displayingTitle {
+	isChatActive, _ := systemsUtil.IsChatActive(sys.scene.World)
+	if isChatActive && !sys.displayingTitle {
 		sys.startTick = th.CurrentTick()
 		return
 	} else {

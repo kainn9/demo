@@ -25,7 +25,7 @@ func (sys NpcAssetLoaderSystem) Query() *donburi.Query {
 
 func (sys NpcAssetLoaderSystem) Load(npcEntity *donburi.Entry) {
 
-	spritesMap := components.SpritesAnimMapComponent.Get(npcEntity)
+	spritesMap := components.SpritesCharStateMapComponent.Get(npcEntity)
 	config := components.NpcConfigComponent.Get(npcEntity)
 
 	for nameKey, sprite := range *spritesMap {
@@ -33,8 +33,9 @@ func (sys NpcAssetLoaderSystem) Load(npcEntity *donburi.Entry) {
 			continue
 		}
 
-		path := string(clientGlobals.CHARACTER_ASSETS_SUB_PATH)
+		path := string(clientGlobals.CHARACTER_ASSETS_PREFIX_PATH)
 		path += string(config.Name) + "/"
+		path += string(clientGlobals.SPRITES_ASSETS_PREFIX_PATH)
 		path += string(nameKey)
 
 		log.Println("Loading Npc Sprite at", path)

@@ -1,10 +1,11 @@
-package simChatSystems
+package clientUISystems
 
 import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 
 	UIGlobals "github.com/kainn9/demo/globalConfig/UI"
+	soundUtil "github.com/kainn9/demo/systems/client/util/sound"
 	animUtil "github.com/kainn9/demo/systems/render/util/anim"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	"github.com/yohamta/donburi"
@@ -36,20 +37,35 @@ func (ChatHandlerSystem) Query() *donburi.Query {
 }
 
 func (sys ChatHandlerSystem) Run(dt float64, chatEntity *donburi.Entry) {
-
-	playerEntity := systemsUtil.GetPlayerEntity(sys.scene.World)
+	world := sys.scene.World
+	playerEntity := systemsUtil.GetPlayerEntity(world)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 
 	configAndState := components.ChatStateAndConfigComponent.Get(chatEntity)
 
-	popDownSprite := systemsUtil.GetChatPopDownSprite(sys.scene.World)
-	popUpSprite := systemsUtil.GetChatPopUpSprite(sys.scene.World)
+	popDownSprite := systemsUtil.GetChatPopDownSprite(world)
+	popUpSprite := systemsUtil.GetChatPopUpSprite(world)
+
+	globalSoundsEntity := systemsUtil.GetUISoundsSingletonEntity(world)
+	globalSounds := components.SoundsMapComponent.Get(globalSoundsEntity)
+
+	audContext := components.AudioContextComponent.Get(globalSoundsEntity).Context
+
+	chatNewSound := (*globalSounds)[UIGlobals.CHAT_BOX_NEW_SOUND_NAME]
+
+	if configAndState.State.JustOpened {
+		soundUtil.PlaySound(audContext, chatNewSound, sys.scene.Manager.TickHandler)
+	}
+
+	if configAndState.State.Active {
+		configAndState.State.JustOpened = false
+	}
 
 	// Handle Key Press.
 	if playerState.IsInteracting && configAndState.State.Active {
 		playerState.IsInteracting = false
 		sys.handleNextSlide(configAndState, popDownSprite, popUpSprite)
-
+		soundUtil.PlaySound(audContext, chatNewSound, sys.scene.Manager.TickHandler)
 	}
 
 	sys.handleTransitionState(configAndState, popDownSprite)
@@ -58,7 +74,6 @@ func (sys ChatHandlerSystem) Run(dt float64, chatEntity *donburi.Entry) {
 	if configAndState.State.Active {
 		sys.handleCallback(configAndState)
 	}
-
 }
 
 func (sys ChatHandlerSystem) handleNextSlide(
@@ -118,7 +133,6 @@ func (sys ChatHandlerSystem) handleTransitionState(configAndState *components.Ch
 
 	if popDownFinished {
 		configAndState.State.PopDownMode = false
-
 	}
 }
 
@@ -142,8 +156,6 @@ func (sys ChatHandlerSystem) handleClose(
 		configAndState.State.PopUpMode = false
 		animUtil.ResetAnimationConfig(popDownSprite)
 		animUtil.ResetAnimationConfig(popUpSprite)
-
-		configAndState.State.HasBeenRead = true
 
 	}
 }

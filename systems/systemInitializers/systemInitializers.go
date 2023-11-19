@@ -3,7 +3,10 @@ package systemInitializers
 import (
 	"github.com/kainn9/coldBrew"
 	clientSystems "github.com/kainn9/demo/systems/client"
+	clientUISystems "github.com/kainn9/demo/systems/client/UI"
 	clientDebugSystems "github.com/kainn9/demo/systems/client/debug"
+	clientNpcSystems "github.com/kainn9/demo/systems/client/npc"
+	clientPlayerSystems "github.com/kainn9/demo/systems/client/player"
 	loaderSystems "github.com/kainn9/demo/systems/loader"
 	loaderNpcSystems "github.com/kainn9/demo/systems/loader/npc"
 	loaderPlayerSystems "github.com/kainn9/demo/systems/loader/player"
@@ -28,12 +31,15 @@ func InitStandardSystems(scene *coldBrew.Scene, title string, indoor bool) {
 	// Client Systems.
 	scene.AddSystem(clientSystems.NewInputTracker(scene))
 	scene.AddSystem(clientDebugSystems.NewDebugClickCoordsTracker(scene))
+	scene.AddSystem(clientUISystems.NewChatHandler(scene))
+	scene.AddSystem(clientPlayerSystems.NewPlayerSoundPlayer(scene))
+	scene.AddSystem(clientSystems.NewBackgroundSoundPlayer(scene))
+	scene.AddSystem(clientNpcSystems.NewNpcHitSoundPlayer(scene))
 
 	// Sim Systems.
 	scene.AddSystem(simPlayerSystems.NewPlayerPhysicsInputProcessor(scene))
 
 	scene.AddSystem(simChatSystems.NewChatCollisionHandler(scene))
-	scene.AddSystem(simChatSystems.NewChatHandler(scene))
 	scene.AddSystem(simChatSystems.NewChatInteractableHandler(scene))
 
 	scene.AddSystem(simPlayerSystems.NewPlayerMovementHandler(scene, indoor))
@@ -50,7 +56,7 @@ func InitStandardSystems(scene *coldBrew.Scene, title string, indoor bool) {
 	scene.AddSystem(simPlayerSystems.NewPlayerNpcHitHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewPlayerIframeHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewPlayerDefeatedHandler(scene))
-	scene.AddSystem(simNpcSystems.NewNpcAttackedHandler(scene))
+	scene.AddSystem(simNpcSystems.NewNpcHitHandler(scene))
 	scene.AddSystem(simNpcSystems.NewNpcDefeatedHandler(scene))
 	scene.AddSystem(simNpcSystems.NewNpcSimpleAiHandler(scene))
 

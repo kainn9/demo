@@ -6,7 +6,6 @@ import (
 	"github.com/kainn9/demo/components"
 	inputGlobals "github.com/kainn9/demo/globalConfig/input"
 	sharedAnimationGlobals "github.com/kainn9/demo/globalConfig/sharedAnimation"
-
 	scenesUtil "github.com/kainn9/demo/scenes/util"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	"github.com/yohamta/donburi"
@@ -36,7 +35,8 @@ func (sys PlayerPhysicsInputProcessorSystem) Run(dt float64, playerEntity *donbu
 	inputs := components.InputsComponent.Get(playerEntity)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 
-	if systemsUtil.IsChatActive(sys.scene.World) {
+	chatIsActive, _ := systemsUtil.IsChatActive(sys.scene.World)
+	if chatIsActive {
 		playerState.Transform.BasicHorizontalMovement = false
 	}
 
@@ -115,15 +115,21 @@ func (sys PlayerPhysicsInputProcessorSystem) handleKeySpace(playerState *compone
 
 }
 
-func (sys PlayerPhysicsInputProcessorSystem) inputPop(inputQueue *[]ebiten.Key) ebiten.Key {
-	if len(*inputQueue) == 0 {
-		return inputGlobals.NO_INPUT
-	}
+// -------------------------------------------------
+// Not used, but should work, if needed.
+// We do prefer to use shift, because it's makes
+// more sense to pop the last input though.
+// -------------------------------------------------
+// func (sys PlayerPhysicsInputProcessorSystem) inputPop(inputQueue *[]ebiten.Key) ebiten.Key {
+// 	if len(*inputQueue) == 0 {
+// 		return inputGlobals.NO_INPUT
+// 	}
 
-	popped := (*inputQueue)[len(*inputQueue)-1]
-	*inputQueue = (*inputQueue)[:len(*inputQueue)-1]
-	return popped
-}
+// 	popped := (*inputQueue)[len(*inputQueue)-1]
+// 	*inputQueue = (*inputQueue)[:len(*inputQueue)-1]
+// 	return popped
+// }
+// -------------------------------------------------
 
 func (sys PlayerPhysicsInputProcessorSystem) inputShift(inputQueue *[]ebiten.Key) ebiten.Key {
 	if len(*inputQueue) == 0 {
@@ -143,6 +149,7 @@ func (sys PlayerPhysicsInputProcessorSystem) handleKeyPrimaryAtk(playerState *co
 	attackState := components.NewAttackState(
 		sys.scene.Manager.TickHandler.CurrentTick(),
 		int(playerEntity.Entity().Id()),
+		string(sharedAnimationGlobals.CHAR_STATE_ATTACK_PRIMARY),
 		true,
 	)
 

@@ -39,7 +39,7 @@ func (sys PlayerRendererSystem) Draw(screen *ebiten.Image, playerEntity *donburi
 	// Get relevant entities and components.
 	world := sys.scene.World
 
-	sprites := components.SpritesAnimMapComponent.Get(playerEntity)
+	sprites := components.SpritesCharStateMapComponent.Get(playerEntity)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 

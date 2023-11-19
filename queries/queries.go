@@ -45,6 +45,10 @@ var FrontLayerQuery = donburi.NewQuery(
 	),
 )
 
+var BackgroundSoundQuery = donburi.NewQuery(
+	filter.Contains(components.BgSoundConfigComponent),
+)
+
 var BlockQuery = donburi.NewQuery(
 	filter.Contains(tags.BlockTag),
 )
@@ -57,8 +61,12 @@ var LadderQuery = donburi.NewQuery(
 	filter.Contains(tags.LadderTag),
 )
 
-var UISingletonQuery = donburi.NewQuery(
-	filter.Contains(tags.UISingletonTag),
+var UISingletonSpritesQuery = donburi.NewQuery(
+	filter.Contains(tags.UISingletonSpritesTag),
+)
+
+var UISingletonSoundsQuery = donburi.NewQuery(
+	filter.Contains(tags.UISingletonSoundsTag),
 )
 
 var AttackQuery = donburi.NewQuery(

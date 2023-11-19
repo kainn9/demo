@@ -65,7 +65,7 @@ func (sys *HitBoxPreviewerSystem) Draw(screen *ebiten.Image, playerEntity *donbu
 
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
-	sprites := components.SpritesAnimMapComponent.Get(playerEntity)
+	sprites := components.SpritesCharStateMapComponent.Get(playerEntity)
 
 	if !sys.jsonLoaded || inpututil.IsKeyJustPressed(ebiten.Key8) {
 		jsonFile, err := os.Open(clientGlobals.DEBUG_HITBOX_PREVIEW_JSON_PATH)

@@ -59,3 +59,8 @@ func AddLadderEntity(scene *coldBrew.Scene, x, y, w, h float64) {
 		*ladderBody,
 	)
 }
+
+func AddWalls(scene *coldBrew.Scene, sceneWidth, sceneHeight float64) {
+	AddBlockEntity(scene, 0, sceneHeight/2, 10, sceneHeight, 0)
+	AddBlockEntity(scene, sceneWidth, 0+sceneHeight/2, 10, sceneHeight, 0)
+}

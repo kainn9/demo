@@ -43,8 +43,8 @@ func (sys ChatLoaderSystem) loadPortraitSprites(configAndState *components.ChatS
 			continue
 		}
 
-		path := clientGlobals.CHARACTER_ASSETS_SUB_PATH
-		path += data.PortraitName + "/"
+		path := clientGlobals.CHARACTER_ASSETS_PREFIX_PATH
+		path += data.PortraitName + "/" + clientGlobals.SPRITES_ASSETS_PREFIX_PATH
 		path += "portrait"
 
 		log.Println("Loading Portrait Sprite:", path)

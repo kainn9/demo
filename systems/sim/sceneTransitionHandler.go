@@ -41,7 +41,8 @@ func (sys SceneTransitionHandlerSystem) Run(dt float64, transitionEntity *donbur
 
 	world := sys.scene.World
 
-	if systemsUtil.IsChatActive(world) {
+	chatIsActive, _ := systemsUtil.IsChatActive(sys.scene.World)
+	if chatIsActive {
 		return
 	}
 

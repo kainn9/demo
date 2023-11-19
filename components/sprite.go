@@ -8,7 +8,7 @@ import (
 var SpriteComponent = donburi.NewComponentType[Sprite]()
 var SpritesMapComponent = donburi.NewComponentType[map[string]*Sprite]()
 var SpritesSliceComponent = donburi.NewComponentType[[]*Sprite]()
-var SpritesAnimMapComponent = donburi.NewComponentType[map[CharState]*Sprite]()
+var SpritesCharStateMapComponent = donburi.NewComponentType[map[CharState]*Sprite]()
 
 type Sprite struct {
 	OffSetX, OffSetY float64

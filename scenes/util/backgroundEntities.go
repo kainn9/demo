@@ -38,3 +38,17 @@ func AddFrontLayerEntity(scene *coldBrew.Scene, sceneAssetPath string) {
 		*components.NewSprite(0, 0),
 	)
 }
+
+func AddBgSoundEntity(scene *coldBrew.Scene, sceneAssetPath string, soundTicksDuration int) {
+	bgSoundEntity := scene.AddEntity(components.BgSoundConfigComponent, components.SoundComponent)
+
+	components.BgSoundConfigComponent.SetValue(
+		bgSoundEntity,
+		*components.NewBgSoundConfig(sceneAssetPath),
+	)
+
+	components.SoundComponent.SetValue(
+		bgSoundEntity,
+		*components.NewSound(soundTicksDuration, 1),
+	)
+}

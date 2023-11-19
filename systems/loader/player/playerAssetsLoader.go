@@ -23,19 +23,39 @@ func (sys PlayerAssetsLoaderSystem) Query() *donburi.Query {
 	return queries.PlayerQuery
 }
 
-func (sys PlayerAssetsLoaderSystem) Load(entity *donburi.Entry) {
+func (sys PlayerAssetsLoaderSystem) Load(playerEntity *donburi.Entry) {
+	sys.loadSprites(playerEntity)
+	sys.loadSounds(playerEntity)
+}
 
-	spritesMap := components.SpritesAnimMapComponent.Get(entity)
+func (sys PlayerAssetsLoaderSystem) loadSprites(playerEntity *donburi.Entry) {
+
+	spritesMap := components.SpritesCharStateMapComponent.Get(playerEntity)
 
 	for nameKey, sprite := range *spritesMap {
 		if sprite.AssetData.Loaded {
 			continue
 		}
 
-		path := string(clientGlobals.PLAYER_ASSETS_SUB_PATH + nameKey)
+		path := string(clientGlobals.CHARACTER_ASSETS_PREFIX_PATH + clientGlobals.PLAYER_PREFIX_PATH + clientGlobals.SPRITES_ASSETS_PREFIX_PATH + nameKey)
 
 		log.Println("Loading Player Sprite at", path)
 		loaderUtil.LoadImage(path, sprite)
 	}
+}
 
+func (sys PlayerAssetsLoaderSystem) loadSounds(playerEntity *donburi.Entry) {
+
+	soundsMap := components.SoundCharStateMapComponent.Get(playerEntity)
+
+	for nameKey, sound := range *soundsMap {
+		if sound.AssetData.Loaded {
+			continue
+		}
+
+		path := string(clientGlobals.CHARACTER_ASSETS_PREFIX_PATH + clientGlobals.PLAYER_PREFIX_PATH + clientGlobals.SOUNDS_ASSETS_PREFIX_PATH + nameKey)
+
+		log.Println("Loading Player Sound at", path)
+		loaderUtil.LoadSound(path, sound)
+	}
 }

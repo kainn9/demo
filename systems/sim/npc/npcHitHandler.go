@@ -12,21 +12,21 @@ import (
 	"github.com/yohamta/donburi"
 )
 
-type NpcAttackedHandlerSystem struct {
+type NpcHitHandlerSystem struct {
 	scene *coldBrew.Scene
 }
 
-func NewNpcAttackedHandler(scene *coldBrew.Scene) *NpcAttackedHandlerSystem {
-	return &NpcAttackedHandlerSystem{
+func NewNpcHitHandler(scene *coldBrew.Scene) *NpcHitHandlerSystem {
+	return &NpcHitHandlerSystem{
 		scene: scene,
 	}
 }
 
-func (sys NpcAttackedHandlerSystem) Query() *donburi.Query {
+func (sys NpcHitHandlerSystem) Query() *donburi.Query {
 	return queries.NpcQuery
 }
 
-func (sys NpcAttackedHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
+func (sys NpcHitHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
 
 	world := sys.scene.World
 	npcBody := components.RigidBodyComponent.Get(npcEntity)
@@ -51,19 +51,22 @@ func (sys NpcAttackedHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
 
 		attackHitboxes := components.AttackBoxesComponent.Get(attackEntity)
 		attackState := components.AttackStateComponent.Get(attackEntity)
-		id := attackState.ID
 
 		for _, attackHitbox := range *attackHitboxes {
 			if isColliding, _ := tBokiPhysics.Detector.Detect(npcBody, attackHitbox, true); isColliding {
-				sys.handleHit(*npcState, attackHitbox, id)
+				sys.handleHit(*npcState, attackHitbox, attackState)
 			}
 		}
 	})
 
 }
 
-func (sys NpcAttackedHandlerSystem) handleHit(npcState components.NpcState, attackHitbox *tBokiComponents.RigidBody, id int) {
+func (sys NpcHitHandlerSystem) handleHit(npcState components.NpcState, attackHitbox *tBokiComponents.RigidBody, attackState *components.AttackState) {
 
+	id := attackState.ID
+	atkName := attackState.Name
+
+	log.Println("npc hit! id:", id, "name:", atkName)
 	if npcState.Combat.Hits[id] != 0 {
 		return
 	}
@@ -72,6 +75,7 @@ func (sys NpcAttackedHandlerSystem) handleHit(npcState components.NpcState, atta
 	npcState.Combat.Hits[id] = id
 	npcState.Combat.IsHit = true
 	npcState.Combat.LastHitTick = sys.scene.Manager.TickHandler.CurrentTick()
+	npcState.Combat.LatestHitAttackName = atkName
 
 	log.Println("npc hit! health:", npcState.Combat.Health)
 }

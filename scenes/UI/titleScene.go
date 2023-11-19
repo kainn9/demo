@@ -7,6 +7,7 @@ import (
 	loaderSystems "github.com/kainn9/demo/systems/loader"
 	renderUISystems "github.com/kainn9/demo/systems/render/UI"
 
+	introScenes "github.com/kainn9/demo/scenes/intro"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
 )
 
@@ -31,7 +32,7 @@ func (TitleScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scene.AddSystem(loaderSystems.NewBackgroundLoader(scene))
 	scene.AddSystem(loaderSystems.NewUIGlobalLoader(scene))
 
-	scene.AddSystem(clientUISystems.NewTitleSceneHandler(scene))
+	scene.AddSystem(clientUISystems.NewTitleSceneHandler(scene, introScenes.LevelOneScene{}))
 
 	scene.AddSystem(renderUISystems.NewTitleRenderer(scene))
 	// Entities ----------------------------------------------------------------------------------

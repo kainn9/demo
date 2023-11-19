@@ -23,6 +23,7 @@ func AddBasicChatEntity(
 	configAndState := components.NewChatStateAndConfig(chatName, content)
 	configAndState.State.Active = auto
 	configAndState.State.PopUpMode = auto
+	configAndState.State.JustOpened = auto
 
 	components.ChatStateAndConfigComponent.SetValue(
 		chatEntity,

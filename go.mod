@@ -10,7 +10,9 @@ require (
 )
 
 require (
+	github.com/ebitengine/oto/v3 v3.1.0 // indirect
 	github.com/ebitengine/purego v0.5.0 // indirect
+	github.com/hajimehoshi/go-mp3 v0.3.4 // indirect
 	github.com/jezek/xgb v1.1.0 // indirect
 	golang.org/x/exp/shiny v0.0.0-20231006140011-7918f672742d // indirect
 	golang.org/x/image v0.13.0 // indirect

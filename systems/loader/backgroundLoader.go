@@ -23,28 +23,32 @@ func NewBackgroundLoader(scene *coldBrew.Scene) *BackgroundLoaderSystem {
 	}
 }
 
-func (sys BackgroundLoaderSystem) ParallaxBGQuery() *donburi.Query {
+func (sys BackgroundLoaderSystem) parallaxBGQuery() *donburi.Query {
 	return queries.ParallaxBackGroundLayerQuery
 }
 
-func (sys BackgroundLoaderSystem) FrontLayerBGQuery() *donburi.Query {
+func (sys BackgroundLoaderSystem) frontLayerBGQuery() *donburi.Query {
 	return queries.FrontLayerQuery
+}
+
+func (sys BackgroundLoaderSystem) bgSoundQuery() *donburi.Query {
+	return queries.BackgroundSoundQuery
 }
 
 func (sys BackgroundLoaderSystem) Load(entity *donburi.Entry) {
 
 	world := sys.scene.World
 
-	parallaxQuery := sys.ParallaxBGQuery()
-
-	parallaxQuery.Each(world, func(layerEntity *donburi.Entry) {
+	sys.parallaxBGQuery().Each(world, func(layerEntity *donburi.Entry) {
 		sys.parallaxLoader(layerEntity)
 	})
 
-	frontLayerQuery := sys.FrontLayerBGQuery()
-
-	frontLayerQuery.Each(world, func(layerEntity *donburi.Entry) {
+	sys.frontLayerBGQuery().Each(world, func(layerEntity *donburi.Entry) {
 		sys.frontLayerLoader(layerEntity)
+	})
+
+	sys.bgSoundQuery().Each(world, func(soundEntity *donburi.Entry) {
+		sys.bgSoundLoader(soundEntity)
 	})
 
 }
@@ -74,4 +78,14 @@ func (sys BackgroundLoaderSystem) frontLayerLoader(layerEntity *donburi.Entry) {
 	log.Println("Loading front layer for", path+".")
 
 	loaderUtil.LoadImage(path, sprite)
+}
+
+func (sys BackgroundLoaderSystem) bgSoundLoader(soundEntity *donburi.Entry) {
+
+	config := components.BgSoundConfigComponent.Get(soundEntity)
+
+	path := clientGlobals.SCENE_ASSETS_SUB_PATH + config.SceneAssetsPath + clientGlobals.BG_SOUND_NAME
+	sound := components.SoundComponent.Get(soundEntity)
+
+	loaderUtil.LoadSound(path, sound)
 }

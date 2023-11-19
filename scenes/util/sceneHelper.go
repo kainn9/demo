@@ -5,6 +5,7 @@ import (
 
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
+	"github.com/kainn9/demo/queries"
 	cameraSimUtil "github.com/kainn9/demo/systems/sim/util/camera"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	"github.com/yohamta/donburi"
@@ -24,7 +25,9 @@ func InitFirstScene(
 
 	currentScene := manager.ActiveScene()
 	AddPlayerEntity(currentScene, playerX, playerY)
+
 	AddUISpritesSingletonEntity(currentScene)
+	AddUISoundsSingletonEntity(currentScene)
 
 }
 
@@ -37,7 +40,8 @@ func ChangeScene(
 	// Get old scene.
 	prevScene := manager.ActiveScene()
 	prevPlayerEntity := systemsUtil.GetPlayerEntity(prevScene.World)
-	prevUISingletonEntity := systemsUtil.GetUISingletonEntity(prevScene.World)
+	prevUISpriteSingletonEntity := systemsUtil.GetUISpritesSingletonEntity(prevScene.World)
+	prevUISoundsSingletonEntity := systemsUtil.GetUISoundsSingletonEntity(prevScene.World)
 
 	// Get new scene.
 	err := manager.LoadScene(newScene)
@@ -50,8 +54,8 @@ func ChangeScene(
 
 	// Transfer necessary player components(state) to new scene.
 	transferPlayer(prevPlayerEntity, prevScene, currentScene, playerX, playerY, camX, camY)
-	transferUISingleton(prevUISingletonEntity, prevScene, currentScene)
-
+	transferUISpriteSingleton(prevUISpriteSingletonEntity, prevUISoundsSingletonEntity, prevScene, currentScene)
+	pauseBgSound(prevScene)
 }
 
 func transferPlayer(
@@ -64,12 +68,20 @@ func transferPlayer(
 	newPlayerEntity := systemsUtil.GetPlayerEntity(newScene.World)
 
 	// Transfer sprites to avoid asset reloading.
-	oldPlayerSpriteMap := components.SpritesAnimMapComponent.Get(prevPlayerEntity)
+	oldPlayerSpriteMap := components.SpritesCharStateMapComponent.Get(prevPlayerEntity)
 
-	newPlayerSpriteMap := components.SpritesAnimMapComponent.Get(newPlayerEntity)
+	newPlayerSpriteMap := components.SpritesCharStateMapComponent.Get(newPlayerEntity)
 
 	for key, value := range *oldPlayerSpriteMap {
 		(*newPlayerSpriteMap)[key] = value
+	}
+
+	// Transfer Sound Assets to avoid reloading
+	oldPlayerSoundMap := components.SoundCharStateMapComponent.Get(prevPlayerEntity)
+	newPlayerSoundMap := components.SoundCharStateMapComponent.Get(newPlayerEntity)
+
+	for key, value := range *oldPlayerSoundMap {
+		(*newPlayerSoundMap)[key] = value
 	}
 
 	// Preserve player direction.
@@ -96,24 +108,52 @@ func transferPlayer(
 	cameraSimUtil.SetPosition(currCamera, camX, camY, false)
 }
 
-func transferUISingleton(
-	prevUISingletonEntity *donburi.Entry,
+func transferUISpriteSingleton(
+	prevUISpritesSingletonEntity *donburi.Entry,
+	prevUISoundsSingletonEntity *donburi.Entry,
 	prevScene, newScene *coldBrew.Scene,
 ) {
 
-	prevSpritesMap := components.SpritesMapComponent.Get(prevUISingletonEntity)
+	prevSpritesMap := components.SpritesMapComponent.Get(prevUISpritesSingletonEntity)
+	prevSoundsMap := components.SoundsMapComponent.Get(prevUISoundsSingletonEntity)
 
 	AddUISpritesSingletonEntity(newScene)
-	newUISingletonEntity := systemsUtil.GetUISingletonEntity(newScene.World)
+	newUISingletonEntity := systemsUtil.GetUISpritesSingletonEntity(newScene.World)
+
+	AddUISoundsSingletonEntityWithoutContext(newScene)
+	newUISoundsSingletonEntity := systemsUtil.GetUISoundsSingletonEntity(newScene.World)
 
 	newSpritesMap := components.SpritesMapComponent.Get(newUISingletonEntity)
+	newSoundsMap := components.SoundsMapComponent.Get(newUISoundsSingletonEntity)
 
 	// Transfer sprites to avoid asset reloading.
 	for key, value := range *prevSpritesMap {
 		(*newSpritesMap)[key] = value
 	}
 
-	// Remove UISingleton from old scene.
-	prevScene.World.Remove(prevUISingletonEntity.Entity())
+	// Transfer sounds to avoid asset reloading.
+	for key, value := range *prevSoundsMap {
+		(*newSoundsMap)[key] = value
+	}
+
+	// Transfer AudioContext to avoid asset reloading.
+	prevAudioContext := components.AudioContextComponent.Get(prevUISoundsSingletonEntity)
+	components.AudioContextComponent.SetValue(newUISoundsSingletonEntity, *prevAudioContext)
+
+	// Remove UISingletons from old scene.
+	prevScene.World.Remove(prevUISpritesSingletonEntity.Entity())
+	prevScene.World.Remove(prevUISoundsSingletonEntity.Entity())
+
+}
+
+func pauseBgSound(prevScene *coldBrew.Scene) {
+	bgSoundEntity, ok := queries.BackgroundSoundQuery.First(prevScene.World)
+	if !ok {
+		return
+	}
+
+	bgSound := components.SoundComponent.Get(bgSoundEntity)
+
+	bgSound.State.Player.Pause()
 
 }

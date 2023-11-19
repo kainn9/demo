@@ -38,6 +38,9 @@ func (LevelTwoScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 
 	scenesUtil.AddFrontLayerEntity(scene, LEVEL_TWO_SCENE_ASSET_PATH)
 
+	// Walls.
+	scenesUtil.AddWalls(scene, LEVEL_TWO_SCENE_WIDTH, LEVEL_TWO_SCENE_HEIGHT)
+
 	// Floor.
 	scenesUtil.AddBlockEntity(scene, 319, 366, LEVEL_ONE_SCENE_WIDTH*2, 31, 0)
 

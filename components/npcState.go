@@ -18,6 +18,7 @@ type NpcTransformState struct {
 
 type NpcCombatState struct {
 	Hits                                   map[int]int
+	LatestHitAttackName                    string
 	Health, LastHitTick, DefeatedStartTick int
 	Hittable, IsHit, Defeated              bool
 }

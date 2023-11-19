@@ -39,7 +39,9 @@ func (sys NpcSimpleAiHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 
-	if npcState.Combat.Defeated || playerState.Combat.Defeated || systemsUtil.IsChatActive(world) {
+	chatIsActive, _ := systemsUtil.IsChatActive(sys.scene.World)
+
+	if npcState.Combat.Defeated || playerState.Combat.Defeated || chatIsActive {
 		sys.idleNpc(npcState, npcBody)
 		return
 	}

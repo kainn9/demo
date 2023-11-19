@@ -21,6 +21,7 @@ type ChatState struct {
 	CurrentSlideIndex, TextAnimStartTick, NameTextAnimStartTick int
 	SlidesContent                                               []SlidesContent
 	HasBeenRead                                                 bool
+	JustOpened                                                  bool
 }
 
 type SlidesContent struct {
@@ -47,4 +48,5 @@ func NewChatStateAndConfig(chatName string, content []SlidesContent) *ChatStateA
 func (stateAndConfig *ChatStateAndConfig) Enable() {
 	stateAndConfig.State.Active = true
 	stateAndConfig.State.PopUpMode = true
+	stateAndConfig.State.JustOpened = true
 }

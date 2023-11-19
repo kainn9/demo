@@ -14,7 +14,9 @@ var LadderTag = donburi.NewTag()
 
 var NpcTag = donburi.NewTag()
 
-var UISingletonTag = donburi.NewTag()
+var UISingletonSpritesTag = donburi.NewTag()
+
+var UISingletonSoundsTag = donburi.NewTag()
 
 var EmptyTag = donburi.NewTag()
 

@@ -24,25 +24,33 @@ func NewUIGlobalLoader(scene *coldBrew.Scene) *UIGlobalLoaderSystem {
 	}
 }
 
-func (sys UIGlobalLoaderSystem) CustomQuery() *donburi.Query {
-	return queries.UISingletonQuery
+func (sys UIGlobalLoaderSystem) SpritesSingletonQuery() *donburi.Query {
+	return queries.UISingletonSpritesQuery
+}
+func (sys UIGlobalLoaderSystem) SoundsSingletonQuery() *donburi.Query {
+	return queries.UISingletonSoundsQuery
 }
 
 func (sys UIGlobalLoaderSystem) Load(_ *donburi.Entry) {
 
-	query := sys.CustomQuery()
+	spritesSingletonQuery := sys.SpritesSingletonQuery()
+	soundsSingletonQuery := sys.SoundsSingletonQuery()
+
 	world := sys.scene.World
 
-	UISpritesMapEntity, _ := query.First(world)
+	UISpritesMapEntity, _ := spritesSingletonQuery.First(world)
+	UISoundsMapEntity, _ := soundsSingletonQuery.First(world)
 
 	UISpritesMap := components.SpritesMapComponent.Get(UISpritesMapEntity)
+	UISoundsMap := components.SoundsMapComponent.Get(UISoundsMapEntity)
 
 	// Todo: Break this up into sub functions.
-	sys.loadAll(UISpritesMap)
+	sys.loadAllSprites(UISpritesMap)
+	sys.loadAllSounds(UISoundsMap)
 
 }
 
-func (sys UIGlobalLoaderSystem) loadAll(UISpritesMap *map[string]*components.Sprite) {
+func (sys UIGlobalLoaderSystem) loadAllSprites(UISpritesMap *map[string]*components.Sprite) {
 
 	// Default Font.
 	lowerCaseSpriteSheet := (*UISpritesMap)[fontGlobals.FONT_DEFAULT_NAME+fontGlobals.FONT_LOWER_CASE_SPRITE_NAME]
@@ -160,4 +168,19 @@ func (sys UIGlobalLoaderSystem) getAnimData(spriteComponent *components.Sprite) 
 	frameCount = totalFrameWidth / UIGlobals.CHAT_BOX_FRAME_WIDTH
 
 	return frameWidth, frameHeight, frameCount
+}
+
+func (sys UIGlobalLoaderSystem) loadAllSounds(UISoundsMap *map[string]*components.Sound) {
+
+	// Assuming if chatActiveSound(first global asset) is loaded,
+	// then all global assets are loaded(for now, at least).
+	if (*UISoundsMap)[UIGlobals.CHAT_BOX_NEW_SOUND_NAME].Loaded {
+		return
+	}
+
+	log.Println("Loading chat box sounds.")
+
+	log.Println("Loading", clientGlobals.UI_ASSETS_CHAT_BOX_SUBPATH+UIGlobals.CHAT_BOX_NEW_SOUND_NAME)
+	chatNewSound := (*UISoundsMap)[UIGlobals.CHAT_BOX_NEW_SOUND_NAME]
+	loaderUtil.LoadSound(clientGlobals.UI_ASSETS_CHAT_BOX_SUBPATH+UIGlobals.CHAT_BOX_NEW_SOUND_NAME, chatNewSound)
 }

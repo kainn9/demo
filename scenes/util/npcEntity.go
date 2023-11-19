@@ -27,7 +27,7 @@ func AddNpcEntity(
 
 	npcEntity := scene.AddEntity(
 		components.RigidBodyComponent,
-		components.SpritesAnimMapComponent,
+		components.SpritesCharStateMapComponent,
 		components.NpcConfigComponent,
 		components.NpcStateComponent,
 		components.PhysicsConfigComponent,
@@ -79,7 +79,7 @@ func AddNpcEntity(
 
 	}
 
-	components.SpritesAnimMapComponent.SetValue(npcEntity, npcSprites)
+	components.SpritesCharStateMapComponent.SetValue(npcEntity, npcSprites)
 
 	return npcEntity
 }

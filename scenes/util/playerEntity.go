@@ -16,7 +16,8 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 		components.RigidBodyComponent,
 		components.InputsComponent,
 		components.PlayerStateComponent,
-		components.SpritesAnimMapComponent,
+		components.SpritesCharStateMapComponent,
+		components.SoundCharStateMapComponent,
 		components.AttackHitboxConfigComponent,
 		components.PhysicsConfigComponent,
 		components.InventoryComponent,
@@ -129,7 +130,16 @@ func AddPlayerEntity(scene *coldBrew.Scene, x, y float64) tBokiComponents.RigidB
 	)
 	playerSprites[playerGlobals.PLAYER_CHAR_STATE_SIT].AnimationConfig = playerGlobals.PLAYER_ANIMATION_CONFIGS[playerGlobals.PLAYER_CHAR_STATE_SIT]
 
-	components.SpritesAnimMapComponent.SetValue(playerEntity, playerSprites)
+	components.SpritesCharStateMapComponent.SetValue(playerEntity, playerSprites)
+
+	// Sounds
+	playerSounds := make(map[components.CharState]*components.Sound, 0)
+
+	playerSounds[sharedAnimationGlobals.CHAR_STATE_HURT] = components.NewSound(30, 1)
+	playerSounds[sharedAnimationGlobals.CHAR_STATE_RUN] = components.NewSound(55, 0.5)
+	playerSounds[sharedAnimationGlobals.CHAR_STATE_ATTACK_PRIMARY] = components.NewSound(60, 1)
+
+	components.SoundCharStateMapComponent.SetValue(playerEntity, playerSounds)
 
 	// Hitboxes
 	noBox := []components.HitboxData{components.NewHitboxData(0, 0, 0, 0, 0)}
