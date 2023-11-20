@@ -34,7 +34,7 @@ func (DebugRigidBodyRendererSystem) Query() *donburi.Query {
 }
 
 func (sys DebugRigidBodyRendererSystem) Draw(screen *ebiten.Image, entity *donburi.Entry) {
-	if clientGlobals.DEBUG_MODE == false {
+	if !clientGlobals.DEBUG_MODE {
 		return
 	}
 
@@ -43,9 +43,7 @@ func (sys DebugRigidBodyRendererSystem) Draw(screen *ebiten.Image, entity *donbu
 	if entity.HasComponent(components.AttackBoxesComponent) {
 		attackBoxes := components.AttackBoxesComponent.Get(entity)
 
-		for _, box := range *attackBoxes {
-			bodies = append(bodies, box)
-		}
+		bodies = append(bodies, *attackBoxes...)
 
 	} else {
 		bodies = append(bodies, components.RigidBodyComponent.Get(entity))

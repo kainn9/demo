@@ -39,6 +39,7 @@ const (
 	PLAYER_HURT_ANIM_SPEED           = 60
 	PLAYER_DEFEATED_ANIM_SPEED       = 12
 	PLAYER_SIT_ANIM_SPEED            = 12
+	PLAYER_ROLL_ANIM_SPEED           = 12
 
 	PLAYER_IDLE_FRAME_COUNT                = 7
 	PLAYER_WALK_FRAME_COUNT                = 8
@@ -51,10 +52,12 @@ const (
 	PLAYER_HURT_FRAME_COUNT                = 1
 	PLAYER_DEFEATED_FRAME_COUNT            = 9
 	PLAYER_SIT_FRAME_COUNT                 = 1
+	PLAYER_ROLL_FRAME_COUNT                = 10
 
 	PLAYER_CHAR_STATE_CLIMB_LADDER_IDLE   components.CharState = "climbLadderIdle"
 	PLAYER_CHAR_STATE_CLIMB_LADDER_ACTIVE components.CharState = "climbLadderActive"
 	PLAYER_CHAR_STATE_SIT                 components.CharState = "sit"
+	PLAYER_CHAR_STATE_ROLL                components.CharState = "roll"
 )
 
 var PLAYER_ANIMATION_CONFIGS = map[components.CharState]*components.AnimationConfig{
@@ -145,6 +148,13 @@ var PLAYER_ANIMATION_CONFIGS = map[components.CharState]*components.AnimationCon
 		PLAYER_SIT_ANIM_SPEED,
 		true,
 	),
+	PLAYER_CHAR_STATE_ROLL: components.NewAnimationConfig(
+		PLAYER_ANIMATIONS_SPRITE_WIDTH,
+		PLAYER_ANIMATIONS_SPRITE_HEIGHT,
+		PLAYER_ROLL_FRAME_COUNT,
+		PLAYER_ROLL_ANIM_SPEED,
+		true,
+	),
 }
 
 type PlayerAttackData struct {
@@ -160,7 +170,8 @@ var PlayerAttackDataMap = map[components.CharState]*PlayerAttackData{
 }
 
 const (
-	PLAYER_PORTRAIT_INDEX = "player"
+	PLAYER_ASSET_NAME     = "player"
+	PLAYER_PORTRAIT_INDEX = PLAYER_ASSET_NAME
 	PLAYER_GOOD_NAME      = "The Goodrich"
 	PLAYER_BAD_NAME       = "The Badrich"
 )

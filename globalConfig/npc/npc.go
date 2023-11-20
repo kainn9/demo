@@ -11,6 +11,10 @@ import (
 const (
 	NPC_NAME_BIG_BOI components.NpcName = "bigBoi"
 
+	BIG_BOI_ATTACK_RANGE = 40
+	BIG_BOI_PATROL_RANGE = 200
+	BIG_BOI_SPEED        = 80
+
 	BIG_BOI_WIDTH  = 30
 	BIG_BOI_HEIGHT = 75
 
@@ -33,6 +37,9 @@ const (
 	BIG_BOI_DEFEATED_ANIM_SPEED  = 12
 
 	BIG_BOI_DEFEATED_DURATION = 240
+
+	BIG_BOI_ATTACK_PRIMARY_FRAME_COUNT = 5
+	BIG_BOI_ATTACK_PRIMARY_ANIM_SPEED  = 12
 )
 
 const (
@@ -41,9 +48,9 @@ const (
 )
 
 const (
-	NPC_NAME_THERAPIST_TWO           components.NpcName = "therapistTwo"
-	NPC_PORTRAIT_NAME_THERAPIST_TWO                     = "Dr. Refeed"
-	NPC_PORTRAIT_INDEX_THERAPIST_TWO                    = "therapistTwo"
+	NPC_NAME_THERAPIST_TWO           = "therapistTwo"
+	NPC_PORTRAIT_NAME_THERAPIST_TWO  = "Dr. Refeed"
+	NPC_PORTRAIT_INDEX_THERAPIST_TWO = "therapistTwo"
 
 	THERAPIST_TWO_WIDTH  = 25
 	THERAPIST_TWO_HEIGHT = 55
@@ -108,6 +115,14 @@ var BIG_BOI_ANIMATION_CONFIGS = map[components.CharState]components.AnimationCon
 		BIG_BOI_DEFEATED_ANIM_SPEED,
 		true,
 	),
+
+	sharedAnimationGlobals.CHAR_STATE_ATTACK_PRIMARY: *components.NewAnimationConfig(
+		BIG_BOI_ANIMATIONS_SPRITE_WIDTH,
+		BIG_BOI_ANIMATIONS_SPRITE_HEIGHT,
+		BIG_BOI_ATTACK_PRIMARY_FRAME_COUNT,
+		BIG_BOI_ATTACK_PRIMARY_ANIM_SPEED,
+		false,
+	),
 }
 
 var THERAPIST_TWO_ANIMATION_CONFIGS = map[components.CharState]components.AnimationConfig{
@@ -131,4 +146,16 @@ var NPC_DEFEATED_DURATIONS = map[components.NpcName]int{
 
 var TAG_MAP = map[components.NpcName]*donburi.ComponentType[struct{}]{
 	NPC_NAME_BIG_BOI: tags.NpcBigBoiTag,
+}
+
+type NpcAttackData struct {
+	TotalTickLength int
+	TicksPerFrame   int
+}
+
+var NpcAttackDataMap = map[components.NpcName]*NpcAttackData{
+	NPC_NAME_BIG_BOI: {
+		TotalTickLength: BIG_BOI_ATTACK_PRIMARY_FRAME_COUNT * BIG_BOI_ATTACK_PRIMARY_ANIM_SPEED,
+		TicksPerFrame:   BIG_BOI_ATTACK_PRIMARY_ANIM_SPEED,
+	},
 }

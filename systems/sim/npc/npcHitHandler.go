@@ -53,6 +53,7 @@ func (sys NpcHitHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
 		attackState := components.AttackStateComponent.Get(attackEntity)
 
 		for _, attackHitbox := range *attackHitboxes {
+
 			if isColliding, _ := tBokiPhysics.Detector.Detect(npcBody, attackHitbox, true); isColliding {
 				sys.handleHit(*npcState, attackHitbox, attackState)
 			}
@@ -63,10 +64,12 @@ func (sys NpcHitHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
 
 func (sys NpcHitHandlerSystem) handleHit(npcState components.NpcState, attackHitbox *tBokiComponents.RigidBody, attackState *components.AttackState) {
 
+	if !attackState.PlayerAttack {
+		return
+	}
 	id := attackState.ID
 	atkName := attackState.Name
 
-	log.Println("npc hit! id:", id, "name:", atkName)
 	if npcState.Combat.Hits[id] != 0 {
 		return
 	}
@@ -77,5 +80,6 @@ func (sys NpcHitHandlerSystem) handleHit(npcState components.NpcState, attackHit
 	npcState.Combat.LastHitTick = sys.scene.Manager.TickHandler.CurrentTick()
 	npcState.Combat.LatestHitAttackName = atkName
 
-	log.Println("npc hit! health:", npcState.Combat.Health)
+	log.Println("npc hit! id:", id, "name:", atkName)
+	log.Println("health:", npcState.Combat.Health)
 }

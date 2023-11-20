@@ -77,6 +77,11 @@ func (sys NpcRendererSystem) determineNpcAnimationState(npcState *components.Npc
 	if npcState.Combat.Defeated {
 		return sharedAnimationGlobals.CHAR_STATE_DEFEATED
 	}
+
+	if npcState.Combat.CurrentAttack == sharedAnimationGlobals.CHAR_STATE_ATTACK_PRIMARY {
+		return sharedAnimationGlobals.CHAR_STATE_ATTACK_PRIMARY
+	}
+
 	if npcState.Combat.IsHit {
 		return sharedAnimationGlobals.CHAR_STATE_HURT
 	}

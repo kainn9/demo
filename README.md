@@ -21,9 +21,9 @@ A Metroidvania-lite/Platformer game written in Go.
 Todos:
 - Cleanup map(fix ladder and platform placement/visibility)
 - Delay for re-interacting interaction markers
-- Emphasis font options for dialogue
 - Dodge/Roll
-- "Better" enemy "ai"
+- Support/refactor for multiple attacks for player
+- Improve enemy "ai"
 - Better callbacks system(perhaps refactor to some sort of event-emitter+queue-processor...this could help
     with proper/better division of responsibilities. For example, preventing chatHandler from triggering
     core sim callbacks despite being a "client system" which is a bit of a violation of concerns).

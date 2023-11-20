@@ -86,15 +86,7 @@ func (sys PlayerNpcHitHandlerSystem) processAttack(
 		return
 	}
 
-	var xFactor = 1.0
-
-	if playerBody.Pos.X < npcBody.Pos.X {
-		xFactor = -1
-	}
-
-	playerBody.Vel.X = 0
-	playerBody.Vel.Y = 0
-	tBokiPhysics.Transformer.ApplyImpulseLinear(playerBody, tBokiVec.Vec2{X: 140 * xFactor, Y: -70})
+	sys.handleDisplacement(playerBody, npcBody)
 
 	playerState.Combat.Hit = true
 	playerState.Combat.Health -= 1
@@ -127,4 +119,18 @@ func (sys *PlayerNpcHitHandlerSystem) clearHitState(playerState *components.Play
 
 	}
 	sys.currNpc++
+}
+
+// CONSOLIDATE IN UTIL!
+func (sys PlayerNpcHitHandlerSystem) handleDisplacement(playerBody, npcBody *tBokiComponents.RigidBody) {
+	var xFactor = 1.0
+
+	if playerBody.Pos.X < npcBody.Pos.X {
+		xFactor = -1
+	}
+
+	playerBody.Vel.X = 0
+	playerBody.Vel.Y = 0
+	tBokiPhysics.Transformer.ApplyImpulseLinear(playerBody, tBokiVec.Vec2{X: 140 * xFactor, Y: -70})
+
 }

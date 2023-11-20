@@ -14,6 +14,7 @@ import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	clientGlobals "github.com/kainn9/demo/globalConfig/client"
+	playerGlobals "github.com/kainn9/demo/globalConfig/player"
 	"github.com/kainn9/demo/queries"
 	animUtil "github.com/kainn9/demo/systems/render/util/anim"
 	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
@@ -28,6 +29,7 @@ type HitBoxPreviewerSystem struct {
 }
 
 type hitboxPreviewConfigFromJson struct {
+	Character     string               `json:"character"`
 	Enabled       bool                 `json:"enabled"`
 	AnimationName components.CharState `json:"animationName"`
 	Frame         int                  `json:"frame"`
@@ -92,9 +94,21 @@ func (sys *HitBoxPreviewerSystem) Draw(screen *ebiten.Image, playerEntity *donbu
 		return
 	}
 
+	if sys.previewData.Character != playerGlobals.PLAYER_ASSET_NAME {
+		queries.NpcQuery.Each(world, func(npcEntity *donburi.Entry) {
+			npcConfig := components.NpcConfigComponent.Get(npcEntity)
+
+			if string(npcConfig.Name) == sys.previewData.Character {
+				sprites = components.SpritesCharStateMapComponent.Get(npcEntity)
+			}
+		})
+
+	}
+
 	currentSpriteSheet := (*sprites)[sys.previewData.AnimationName]
 
 	opts := &ebiten.DrawImageOptions{}
+
 	opts.GeoM.Scale(playerState.Direction(), 1)
 	blue := color.RGBA{0, 0, 255, 255}
 	opts.ColorScale.ScaleWithColor(blue)

@@ -14,25 +14,32 @@ type NpcState struct {
 type NpcTransformState struct {
 	direction               float64
 	BasicHorizontalMovement bool
+	Speed                   float64
 }
 
 type NpcCombatState struct {
-	Hits                                   map[int]int
-	LatestHitAttackName                    string
-	Health, LastHitTick, DefeatedStartTick int
-	Hittable, IsHit, Defeated              bool
+	Hits                                                    map[int]int
+	LatestHitAttackName                                     string
+	Health, LastHitTick, DefeatedStartTick, AttackStartTick int
+	Hittable, IsHit, Defeated                               bool
+	AttackRange                                             float64
+	PatrolRange                                             float64
+	CurrentAttack                                           CharState
 }
 
-func NewNpcState(hittable bool) *NpcState {
+func NewNpcState(hittable bool, attackRange, patrolRange, speed float64) *NpcState {
 
 	return &NpcState{
 		Transform: &NpcTransformState{
 			direction: -1,
+			Speed:     speed,
 		},
 		Combat: &NpcCombatState{
-			Health:   3,
-			Hits:     make(map[int]int),
-			Hittable: hittable,
+			Health:      3,
+			Hits:        make(map[int]int),
+			Hittable:    hittable,
+			AttackRange: attackRange,
+			PatrolRange: patrolRange,
 		},
 	}
 

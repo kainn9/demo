@@ -228,7 +228,7 @@ func (LevelThreeScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 			FacingRight:  true,
 		},
 		{
-			Text:         "Good for blood flow, and I have ED.",
+			Text:         "Good for blood flow.",
 			PortraitName: npcGlobals.NPC_PORTRAIT_INDEX_THERAPIST_THREE,
 			CharName:     npcGlobals.NPC_PORTRAIT_NAME_THERAPIST_THREE,
 		},
@@ -372,7 +372,7 @@ func (LevelThreeScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 
 	// Off scene(gets moved later).
 	gravityMod := components.NewPhysicsConfig(0.25)
-	scenesUtil.AddNpcEntity(scene, -200, -200, npcGlobals.NPC_NAME_THERAPIST_TWO, gravityMod, false, false)
+	scenesUtil.AddStaticNpcEntity(scene, -200, -200, npcGlobals.NPC_NAME_THERAPIST_TWO, gravityMod)
 
 	// Attaching unique chat callback.
 	callbacksUtil.AttachChatCallback(scene, IntroChatSpawnTherapistTwoCallBack{})

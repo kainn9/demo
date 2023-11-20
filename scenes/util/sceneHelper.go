@@ -24,7 +24,7 @@ func InitFirstScene(
 	}
 
 	currentScene := manager.ActiveScene()
-	AddPlayerEntity(currentScene, playerX, playerY)
+	PlayerEntityFactory.AddPlayerEntity(currentScene, playerX, playerY)
 
 	AddUISpritesSingletonEntity(currentScene)
 	AddUISoundsSingletonEntity(currentScene)
@@ -64,7 +64,7 @@ func transferPlayer(
 	playerX, playerY, camX, camY float64,
 ) {
 
-	AddPlayerEntity(newScene, playerX, playerY)
+	PlayerEntityFactory.AddPlayerEntity(newScene, playerX, playerY)
 	newPlayerEntity := systemsUtil.GetPlayerEntity(newScene.World)
 
 	// Transfer sprites to avoid asset reloading.

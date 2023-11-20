@@ -142,14 +142,14 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	// Thugs.
 
 	thugs := []*donburi.Entry{
-		scenesUtil.AddNpcEntity(scene, 1071, 188, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true),
-		scenesUtil.AddNpcEntity(scene, 1636, 45, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true),
-		scenesUtil.AddNpcEntity(scene, 2095, 149, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true),
-		scenesUtil.AddNpcEntity(scene, 2606, 159, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true),
+		scenesUtil.AddCombatNpcEntity(scene, 1071, 188, npcGlobals.NPC_NAME_BIG_BOI, nil, npcGlobals.BIG_BOI_ATTACK_RANGE, npcGlobals.BIG_BOI_PATROL_RANGE, npcGlobals.BIG_BOI_SPEED),
+		scenesUtil.AddCombatNpcEntity(scene, 1636, 45, npcGlobals.NPC_NAME_BIG_BOI, nil, npcGlobals.BIG_BOI_ATTACK_RANGE, npcGlobals.BIG_BOI_PATROL_RANGE, npcGlobals.BIG_BOI_SPEED),
+		scenesUtil.AddCombatNpcEntity(scene, 2095, 149, npcGlobals.NPC_NAME_BIG_BOI, nil, npcGlobals.BIG_BOI_ATTACK_RANGE, npcGlobals.BIG_BOI_PATROL_RANGE, npcGlobals.BIG_BOI_SPEED),
+		scenesUtil.AddCombatNpcEntity(scene, 2606, 159, npcGlobals.NPC_NAME_BIG_BOI, nil, npcGlobals.BIG_BOI_ATTACK_RANGE, npcGlobals.BIG_BOI_PATROL_RANGE, npcGlobals.BIG_BOI_SPEED),
 
-		scenesUtil.AddNpcEntity(scene, 3052, 275, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true),
-		scenesUtil.AddNpcEntity(scene, 3152, 275, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true),
-		scenesUtil.AddNpcEntity(scene, 3202, 275, npcGlobals.NPC_NAME_BIG_BOI, nil, true, true),
+		scenesUtil.AddCombatNpcEntity(scene, 3052, 275, npcGlobals.NPC_NAME_BIG_BOI, nil, npcGlobals.BIG_BOI_ATTACK_RANGE, npcGlobals.BIG_BOI_PATROL_RANGE, npcGlobals.BIG_BOI_SPEED),
+		scenesUtil.AddCombatNpcEntity(scene, 3152, 275, npcGlobals.NPC_NAME_BIG_BOI, nil, npcGlobals.BIG_BOI_ATTACK_RANGE, npcGlobals.BIG_BOI_PATROL_RANGE, npcGlobals.BIG_BOI_SPEED),
+		scenesUtil.AddCombatNpcEntity(scene, 3202, 275, npcGlobals.NPC_NAME_BIG_BOI, nil, npcGlobals.BIG_BOI_ATTACK_RANGE, npcGlobals.BIG_BOI_PATROL_RANGE, npcGlobals.BIG_BOI_SPEED),
 	}
 
 	for _, npc := range thugs {
