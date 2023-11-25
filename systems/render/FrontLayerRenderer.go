@@ -24,7 +24,7 @@ func NewFrontLayerRenderer(scene *coldBrew.Scene) *FrontLayerRendererSystem {
 func (sys FrontLayerRendererSystem) Draw(screen *ebiten.Image, _ *donburi.Entry) {
 
 	world := sys.scene.World
-	cameraEntity := systemsUtil.GetCameraEntity(world)
+	cameraEntity := systemsUtil.CameraEntity(world)
 	camera := components.CameraComponent.Get(cameraEntity)
 
 	queries.FrontLayerQuery.Each(world, func(layerEntity *donburi.Entry) {

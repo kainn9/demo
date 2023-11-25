@@ -23,9 +23,7 @@ func NewTitleSceneHandler(scene *coldBrew.Scene, nextSceneFace coldBrew.SceneFac
 
 func (sys *TitleSceneHandlerSystem) Sync(_ *donburi.Entry) {
 
-	_, _, _, _, _, interact, _ := inputGlobals.ALL_BINDS()
-
-	if inpututil.IsKeyJustPressed(interact) {
+	if inpututil.IsKeyJustPressed(inputGlobals.KeyInteract()) {
 		scenesUtil.ChangeScene(sys.scene.Manager, sys.nextSceneFace, 147, 275, 0, 0)
 	}
 

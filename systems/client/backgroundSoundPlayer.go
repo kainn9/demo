@@ -31,8 +31,8 @@ func (BackgroundSoundPlayerSystem) Query() *donburi.Query {
 func (sys *BackgroundSoundPlayerSystem) Sync(soundEntity *donburi.Entry) {
 
 	sound := components.SoundComponent.Get(soundEntity)
-	globalSounds := systemsUtil.GetUISoundsSingletonEntity(sys.scene.World)
+	globalSounds := systemsUtil.UISoundsSingletonEntity(sys.scene.World)
 	context := components.AudioContextComponent.Get(globalSounds)
 
-	soundUtil.PlaySound(context.Context, sound, sys.scene.Manager.TickHandler)
+	soundUtil.PlaySound(context.Context, sound)
 }

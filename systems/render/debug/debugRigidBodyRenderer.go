@@ -28,7 +28,7 @@ func (DebugRigidBodyRendererSystem) Query() *donburi.Query {
 	return donburi.NewQuery(
 		filter.Or(
 			filter.Contains(components.RigidBodyComponent),
-			filter.Contains(components.AttackBoxesComponent),
+			filter.Contains(components.AttackHitboxesComponent),
 		),
 	)
 }
@@ -40,8 +40,8 @@ func (sys DebugRigidBodyRendererSystem) Draw(screen *ebiten.Image, entity *donbu
 
 	bodies := make([]*tBokiComponents.RigidBody, 0)
 
-	if entity.HasComponent(components.AttackBoxesComponent) {
-		attackBoxes := components.AttackBoxesComponent.Get(entity)
+	if entity.HasComponent(components.AttackHitboxesComponent) {
+		attackBoxes := components.AttackHitboxesComponent.Get(entity)
 
 		bodies = append(bodies, *attackBoxes...)
 
@@ -50,7 +50,7 @@ func (sys DebugRigidBodyRendererSystem) Draw(screen *ebiten.Image, entity *donbu
 	}
 
 	for _, body := range bodies {
-		cameraEntity := systemsUtil.GetCameraEntity(sys.scene.World)
+		cameraEntity := systemsUtil.CameraEntity(sys.scene.World)
 		camera := components.CameraComponent.Get(cameraEntity)
 
 		red := color.RGBA{R: 255, G: 0, B: 0, A: 255}

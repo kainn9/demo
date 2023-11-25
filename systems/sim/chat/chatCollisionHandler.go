@@ -33,7 +33,7 @@ func (ChatCollisionHandlerSystem) Query() *donburi.Query {
 }
 
 func (sys ChatCollisionHandlerSystem) Run(dt float64, chatEntity *donburi.Entry) {
-	playerEntity := systemsUtil.GetPlayerEntity(sys.scene.World)
+	playerEntity := systemsUtil.PlayerEntity(sys.scene.World)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 
 	chatBody := components.RigidBodyComponent.Get(chatEntity)

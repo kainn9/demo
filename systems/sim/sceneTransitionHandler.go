@@ -46,7 +46,7 @@ func (sys SceneTransitionHandlerSystem) Run(dt float64, transitionEntity *donbur
 		return
 	}
 
-	playerEntity := systemsUtil.GetPlayerEntity(world)
+	playerEntity := systemsUtil.PlayerEntity(world)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 

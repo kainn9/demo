@@ -49,6 +49,6 @@ func AddBgSoundEntity(scene *coldBrew.Scene, sceneAssetPath string, soundTicksDu
 
 	components.SoundComponent.SetValue(
 		bgSoundEntity,
-		*components.NewSound(soundTicksDuration, 1),
+		*components.NewSound(29, 1),
 	)
 }

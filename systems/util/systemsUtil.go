@@ -10,7 +10,11 @@ import (
 	"github.com/yohamta/donburi"
 )
 
-func GetCameraEntity(world donburi.World) *donburi.Entry {
+func ID(entry *donburi.Entry) int {
+	return int(entry.Entity().Id())
+}
+
+func CameraEntity(world donburi.World) *donburi.Entry {
 
 	entity, ok := queries.CameraQuery.First(world)
 
@@ -21,7 +25,7 @@ func GetCameraEntity(world donburi.World) *donburi.Entry {
 	return entity
 }
 
-func GetPlayerEntity(world donburi.World) *donburi.Entry {
+func PlayerEntity(world donburi.World) *donburi.Entry {
 
 	entity, ok := queries.PlayerQuery.First(world)
 
@@ -31,7 +35,7 @@ func GetPlayerEntity(world donburi.World) *donburi.Entry {
 	return entity
 }
 
-func GetUISpritesSingletonEntity(world donburi.World) *donburi.Entry {
+func UISpritesSingletonEntity(world donburi.World) *donburi.Entry {
 
 	entity, ok := queries.UISingletonSpritesQuery.First(world)
 
@@ -43,7 +47,7 @@ func GetUISpritesSingletonEntity(world donburi.World) *donburi.Entry {
 
 }
 
-func GetUISoundsSingletonEntity(world donburi.World) *donburi.Entry {
+func UISoundsSingletonEntity(world donburi.World) *donburi.Entry {
 
 	entity, ok := queries.UISingletonSoundsQuery.First(world)
 
@@ -55,7 +59,7 @@ func GetUISoundsSingletonEntity(world donburi.World) *donburi.Entry {
 
 }
 
-func GetChatPopUpSprite(world donburi.World) *components.Sprite {
+func ChatPopUpSprite(world donburi.World) *components.Sprite {
 	entity, ok := queries.UISingletonSpritesQuery.First(world)
 
 	if !ok {
@@ -68,7 +72,7 @@ func GetChatPopUpSprite(world donburi.World) *components.Sprite {
 
 }
 
-func GetChatPopDownSprite(world donburi.World) *components.Sprite {
+func ChatPopDownSprite(world donburi.World) *components.Sprite {
 	entity, ok := queries.UISingletonSpritesQuery.First(world)
 
 	if !ok {
@@ -81,7 +85,7 @@ func GetChatPopDownSprite(world donburi.World) *components.Sprite {
 
 }
 
-func GetDefaultFontSpriteMap(world donburi.World) (lower, upper, numbers, special *components.Sprite) {
+func DefaultFontSpriteMap(world donburi.World) (lower, upper, numbers, special *components.Sprite) {
 	entity, ok := queries.UISingletonSpritesQuery.First(world)
 
 	if !ok {

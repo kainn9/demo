@@ -6,18 +6,15 @@ import (
 	tBokiComponents "github.com/kainn9/tteokbokki/components"
 )
 
-func AddAttackEntity(scene *coldBrew.Scene, AS components.AttackState) {
+func AddAttackEntity(scene *coldBrew.Scene, attackData components.AttackData) {
 
-	playerEntity := scene.AddEntity(
-		components.AttackBoxesComponent,
-		components.AttackStateComponent,
+	attackEntity := scene.AddEntity(
+		components.AttackDataComponent,
+		components.AttackHitboxesComponent,
 	)
 
-	emptyBoxes := []*tBokiComponents.RigidBody{
-		tBokiComponents.NewRigidBodyBox(0, 0, 0, 0, 0, false),
-	}
+	emptyBoxes := []*tBokiComponents.RigidBody{}
 
-	components.AttackBoxesComponent.SetValue(playerEntity, emptyBoxes)
-	components.AttackStateComponent.SetValue(playerEntity, AS)
-
+	components.AttackHitboxesComponent.SetValue(attackEntity, emptyBoxes)
+	components.AttackDataComponent.SetValue(attackEntity, attackData)
 }

@@ -2,7 +2,7 @@ package playerGlobals
 
 import (
 	"github.com/kainn9/demo/components"
-	sharedAnimationGlobals "github.com/kainn9/demo/globalConfig/sharedAnimation"
+	sharedStateGlobals "github.com/kainn9/demo/globalConfig/sharedState"
 )
 
 // RIGID BODY.
@@ -19,9 +19,11 @@ const (
 
 // Combat.
 const (
-	PLAYER_HURT_DURATION_TICKS   = 20
-	PLAYER_DEFEAT_DURATION_TICKS = 200
-	PLAYER_IFRAME_DURATION_TICKS = PLAYER_HURT_DURATION_TICKS + 60
+	PLAYER_DEFEAT_DURATION_TICKS          = 200
+	PLAYER_HURT_DURATION_TICKS            = 20
+	PLAYER_RECOVERY_IFRAME_DURATION_TICKS = PLAYER_HURT_DURATION_TICKS + 60
+	PLAYER_DODGE_DURATION_TICKS           = 30
+	PLAYER_DODGE_COOLDOWN_TICKS           = 15
 )
 
 // ANIMATIONS.
@@ -39,7 +41,7 @@ const (
 	PLAYER_HURT_ANIM_SPEED           = 60
 	PLAYER_DEFEATED_ANIM_SPEED       = 12
 	PLAYER_SIT_ANIM_SPEED            = 12
-	PLAYER_ROLL_ANIM_SPEED           = 12
+	PLAYER_ROLL_ANIM_SPEED           = 6
 
 	PLAYER_IDLE_FRAME_COUNT                = 7
 	PLAYER_WALK_FRAME_COUNT                = 8
@@ -57,12 +59,12 @@ const (
 	PLAYER_CHAR_STATE_CLIMB_LADDER_IDLE   components.CharState = "climbLadderIdle"
 	PLAYER_CHAR_STATE_CLIMB_LADDER_ACTIVE components.CharState = "climbLadderActive"
 	PLAYER_CHAR_STATE_SIT                 components.CharState = "sit"
-	PLAYER_CHAR_STATE_ROLL                components.CharState = "roll"
+	PLAYER_CHAR_STATE_DODGE               components.CharState = "dodge"
 )
 
 var PLAYER_ANIMATION_CONFIGS = map[components.CharState]*components.AnimationConfig{
 
-	sharedAnimationGlobals.CHAR_STATE_IDLE: components.NewAnimationConfig(
+	sharedStateGlobals.CHAR_STATE_IDLE: components.NewAnimationConfig(
 		PLAYER_ANIMATIONS_SPRITE_WIDTH,
 		PLAYER_ANIMATIONS_SPRITE_HEIGHT,
 		PLAYER_IDLE_FRAME_COUNT,
@@ -70,7 +72,7 @@ var PLAYER_ANIMATION_CONFIGS = map[components.CharState]*components.AnimationCon
 		false,
 	),
 
-	sharedAnimationGlobals.CHAR_STATE_WALK: components.NewAnimationConfig(
+	sharedStateGlobals.CHAR_STATE_WALK: components.NewAnimationConfig(
 		PLAYER_ANIMATIONS_SPRITE_WIDTH,
 		PLAYER_ANIMATIONS_SPRITE_HEIGHT,
 		PLAYER_WALK_FRAME_COUNT,
@@ -78,7 +80,7 @@ var PLAYER_ANIMATION_CONFIGS = map[components.CharState]*components.AnimationCon
 		false,
 	),
 
-	sharedAnimationGlobals.CHAR_STATE_RUN: components.NewAnimationConfig(
+	sharedStateGlobals.CHAR_STATE_RUN: components.NewAnimationConfig(
 		PLAYER_ANIMATIONS_SPRITE_WIDTH,
 		PLAYER_ANIMATIONS_SPRITE_HEIGHT,
 		PLAYER_RUN_FRAME_COUNT,
@@ -86,7 +88,7 @@ var PLAYER_ANIMATION_CONFIGS = map[components.CharState]*components.AnimationCon
 		false,
 	),
 
-	sharedAnimationGlobals.CHAR_STATE_JUMP: components.NewAnimationConfig(
+	sharedStateGlobals.CHAR_STATE_JUMP: components.NewAnimationConfig(
 		PLAYER_ANIMATIONS_SPRITE_WIDTH,
 		PLAYER_ANIMATIONS_SPRITE_HEIGHT,
 		PLAYER_JUMP_FRAME_COUNT,
@@ -94,7 +96,7 @@ var PLAYER_ANIMATION_CONFIGS = map[components.CharState]*components.AnimationCon
 		true,
 	),
 
-	sharedAnimationGlobals.CHAR_STATE_FALL: components.NewAnimationConfig(
+	sharedStateGlobals.CHAR_STATE_FALL: components.NewAnimationConfig(
 		PLAYER_ANIMATIONS_SPRITE_WIDTH,
 		PLAYER_ANIMATIONS_SPRITE_HEIGHT,
 		PLAYER_FALL_FRAME_COUNT,
@@ -118,7 +120,7 @@ var PLAYER_ANIMATION_CONFIGS = map[components.CharState]*components.AnimationCon
 		false,
 	),
 
-	sharedAnimationGlobals.CHAR_STATE_ATTACK_PRIMARY: components.NewAnimationConfig(
+	sharedStateGlobals.CHAR_STATE_ATTACK_PRIMARY: components.NewAnimationConfig(
 		PLAYER_ANIMATIONS_SPRITE_WIDTH,
 		PLAYER_ANIMATIONS_SPRITE_HEIGHT,
 		PLAYER_ATTACK_PRIMARY_FRAME_COUNT,
@@ -126,7 +128,7 @@ var PLAYER_ANIMATION_CONFIGS = map[components.CharState]*components.AnimationCon
 		false,
 	),
 
-	sharedAnimationGlobals.CHAR_STATE_HURT: components.NewAnimationConfig(
+	sharedStateGlobals.CHAR_STATE_HURT: components.NewAnimationConfig(
 		PLAYER_ANIMATIONS_SPRITE_WIDTH,
 		PLAYER_ANIMATIONS_SPRITE_HEIGHT,
 		PLAYER_HURT_FRAME_COUNT,
@@ -134,7 +136,7 @@ var PLAYER_ANIMATION_CONFIGS = map[components.CharState]*components.AnimationCon
 		false,
 	),
 
-	sharedAnimationGlobals.CHAR_STATE_DEFEATED: components.NewAnimationConfig(
+	sharedStateGlobals.CHAR_STATE_DEFEATED: components.NewAnimationConfig(
 		PLAYER_ANIMATIONS_SPRITE_WIDTH,
 		PLAYER_ANIMATIONS_SPRITE_HEIGHT,
 		PLAYER_DEFEATED_FRAME_COUNT,
@@ -148,25 +150,13 @@ var PLAYER_ANIMATION_CONFIGS = map[components.CharState]*components.AnimationCon
 		PLAYER_SIT_ANIM_SPEED,
 		true,
 	),
-	PLAYER_CHAR_STATE_ROLL: components.NewAnimationConfig(
+	PLAYER_CHAR_STATE_DODGE: components.NewAnimationConfig(
 		PLAYER_ANIMATIONS_SPRITE_WIDTH,
 		PLAYER_ANIMATIONS_SPRITE_HEIGHT,
 		PLAYER_ROLL_FRAME_COUNT,
 		PLAYER_ROLL_ANIM_SPEED,
-		true,
+		false,
 	),
-}
-
-type PlayerAttackData struct {
-	TotalTickLength int
-	TicksPerFrame   int
-}
-
-var PlayerAttackDataMap = map[components.CharState]*PlayerAttackData{
-	sharedAnimationGlobals.CHAR_STATE_ATTACK_PRIMARY: {
-		TotalTickLength: PLAYER_ATTACK_PRIMARY_FRAME_COUNT * PLAYER_ATTACK_PRIMARY_ANIM_SPEED,
-		TicksPerFrame:   PLAYER_ATTACK_PRIMARY_ANIM_SPEED,
-	},
 }
 
 const (

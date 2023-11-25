@@ -27,7 +27,7 @@ func (sys IndicatorCollisionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 
 	world := sys.scene.World
 
-	playerEntity := systemsUtil.GetPlayerEntity(world)
+	playerEntity := systemsUtil.PlayerEntity(world)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 
 	sys.IndicatorQuery().Each(world, func(indicatorEntity *donburi.Entry) {

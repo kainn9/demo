@@ -7,6 +7,8 @@ import (
 	"github.com/kainn9/demo/components"
 	playerGlobals "github.com/kainn9/demo/globalConfig/player"
 	"github.com/kainn9/demo/queries"
+	combatUtil "github.com/kainn9/demo/systems/sim/combatUtil"
+	systemsUtil "github.com/kainn9/demo/systems/util"
 	tBokiComponents "github.com/kainn9/tteokbokki/components"
 	"github.com/yohamta/donburi"
 )
@@ -26,119 +28,84 @@ func (sys PlayerMeleeAttackHandlerSystem) Query() *donburi.Query {
 }
 
 func (sys PlayerMeleeAttackHandlerSystem) Run(dt float64, playerEntity *donburi.Entry) {
+
 	world := sys.scene.World
+	tickHandler := sys.scene.Manager.TickHandler
 
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
-	hitboxesData := components.AttackHitboxConfigComponent.Get(playerEntity)
-
-	tickHandler := sys.scene.Manager.TickHandler
 
 	if playerState.Combat.CurrentAttack == "" {
 		return
 	}
 
-	currentAttackData := playerGlobals.PlayerAttackDataMap[playerState.Combat.CurrentAttack]
-
-	if currentAttackData == nil {
-		log.Println("currant attack state:", playerState.Combat.CurrentAttack)
-		panic("currentAttackData is nil!")
+	attackData, ok := playerGlobals.AttackDataMap[playerState.Combat.CurrentAttack]
+	if !ok {
+		log.Println("key:", playerState.Combat.CurrentAttack)
+		panic("attackData is nil!")
 	}
 
-	ticksSinceAttackStart := tickHandler.TicksSinceNTicks(playerState.Combat.AttackStartTick)
+	ticksSinceAttackStarted := tickHandler.TicksSinceNTicks(playerState.Combat.AttackStartTick)
+	attackIsFinished := ticksSinceAttackStarted >= attackData.TotalTickLength
 
-	if ticksSinceAttackStart >= currentAttackData.TotalTickLength {
-		sys.endAttack(world, playerState)
+	if attackIsFinished || playerState.Combat.IsHit || playerState.Transform.Dodging {
+		combatUtil.RemoveAttackEntity(world, systemsUtil.ID(playerEntity))
+		playerState.Combat.ClearAttackState()
 		return
 	}
 
-	frame := ticksSinceAttackStart / currentAttackData.TicksPerFrame
-	sys.processAttack(frame, hitboxesData, playerBody, playerState)
+	currentAttackFrame := ticksSinceAttackStarted / attackData.TicksPerFrame
 
-}
-
-func (sys PlayerMeleeAttackHandlerSystem) endAttack(world donburi.World, playerState *components.PlayerState) {
-
-	// Remove attack hitboxes for the matching attack id/entity.
-	sys.removeAttackEntityFromWorld(world, playerState)
-
-	// Update player combat state.
-	playerState.Combat.Attacking = false
-	playerState.Combat.AttackStartTick = -1
-	playerState.Combat.CurrentAttack = ""
-}
-
-func (sys PlayerMeleeAttackHandlerSystem) removeAttackEntityFromWorld(world donburi.World, playerState *components.PlayerState) {
-
-	queries.AttackQuery.Each(world, func(attackEntity *donburi.Entry) {
-
-		emptyBoxes := []*tBokiComponents.RigidBody{
-			tBokiComponents.NewRigidBodyBox(0, 0, 0, 0, 0, false),
-		}
-
-		attackState := components.AttackStateComponent.Get(attackEntity)
-		attackId := attackState.ID
-
-		if int(attackId) == playerState.Combat.AttackStartTick {
-			components.AttackBoxesComponent.SetValue(attackEntity, emptyBoxes)
-			sys.clearAttackFromNpcHits(world, attackId)
-			world.Remove(attackEntity.Entity())
-
-		}
-	})
-
-}
-
-func (sys PlayerMeleeAttackHandlerSystem) clearAttackFromNpcHits(world donburi.World, attackId int) {
-	// Remove the attack id from all NPC that were hit by this attack.
-	queries.NpcQuery.Each(world, func(npcEntity *donburi.Entry) {
-		npcState := components.NpcStateComponent.Get(npcEntity)
-
-		if npcState.Combat.Hits[attackId] != 0 {
-			delete(npcState.Combat.Hits, attackId)
-		}
-
-	})
+	sys.processAttack(
+		playerState.Combat.CurrentAttack,
+		currentAttackFrame,
+		playerBody,
+		playerState,
+		playerEntity,
+	)
 }
 
 func (sys PlayerMeleeAttackHandlerSystem) processAttack(
+	attackName components.CharState,
 	frame int,
-	hitboxesData *components.AttackHitboxConfig,
 	playerBody *tBokiComponents.RigidBody,
 	playerState *components.PlayerState,
+	playerEntity *donburi.Entry,
 ) {
 
-	if frame > len(hitboxesData.Hitboxes)-1 {
+	attackHitboxesData, ok := playerGlobals.AttackHitboxesData[attackName]
+	if !ok {
+		log.Println("key:", attackName)
+		panic("attackHitboxesData is nil!")
+	}
+
+	if frame >= len(attackHitboxesData.Hitboxes) {
 		return
 	}
 
-	// Generate hitboxes for the current frame.
-	// Each frame can have multiple hitboxes to
-	// create more complex attack shapes.
-	currBoxesData := hitboxesData.Hitboxes[frame]
-	hitboxes := make([]*tBokiComponents.RigidBody, 0)
+	currentFrameHitboxesData := attackHitboxesData.Hitboxes[frame]
 
-	for _, boxData := range currBoxesData {
+	currentFrameHitboxes := make([]*tBokiComponents.RigidBody, 0)
 
-		xPos := playerBody.Pos.X + (boxData.OffsetX * playerState.Direction())
-		yPos := playerBody.Pos.Y + boxData.OffsetY
+	for _, attackBoxData := range currentFrameHitboxesData {
 
-		isAngular := boxData.Rotation != 0
+		xPos := playerBody.Pos.X + (attackBoxData.OffsetX * playerState.Direction())
+		yPos := playerBody.Pos.Y + attackBoxData.OffsetY
 
-		box := tBokiComponents.NewRigidBodyBox(xPos, yPos, boxData.Width, boxData.Height, 0, isAngular)
-		box.Rotation = (boxData.Rotation * playerState.Direction())
+		isAngular := attackBoxData.Rotation != 0
+
+		box := tBokiComponents.NewRigidBodyBox(xPos, yPos, attackBoxData.Width, attackBoxData.Height, 0, isAngular)
+		box.Rotation = (attackBoxData.Rotation * playerState.Direction())
 		box.UpdateVertices()
 
-		hitboxes = append(hitboxes, box)
+		currentFrameHitboxes = append(currentFrameHitboxes, box)
 	}
 
-	// Associate the hitboxes with the attack entity & record the attack id.
 	queries.AttackQuery.Each(sys.scene.World, func(attackEntity *donburi.Entry) {
-		attackState := components.AttackStateComponent.Get(attackEntity)
-		attackId := attackState.ID
+		attackState := components.AttackDataComponent.Get(attackEntity)
 
-		if int(attackId) == playerState.Combat.AttackStartTick {
-			components.AttackBoxesComponent.SetValue(attackEntity, hitboxes)
+		if attackState.Initiator == playerEntity {
+			components.AttackHitboxesComponent.SetValue(attackEntity, currentFrameHitboxes)
 		}
 	})
 

@@ -27,7 +27,7 @@ func NewNpcHitSoundPlayer(scene *coldBrew.Scene) *NpcHitSoundPlayerSystem {
 
 func (sys *NpcHitSoundPlayerSystem) Sync(_ *donburi.Entry) {
 	world := sys.scene.World
-	// playerEntity := systemsUtil.GetPlayerEntity(world)
+	// playerEntity := systemsUtil.PlayerEntity(world)
 
 	sys.NpcQuery().Each(world, func(npcEntity *donburi.Entry) {
 		sys.handleHitSounds(npcEntity)
@@ -42,10 +42,10 @@ func (sys *NpcHitSoundPlayerSystem) handleHitSounds(npcEntity *donburi.Entry) {
 		return
 	}
 
-	globalSounds := systemsUtil.GetUISoundsSingletonEntity(sys.scene.World)
+	globalSounds := systemsUtil.UISoundsSingletonEntity(sys.scene.World)
 	audContext := components.AudioContextComponent.Get(globalSounds)
 
-	playerEntity := systemsUtil.GetPlayerEntity(sys.scene.World)
+	playerEntity := systemsUtil.PlayerEntity(sys.scene.World)
 	playerSoundsMap := components.SoundCharStateMapComponent.Get(playerEntity)
 
 	sound := (*playerSoundsMap)[components.CharState(npcState.Combat.LatestHitAttackName)]
@@ -56,5 +56,5 @@ func (sys *NpcHitSoundPlayerSystem) handleHitSounds(npcEntity *donburi.Entry) {
 		return
 	}
 
-	soundUtil.PlaySound(audContext.Context, sound, sys.scene.Manager.TickHandler)
+	soundUtil.PlaySound(audContext.Context, sound)
 }

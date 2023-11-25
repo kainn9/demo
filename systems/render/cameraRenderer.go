@@ -22,7 +22,7 @@ func NewCameraRenderer(scene *coldBrew.Scene) *CameraRendererSystem {
 
 func (sys CameraRendererSystem) Draw(screen *ebiten.Image, _ *donburi.Entry) {
 	world := sys.scene.World
-	cameraEntity := systemsUtil.GetCameraEntity(world)
+	cameraEntity := systemsUtil.CameraEntity(world)
 	camera := components.CameraComponent.Get(cameraEntity)
 
 	cameraUtil.Render(camera, screen)

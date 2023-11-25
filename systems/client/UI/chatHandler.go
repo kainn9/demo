@@ -38,15 +38,15 @@ func (ChatHandlerSystem) Query() *donburi.Query {
 
 func (sys ChatHandlerSystem) Run(dt float64, chatEntity *donburi.Entry) {
 	world := sys.scene.World
-	playerEntity := systemsUtil.GetPlayerEntity(world)
+	playerEntity := systemsUtil.PlayerEntity(world)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 
 	configAndState := components.ChatStateAndConfigComponent.Get(chatEntity)
 
-	popDownSprite := systemsUtil.GetChatPopDownSprite(world)
-	popUpSprite := systemsUtil.GetChatPopUpSprite(world)
+	popDownSprite := systemsUtil.ChatPopDownSprite(world)
+	popUpSprite := systemsUtil.ChatPopUpSprite(world)
 
-	globalSoundsEntity := systemsUtil.GetUISoundsSingletonEntity(world)
+	globalSoundsEntity := systemsUtil.UISoundsSingletonEntity(world)
 	globalSounds := components.SoundsMapComponent.Get(globalSoundsEntity)
 
 	audContext := components.AudioContextComponent.Get(globalSoundsEntity).Context
@@ -54,7 +54,7 @@ func (sys ChatHandlerSystem) Run(dt float64, chatEntity *donburi.Entry) {
 	chatNewSound := (*globalSounds)[UIGlobals.CHAT_BOX_NEW_SOUND_NAME]
 
 	if configAndState.State.JustOpened {
-		soundUtil.PlaySound(audContext, chatNewSound, sys.scene.Manager.TickHandler)
+		soundUtil.PlaySound(audContext, chatNewSound)
 	}
 
 	if configAndState.State.Active {
@@ -65,7 +65,7 @@ func (sys ChatHandlerSystem) Run(dt float64, chatEntity *donburi.Entry) {
 	if playerState.IsInteracting && configAndState.State.Active {
 		playerState.IsInteracting = false
 		sys.handleNextSlide(configAndState, popDownSprite, popUpSprite)
-		soundUtil.PlaySound(audContext, chatNewSound, sys.scene.Manager.TickHandler)
+		soundUtil.PlaySound(audContext, chatNewSound)
 	}
 
 	sys.handleTransitionState(configAndState, popDownSprite)

@@ -12,7 +12,6 @@ import (
 
 	UIGlobals "github.com/kainn9/demo/globalConfig/UI"
 	inventoryGlobals "github.com/kainn9/demo/globalConfig/inventory"
-	npcGlobals "github.com/kainn9/demo/globalConfig/npc"
 	playerGlobals "github.com/kainn9/demo/globalConfig/player"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
 )
@@ -51,19 +50,20 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 
 	scenesUtil.AddParallaxBackgroundEntity(scene, []*components.ParallaxLayerConfig{
 		// Sky.
-		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 0, 0, 0, false),
+		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 0, 28, 0, false),
 
 		// Moon
 		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 1, 0, 0, true),
 
 		// Clouds Back.
-		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 2, 16, 0, false),
+		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 2, 18, 0, false),
 
 		// Clouds Front.
-		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 3, 8, 0, false),
+		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 3, 6, 0, false),
 
 		// City.
-		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 4, 0, 0, false),
+		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 4, 4, 0, false),
+
 		// Front.
 		components.NewParallaxLayerConfig(LEVEL_ONE_SCENE_ASSET_PATH, 5, 0, 0, false),
 	})
@@ -82,9 +82,8 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scenesUtil.AddLadderEntity(scene, 1130, 180, 40, 360)
 
 	// Platforms left to right.
-	scenesUtil.AddPlatformEntity(scene, 1491, 87, 322, 10)
-	scenesUtil.AddPlatformEntity(scene, 2037, 191, 320, 10)
-	scenesUtil.AddPlatformEntity(scene, 2597, 201, 320, 10)
+	scenesUtil.AddPlatformEntity(scene, 1491, 175, 322, 10)
+	scenesUtil.AddPlatformEntity(scene, 2360, 191, 962, 10)
 
 	// Tutorial indicators.
 	// Movement.
@@ -140,21 +139,23 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scenesUtil.AddBasicChatEntity(scene, "introLevelOneGetClinic", introLevelOneGetClinicContent, true)
 
 	// Thugs.
-
+	groupX := 3052.0
 	thugs := []*donburi.Entry{
-		scenesUtil.AddCombatNpcEntity(scene, 1071, 188, npcGlobals.NPC_NAME_BIG_BOI, nil, npcGlobals.BIG_BOI_ATTACK_RANGE, npcGlobals.BIG_BOI_PATROL_RANGE, npcGlobals.BIG_BOI_SPEED),
-		scenesUtil.AddCombatNpcEntity(scene, 1636, 45, npcGlobals.NPC_NAME_BIG_BOI, nil, npcGlobals.BIG_BOI_ATTACK_RANGE, npcGlobals.BIG_BOI_PATROL_RANGE, npcGlobals.BIG_BOI_SPEED),
-		scenesUtil.AddCombatNpcEntity(scene, 2095, 149, npcGlobals.NPC_NAME_BIG_BOI, nil, npcGlobals.BIG_BOI_ATTACK_RANGE, npcGlobals.BIG_BOI_PATROL_RANGE, npcGlobals.BIG_BOI_SPEED),
-		scenesUtil.AddCombatNpcEntity(scene, 2606, 159, npcGlobals.NPC_NAME_BIG_BOI, nil, npcGlobals.BIG_BOI_ATTACK_RANGE, npcGlobals.BIG_BOI_PATROL_RANGE, npcGlobals.BIG_BOI_SPEED),
+		scenesUtil.NpcEntityFactory.AddNpcThug(scene, 1071, 188, 861, 1125),
+		scenesUtil.NpcEntityFactory.AddNpcThug(scene, 1636, 45, 1350, 1637),
+		scenesUtil.NpcEntityFactory.AddNpcThug(scene, 2095, 149, 1897, 2835),
+		scenesUtil.NpcEntityFactory.AddNpcThug(scene, 2606, 159, 1897, 2835),
 
-		scenesUtil.AddCombatNpcEntity(scene, 3052, 275, npcGlobals.NPC_NAME_BIG_BOI, nil, npcGlobals.BIG_BOI_ATTACK_RANGE, npcGlobals.BIG_BOI_PATROL_RANGE, npcGlobals.BIG_BOI_SPEED),
-		scenesUtil.AddCombatNpcEntity(scene, 3152, 275, npcGlobals.NPC_NAME_BIG_BOI, nil, npcGlobals.BIG_BOI_ATTACK_RANGE, npcGlobals.BIG_BOI_PATROL_RANGE, npcGlobals.BIG_BOI_SPEED),
-		scenesUtil.AddCombatNpcEntity(scene, 3202, 275, npcGlobals.NPC_NAME_BIG_BOI, nil, npcGlobals.BIG_BOI_ATTACK_RANGE, npcGlobals.BIG_BOI_PATROL_RANGE, npcGlobals.BIG_BOI_SPEED),
+		scenesUtil.NpcEntityFactory.AddNpcThug(scene, groupX, 275, 2865, 4017),
+		scenesUtil.NpcEntityFactory.AddNpcThug(scene, groupX+100, 275, 2865, 4017),
+		scenesUtil.NpcEntityFactory.AddNpcThug(scene, groupX+200, 275, 2865, 4017),
+		scenesUtil.NpcEntityFactory.AddNpcThug(scene, groupX+300, 275, 2865, 4017),
 	}
 
 	for _, npc := range thugs {
 		callbacksUtil.AttachNpcDefeatCallback(scene, LevelOneThugsUniqueDropCallback{npc: npc})
 	}
+
 	firstThugDefeatChat := []components.SlidesContent{
 		{
 			Text:         "HA! Deadzo Mcgee.",
@@ -209,7 +210,7 @@ func (cb LevelOneThugsUniqueDropCallback) Npc() *donburi.Entry {
 
 func (cb LevelOneThugsUniqueDropCallback) OnDefeat(scene *coldBrew.Scene, npcEntity *donburi.Entry) {
 	world := scene.World
-	playerEntity := systemsUtil.GetPlayerEntity(world)
+	playerEntity := systemsUtil.PlayerEntity(world)
 
 	inventory := components.InventoryComponent.Get(playerEntity)
 	itemToAdd := components.NewInventoryItem(inventoryGlobals.ITEM_NAME_ZAP_CLINIC_UNLOCK, 1)
@@ -236,7 +237,7 @@ type ZapClinicDoorRequirements struct {
 
 func (ZapClinicDoorRequirements) AllowedToTransition(scene *coldBrew.Scene) bool {
 
-	playerEntity := systemsUtil.GetPlayerEntity(scene.World)
+	playerEntity := systemsUtil.PlayerEntity(scene.World)
 	inventory := components.InventoryComponent.Get(playerEntity)
 
 	doorKey := inventoryUtil.GetItemFromInventory(*inventory, inventoryGlobals.ITEM_NAME_ZAP_CLINIC_UNLOCK)

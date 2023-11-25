@@ -31,6 +31,7 @@ func (sys NpcDefeatedHandlerSystem) Query() *donburi.Query {
 
 func (sys NpcDefeatedHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
 	ticksHandler := sys.scene.Manager.TickHandler
+
 	state := components.NpcStateComponent.Get(npcEntity)
 	body := components.RigidBodyComponent.Get(npcEntity)
 	config := components.NpcConfigComponent.Get(npcEntity)

@@ -10,7 +10,7 @@ import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	playerGlobals "github.com/kainn9/demo/globalConfig/player"
-	sharedAnimationGlobals "github.com/kainn9/demo/globalConfig/sharedAnimation"
+	sharedStateGlobals "github.com/kainn9/demo/globalConfig/sharedState"
 	"github.com/kainn9/demo/queries"
 	animUtil "github.com/kainn9/demo/systems/render/util/anim"
 	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
@@ -43,7 +43,7 @@ func (sys PlayerRendererSystem) Draw(screen *ebiten.Image, playerEntity *donburi
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 
-	cameraEntity := systemsUtil.GetCameraEntity(world)
+	cameraEntity := systemsUtil.CameraEntity(world)
 	camera := components.CameraComponent.Get(cameraEntity)
 
 	sys.updateAnimationState(playerState, sprites)
@@ -85,7 +85,7 @@ func (sys PlayerRendererSystem) currentSpriteSheet(
 	if currentSpriteSheet == nil {
 		log.Println("Player sprite sheet is nil, defaulting to idle.")
 
-		currentSpriteSheet = (*sprites)[sharedAnimationGlobals.CHAR_STATE_IDLE]
+		currentSpriteSheet = (*sprites)[sharedStateGlobals.CHAR_STATE_IDLE]
 	}
 
 	return currentSpriteSheet
@@ -105,8 +105,11 @@ func (sys PlayerRendererSystem) configureDrawOptions(
 	// Scaling player sprite to face correct direction.
 	opts.GeoM.Scale(playerState.Direction(), 1)
 
-	flashWhite := sys.scene.Manager.TickHandler.CurrentTick()%20 > 15
-	if playerState.Combat.Hit && flashWhite {
+	flashRed := sys.scene.Manager.TickHandler.CurrentTick()%20 > 15
+
+	playerIsHitOrInRecoveryIframe := playerState.Combat.IsHit || playerState.Combat.IsInRecoveryIframe
+
+	if playerIsHitOrInRecoveryIframe && flashRed {
 		red := color.RGBA{255, 0, 0, 255}
 		opts.ColorScale.ScaleWithColor(red)
 	} else {
@@ -141,15 +144,19 @@ func (sys PlayerRendererSystem) determinePlayerAnimationState(playerState *compo
 	}
 
 	if playerState.Combat.Defeated {
-		return sharedAnimationGlobals.CHAR_STATE_DEFEATED
+		return sharedStateGlobals.CHAR_STATE_DEFEATED
 	}
 
-	if playerState.Combat.Hit {
-		return sharedAnimationGlobals.CHAR_STATE_HURT
+	if playerState.Transform.Dodging {
+		return playerGlobals.PLAYER_CHAR_STATE_DODGE
+	}
+
+	if playerState.Combat.IsHit {
+		return sharedStateGlobals.CHAR_STATE_HURT
 	}
 	// Todo: Handler func for specific attacks once theres more than one.
 	if playerState.Combat.Attacking {
-		return sharedAnimationGlobals.CHAR_STATE_ATTACK_PRIMARY
+		return sharedStateGlobals.CHAR_STATE_ATTACK_PRIMARY
 	}
 
 	if playerState.Collision.Climbing && (playerState.Transform.Up || playerState.Transform.Down) {
@@ -161,21 +168,21 @@ func (sys PlayerRendererSystem) determinePlayerAnimationState(playerState *compo
 	}
 
 	if playerState.Transform.Jumping {
-		return sharedAnimationGlobals.CHAR_STATE_JUMP
+		return sharedStateGlobals.CHAR_STATE_JUMP
 	}
 
 	if !playerState.Transform.Jumping && !playerState.Collision.OnGround {
 
-		return sharedAnimationGlobals.CHAR_STATE_FALL
+		return sharedStateGlobals.CHAR_STATE_FALL
 	}
 
 	if playerState.Collision.OnGround && playerState.Transform.BasicHorizontalMovement && !sys.indoor {
-		return sharedAnimationGlobals.CHAR_STATE_RUN
+		return sharedStateGlobals.CHAR_STATE_RUN
 	}
 
 	if playerState.Collision.OnGround && playerState.Transform.BasicHorizontalMovement && sys.indoor {
-		return sharedAnimationGlobals.CHAR_STATE_WALK
+		return sharedStateGlobals.CHAR_STATE_WALK
 	}
 
-	return sharedAnimationGlobals.CHAR_STATE_IDLE
+	return sharedStateGlobals.CHAR_STATE_IDLE
 }

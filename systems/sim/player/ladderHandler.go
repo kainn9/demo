@@ -28,7 +28,7 @@ func (sys LadderHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 
 	world := sys.scene.World
 
-	playerEntity := systemsUtil.GetPlayerEntity(world)
+	playerEntity := systemsUtil.PlayerEntity(world)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 

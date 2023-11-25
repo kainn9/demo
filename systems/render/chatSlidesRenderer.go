@@ -42,7 +42,7 @@ func (sys ChatSlidesRendererSystem) Draw(screen *ebiten.Image, chatEntity *donbu
 	// Chat Box Draw options.
 	charBoxOpts := &ebiten.DrawImageOptions{}
 	charBoxOpts.GeoM.Translate(boxX, boxY)
-	popDownSprite := systemsUtil.GetChatPopDownSprite(sys.scene.World)
+	popDownSprite := systemsUtil.ChatPopDownSprite(sys.scene.World)
 
 	// Handle the pop down animation one last time,
 	// when the chat box is no longer active.
@@ -140,7 +140,7 @@ func (sys ChatSlidesRendererSystem) Draw(screen *ebiten.Image, chatEntity *donbu
 }
 
 func (sys ChatSlidesRendererSystem) renderPopUpAnimation(chatBoxOpts *ebiten.DrawImageOptions, screen *ebiten.Image) (finished bool) {
-	popUpSprite := systemsUtil.GetChatPopUpSprite(sys.scene.World)
+	popUpSprite := systemsUtil.ChatPopUpSprite(sys.scene.World)
 
 	spriteAtFrameIndex := animUtil.GetAnimFrame(sys.scene.Manager.TickHandler, popUpSprite)
 

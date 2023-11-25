@@ -39,7 +39,7 @@ func (sys *DebugClickCoordsTrackerSystem) Sync(_ *donburi.Entry) {
 
 	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButton0) {
 		world := sys.scene.World
-		cameraEntity := systemsUtil.GetCameraEntity(world)
+		cameraEntity := systemsUtil.CameraEntity(world)
 		camera := components.CameraComponent.Get(cameraEntity)
 
 		localX, localY := ebiten.CursorPosition()

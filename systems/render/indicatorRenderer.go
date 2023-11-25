@@ -37,13 +37,13 @@ func (sys IndicatorRendererSystem) Draw(screen *ebiten.Image, _ *donburi.Entry) 
 		return
 	}
 
-	cameraEntity := systemsUtil.GetCameraEntity(world)
+	cameraEntity := systemsUtil.CameraEntity(world)
 	camera := components.CameraComponent.Get(cameraEntity)
 
-	playerEntity := systemsUtil.GetPlayerEntity(world)
+	playerEntity := systemsUtil.PlayerEntity(world)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 
-	uiSingletonEntity := systemsUtil.GetUISpritesSingletonEntity(world)
+	uiSingletonEntity := systemsUtil.UISpritesSingletonEntity(world)
 	UISpritesMap := components.SpritesMapComponent.Get(uiSingletonEntity)
 
 	sys.IndicatorQuery().Each(world, func(indicatorEntity *donburi.Entry) {

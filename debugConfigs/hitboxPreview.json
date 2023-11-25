@@ -1,15 +1,15 @@
 {
-    "character": "bigBoi",
+    "character": "player",
     "enabled": true,
     "animationName": "atkPrimary",
     "frame": 3,
     "hitboxes": [
         {
-            "width": 700,
+            "width": 50,
             "height": 10,
-            "rotation": -0.6,
-            "offsetX": 25,
-            "offsetY": -24
+            "rotation": -0.1,
+            "offsetX": 30,
+            "offsetY": -30
         }
     ]
 }

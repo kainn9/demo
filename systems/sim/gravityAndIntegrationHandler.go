@@ -28,7 +28,7 @@ func (sys GravityAndIntegrationHandlerSystem) Query() *donburi.Query {
 func (sys GravityAndIntegrationHandlerSystem) Run(dt float64, bodyEntity *donburi.Entry) {
 	body := components.RigidBodyComponent.Get(bodyEntity)
 
-	var physicsMod *components.PhysicsConfig
+	var physicsMod *components.PhysicsModConfig
 
 	if bodyEntity.HasComponent(components.PhysicsConfigComponent) {
 		physicsMod = components.PhysicsConfigComponent.Get(bodyEntity)
@@ -46,7 +46,7 @@ func (sys GravityAndIntegrationHandlerSystem) Run(dt float64, bodyEntity *donbur
 
 // Probably worth moving this to a more general gravity system,
 // once we have more than one entity that needs gravity.
-func (sys GravityAndIntegrationHandlerSystem) gravityHandler(body *tBokiComponents.RigidBody, mod *components.PhysicsConfig, playerState *components.PlayerState) {
+func (sys GravityAndIntegrationHandlerSystem) gravityHandler(body *tBokiComponents.RigidBody, mod *components.PhysicsModConfig, playerState *components.PlayerState) {
 
 	if playerState != nil && playerState.Collision.Climbing {
 		return

@@ -1,0 +1,34 @@
+package npcGlobals
+
+import (
+	"github.com/kainn9/demo/components"
+	sharedStateGlobals "github.com/kainn9/demo/globalConfig/sharedState"
+)
+
+const (
+	NPC_NAME_THERAPIST_TWO           = "therapistTwo"
+	NPC_PORTRAIT_NAME_THERAPIST_TWO  = "Dr. Refeed"
+	NPC_PORTRAIT_INDEX_THERAPIST_TWO = "therapistTwo"
+
+	THERAPIST_TWO_WIDTH  = 25
+	THERAPIST_TWO_HEIGHT = 55
+
+	THERAPIST_TWO_SPRITE_OFFSET_X = -35
+	THERAPIST_TWO_SPRITE_OFFSET_Y = -45
+
+	THERAPIST_TWO_ANIMATIONS_SPRITE_WIDTH  = 96
+	THERAPIST_TWO_ANIMATIONS_SPRITE_HEIGHT = 96
+
+	THERAPIST_TWO_IDLE_FRAME_COUNT = 1
+	THERAPIST_TWO_IDLE_ANIM_SPEED  = 1
+)
+
+var THERAPIST_TWO_ANIMATION_CONFIGS = map[components.CharState]components.AnimationConfig{
+	sharedStateGlobals.CHAR_STATE_IDLE: *components.NewAnimationConfig(
+		THERAPIST_TWO_ANIMATIONS_SPRITE_WIDTH,
+		THERAPIST_TWO_ANIMATIONS_SPRITE_HEIGHT,
+		THERAPIST_TWO_IDLE_FRAME_COUNT,
+		THERAPIST_TWO_IDLE_ANIM_SPEED,
+		false,
+	),
+}

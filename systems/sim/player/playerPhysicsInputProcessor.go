@@ -5,7 +5,8 @@ import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	inputGlobals "github.com/kainn9/demo/globalConfig/input"
-	sharedAnimationGlobals "github.com/kainn9/demo/globalConfig/sharedAnimation"
+	playerGlobals "github.com/kainn9/demo/globalConfig/player"
+	sharedStateGlobals "github.com/kainn9/demo/globalConfig/sharedState"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 	"github.com/yohamta/donburi"
@@ -33,6 +34,7 @@ func (PlayerPhysicsInputProcessorSystem) Query() *donburi.Query {
 
 func (sys PlayerPhysicsInputProcessorSystem) Run(dt float64, playerEntity *donburi.Entry) {
 	inputs := components.InputsComponent.Get(playerEntity)
+
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 
 	chatIsActive, _ := systemsUtil.IsChatActive(sys.scene.World)
@@ -40,13 +42,19 @@ func (sys PlayerPhysicsInputProcessorSystem) Run(dt float64, playerEntity *donbu
 		playerState.Transform.BasicHorizontalMovement = false
 	}
 
-	if playerState.Combat.Hit {
+	if playerState.Combat.IsHit || playerState.Transform.Dodging {
 		return
 	}
 
 	activeInput := sys.inputShift(&inputs.Queue)
 
-	left, right, jump, up, down, _, attackPrimary := inputGlobals.ALL_BINDS()
+	attackPrimary := inputGlobals.KeyPrimaryAttack()
+	left := inputGlobals.KeyLeft()
+	right := inputGlobals.KeyRight()
+	jump := inputGlobals.KeyJump()
+	dodge := inputGlobals.KeyDodge()
+	up := inputGlobals.KeyUp()
+	down := inputGlobals.KeyDown()
 
 	if activeInput == attackPrimary {
 		sys.handleKeyPrimaryAtk(playerState, playerEntity)
@@ -69,6 +77,10 @@ func (sys PlayerPhysicsInputProcessorSystem) Run(dt float64, playerEntity *donbu
 	// Jumping or descending platform.
 	if activeInput == jump {
 		sys.handleKeySpace(playerState)
+	}
+
+	if activeInput == dodge {
+		sys.handleDodge(playerState)
 	}
 
 	if activeInput == inputGlobals.COMBO_DOWN_SPACE && playerState.Collision.OnGround {
@@ -115,21 +127,17 @@ func (sys PlayerPhysicsInputProcessorSystem) handleKeySpace(playerState *compone
 
 }
 
-// -------------------------------------------------
-// Not used, but should work, if needed.
-// We do prefer to use shift, because it's makes
-// more sense to pop the last input though.
-// -------------------------------------------------
-// func (sys PlayerPhysicsInputProcessorSystem) inputPop(inputQueue *[]ebiten.Key) ebiten.Key {
-// 	if len(*inputQueue) == 0 {
-// 		return inputGlobals.NO_INPUT
-// 	}
+func (sys PlayerPhysicsInputProcessorSystem) handleDodge(playerState *components.PlayerState) {
+	th := sys.scene.Manager.TickHandler
 
-// 	popped := (*inputQueue)[len(*inputQueue)-1]
-// 	*inputQueue = (*inputQueue)[:len(*inputQueue)-1]
-// 	return popped
-// }
-// -------------------------------------------------
+	dodgeIsOnCooldown := th.CurrentTick() < playerState.Transform.DodgeFinishedTick+playerGlobals.PLAYER_DODGE_COOLDOWN_TICKS
+
+	if playerState.Collision.Climbing || dodgeIsOnCooldown {
+		return
+	}
+
+	playerState.Transform.DodgeTriggered = true
+}
 
 func (sys PlayerPhysicsInputProcessorSystem) inputShift(inputQueue *[]ebiten.Key) ebiten.Key {
 	if len(*inputQueue) == 0 {
@@ -142,15 +150,14 @@ func (sys PlayerPhysicsInputProcessorSystem) inputShift(inputQueue *[]ebiten.Key
 }
 
 func (sys PlayerPhysicsInputProcessorSystem) handleKeyPrimaryAtk(playerState *components.PlayerState, playerEntity *donburi.Entry) {
+
 	playerState.Combat.Attacking = true
 	playerState.Combat.AttackStartTick = sys.scene.Manager.TickHandler.CurrentTick()
-	playerState.Combat.CurrentAttack = sharedAnimationGlobals.CHAR_STATE_ATTACK_PRIMARY
+	playerState.Combat.CurrentAttack = sharedStateGlobals.CHAR_STATE_ATTACK_PRIMARY
 
 	attackState := components.NewAttackState(
-		sys.scene.Manager.TickHandler.CurrentTick(),
-		int(playerEntity.Entity().Id()),
-		string(sharedAnimationGlobals.CHAR_STATE_ATTACK_PRIMARY),
-		true,
+		string(sharedStateGlobals.CHAR_STATE_ATTACK_PRIMARY),
+		playerEntity,
 	)
 
 	scenesUtil.AddAttackEntity(sys.scene, *attackState)

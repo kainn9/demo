@@ -21,4 +21,4 @@ var UISingletonSoundsTag = donburi.NewTag()
 var EmptyTag = donburi.NewTag()
 
 // NPC TAGS:
-var NpcBigBoiTag = donburi.NewTag()
+var NpcThugTag = donburi.NewTag()

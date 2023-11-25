@@ -35,23 +35,22 @@ func (InputTrackerSystem) InputsQuery() *donburi.Query {
 func (sys *InputTrackerSystem) Sync(_ *donburi.Entry) {
 
 	world := sys.scene.World
-	playerEntity := systemsUtil.GetPlayerEntity(world)
-	left, right, jump, up, down, interact, attackPrimary := inputGlobals.ALL_BINDS()
+	playerEntity := systemsUtil.PlayerEntity(world)
 
-	sys.processInteractionInput(playerEntity, interact)
+	sys.processInteractionInput(playerEntity)
 
-	sys.trackLeftRightLastPressed(left, right)
+	sys.trackLeftRightLastPressed()
 
 	sys.InputsQuery().Each(world, func(inputsEntity *donburi.Entry) {
-		sys.processMovementInputs(inputsEntity, left, right, jump, up, down, attackPrimary)
+		sys.processMovementInputs(inputsEntity)
 	})
 
 }
 
-func (sys InputTrackerSystem) processInteractionInput(playerEntity *donburi.Entry, interact ebiten.Key) {
+func (sys InputTrackerSystem) processInteractionInput(playerEntity *donburi.Entry) {
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 
-	if inpututil.IsKeyJustPressed(interact) {
+	if inpututil.IsKeyJustPressed(inputGlobals.KeyInteract()) {
 		playerState.IsInteracting = true
 	} else {
 		playerState.IsInteracting = false
@@ -59,11 +58,11 @@ func (sys InputTrackerSystem) processInteractionInput(playerEntity *donburi.Entr
 
 }
 
-func (sys InputTrackerSystem) processMovementInputs(inputsEntity *donburi.Entry, left, right, jump, up, down, attackPrimary ebiten.Key) {
+func (sys InputTrackerSystem) processMovementInputs(inputsEntity *donburi.Entry) {
 	inputs := components.InputsComponent.Get(inputsEntity)
 	world := sys.scene.World
 
-	playerEntity := systemsUtil.GetPlayerEntity(world)
+	playerEntity := systemsUtil.PlayerEntity(world)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 
 	if sys.playerCannotAcceptMovementInputs(world, playerState) {
@@ -72,6 +71,23 @@ func (sys InputTrackerSystem) processMovementInputs(inputsEntity *donburi.Entry,
 
 	// Left/Right movement.
 	leftPriority := sys.tickLeftKeyLastPressed > sys.tickRightKeyLastPressed
+
+	left := inputGlobals.KeyLeft()
+	right := inputGlobals.KeyRight()
+	dodge := inputGlobals.KeyDodge()
+	jump := inputGlobals.KeyJump()
+	up := inputGlobals.KeyUp()
+	down := inputGlobals.KeyDown()
+	attackPrimary := inputGlobals.KeyPrimaryAttack()
+
+	// Dodge.
+	if inpututil.IsKeyJustPressed(dodge) {
+		sys.addUniqueKey(&inputs.Queue, dodge)
+	}
+
+	if playerState.Combat.Attacking {
+		return
+	}
 
 	if ebiten.IsKeyPressed(left) && leftPriority {
 		sys.addUniqueKey(&inputs.Queue, left)
@@ -118,7 +134,11 @@ func (sys InputTrackerSystem) processMovementInputs(inputsEntity *donburi.Entry,
 	}
 }
 
-func (sys *InputTrackerSystem) trackLeftRightLastPressed(left ebiten.Key, right ebiten.Key) {
+func (sys *InputTrackerSystem) trackLeftRightLastPressed() {
+
+	left := inputGlobals.KeyLeft()
+	right := inputGlobals.KeyRight()
+
 	if inpututil.IsKeyJustPressed(left) {
 		sys.tickLeftKeyLastPressed = sys.scene.Manager.TickHandler.CurrentTick()
 	}
@@ -151,7 +171,6 @@ func (sys InputTrackerSystem) playerCannotAcceptMovementInputs(world donburi.Wor
 
 	isChatActive, _ := systemsUtil.IsChatActive(world)
 	return isChatActive ||
-		playerState.Combat.Hit ||
-		playerState.Combat.Attacking ||
+		playerState.Combat.IsHit ||
 		playerState.Combat.Defeated
 }

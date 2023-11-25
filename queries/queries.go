@@ -70,7 +70,7 @@ var UISingletonSoundsQuery = donburi.NewQuery(
 )
 
 var AttackQuery = donburi.NewQuery(
-	filter.Contains(components.AttackStateComponent),
+	filter.Contains(components.AttackDataComponent),
 )
 
 var IndicatorQuery = donburi.NewQuery(
@@ -82,4 +82,8 @@ var IndicatorQuery = donburi.NewQuery(
 
 var ChatQuery = donburi.NewQuery(
 	filter.Contains(components.ChatStateAndConfigComponent),
+)
+
+var HitQuery = donburi.NewQuery(
+	filter.Contains(components.HitStateComponent),
 )

@@ -43,7 +43,6 @@ func LoadSound(path string, sound *components.Sound) []byte {
 	}
 
 	sound.Bytes = b
-
 	sound.Loaded = true
 
 	return songBytes

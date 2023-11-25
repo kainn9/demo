@@ -25,7 +25,7 @@ func AddBlockEntity(scene *coldBrew.Scene, x, y, w, h, rotation float64) {
 	)
 }
 
-// Note: Platforms do not support rotation.
+// Note: Platforms do not support rotation yet.
 func AddPlatformEntity(scene *coldBrew.Scene, x, y, w, h float64) {
 
 	platformEntity := scene.AddEntity(

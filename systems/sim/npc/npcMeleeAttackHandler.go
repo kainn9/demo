@@ -4,9 +4,11 @@ import (
 	"log"
 
 	"github.com/kainn9/coldBrew"
-	"github.com/kainn9/demo/components"
+	components "github.com/kainn9/demo/components"
 	npcGlobals "github.com/kainn9/demo/globalConfig/npc"
 	"github.com/kainn9/demo/queries"
+	combatUtil "github.com/kainn9/demo/systems/sim/combatUtil"
+	systemsUtil "github.com/kainn9/demo/systems/util"
 	tBokiComponents "github.com/kainn9/tteokbokki/components"
 	"github.com/yohamta/donburi"
 )
@@ -26,104 +28,67 @@ func (sys NpcMeleeAttackHandlerSystem) Query() *donburi.Query {
 }
 
 func (sys NpcMeleeAttackHandlerSystem) Run(dt float64, npcEntity *donburi.Entry) {
-	world := sys.scene.World
-	tickHandler := sys.scene.Manager.TickHandler
 
 	npcState := components.NpcStateComponent.Get(npcEntity)
 
-	if !npcState.Combat.Hittable {
+	if combatUtil.NpcIsInvincible(npcState) || npcState.Combat.CurrentAttack == "" {
 		return
 	}
+
+	world := sys.scene.World
+	tickHandler := sys.scene.Manager.TickHandler
 
 	npcConfig := components.NpcConfigComponent.Get(npcEntity)
 	npcBody := components.RigidBodyComponent.Get(npcEntity)
 
-	hitboxesData := components.AttackHitboxConfigComponent.Get(npcEntity)
-
-	if npcState.Combat.CurrentAttack == "" {
-		return
-	}
-
-	currentAttackData := npcGlobals.NpcAttackDataMap[npcConfig.Name]
+	currentAttackData := npcGlobals.NPCAttackDataMaps[npcConfig.Name][npcState.Combat.CurrentAttack]
 
 	if currentAttackData == nil {
-		log.Println("currant attack state:", npcState.Combat.CurrentAttack)
+		log.Println("curr attack state:", npcState.Combat.CurrentAttack)
 		panic("currentAttackData is nil!")
 	}
 
 	ticksSinceAttackStart := tickHandler.TicksSinceNTicks(npcState.Combat.AttackStartTick)
+	attackIsFinished := ticksSinceAttackStart > currentAttackData.TotalTickLength
 
-	if ticksSinceAttackStart >= currentAttackData.TotalTickLength {
-		sys.endAttack(world, npcState)
+	if attackIsFinished {
+		combatUtil.RemoveAttackEntity(world, systemsUtil.ID(npcEntity))
+		sys.clearAttackState(npcState)
 		return
 	}
 
-	frame := ticksSinceAttackStart / currentAttackData.TicksPerFrame
-	sys.processAttack(frame, hitboxesData, npcBody, npcState)
+	currentAttackFrame := ticksSinceAttackStart / currentAttackData.TicksPerFrame
+	sys.processAttack(currentAttackFrame, npcBody, npcConfig, npcState, npcEntity)
 
 }
 
-func (sys NpcMeleeAttackHandlerSystem) endAttack(world donburi.World, npcState *components.NpcState) {
-
-	// Remove attack hitboxes for the matching attack id/entity.
-	sys.removeAttackEntityFromWorld(world, npcState)
-
-	// Update player combat state.
+func (sys NpcMeleeAttackHandlerSystem) clearAttackState(npcState *components.NpcState) {
 	npcState.Combat.AttackStartTick = -1
 	npcState.Combat.CurrentAttack = ""
 }
 
-func (sys NpcMeleeAttackHandlerSystem) removeAttackEntityFromWorld(world donburi.World, npcState *components.NpcState) {
-
-	queries.AttackQuery.Each(world, func(attackEntity *donburi.Entry) {
-
-		emptyBoxes := []*tBokiComponents.RigidBody{
-			tBokiComponents.NewRigidBodyBox(0, 0, 0, 0, 0, false),
-		}
-
-		attackState := components.AttackStateComponent.Get(attackEntity)
-		attackId := attackState.ID
-
-		if int(attackId) == npcState.Combat.AttackStartTick {
-			components.AttackBoxesComponent.SetValue(attackEntity, emptyBoxes)
-			sys.clearAttackFromNpcHits(world, attackId)
-			world.Remove(attackEntity.Entity())
-
-		}
-	})
-
-}
-
-func (sys NpcMeleeAttackHandlerSystem) clearAttackFromNpcHits(world donburi.World, attackId int) {
-	// Remove the attack id from all NPC that were hit by this attack.
-	queries.PlayerQuery.Each(world, func(playerEntity *donburi.Entry) {
-		playerState := components.PlayerStateComponent.Get(playerEntity)
-
-		if playerState.Combat.Hits[attackId] != 0 {
-			delete(playerState.Combat.Hits, attackId)
-		}
-
-	})
-}
-
 func (sys NpcMeleeAttackHandlerSystem) processAttack(
 	frame int,
-	hitboxesData *components.AttackHitboxConfig,
 	npcBody *tBokiComponents.RigidBody,
+	npcConfig *components.NpcConfig,
 	npcState *components.NpcState,
+	npcEntity *donburi.Entry,
 ) {
 
-	if frame > len(hitboxesData.Hitboxes)-1 {
+	attackHitboxesData, ok := npcGlobals.NPCAttackHitboxesDataMaps[npcConfig.Name][npcState.Combat.CurrentAttack]
+	if !ok {
+		log.Println("key:", npcState.Combat.CurrentAttack)
+		panic("attackHitboxesData is nil!")
+	}
+
+	if frame > len(attackHitboxesData.Hitboxes)-1 {
 		return
 	}
 
-	// Generate hitboxes for the current frame.
-	// Each frame can have multiple hitboxes to
-	// create more complex attack shapes.
-	currBoxesData := hitboxesData.Hitboxes[frame]
-	hitboxes := make([]*tBokiComponents.RigidBody, 0)
+	currentFrameHitboxesData := attackHitboxesData.Hitboxes[frame]
+	currentFrameHitboxes := make([]*tBokiComponents.RigidBody, 0)
 
-	for _, boxData := range currBoxesData {
+	for _, boxData := range currentFrameHitboxesData {
 
 		xPos := npcBody.Pos.X + (boxData.OffsetX * npcState.Direction())
 		yPos := npcBody.Pos.Y + boxData.OffsetY
@@ -134,16 +99,14 @@ func (sys NpcMeleeAttackHandlerSystem) processAttack(
 		box.Rotation = (boxData.Rotation * npcState.Direction())
 		box.UpdateVertices()
 
-		hitboxes = append(hitboxes, box)
+		currentFrameHitboxes = append(currentFrameHitboxes, box)
 	}
 
-	// Associate the hitboxes with the attack entity & record the attack id.
 	queries.AttackQuery.Each(sys.scene.World, func(attackEntity *donburi.Entry) {
-		attackState := components.AttackStateComponent.Get(attackEntity)
-		attackId := attackState.ID
+		attackState := components.AttackDataComponent.Get(attackEntity)
 
-		if int(attackId) == npcState.Combat.AttackStartTick {
-			components.AttackBoxesComponent.SetValue(attackEntity, hitboxes)
+		if attackState.Initiator == npcEntity {
+			components.AttackHitboxesComponent.SetValue(attackEntity, currentFrameHitboxes)
 		}
 	})
 

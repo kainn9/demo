@@ -26,7 +26,7 @@ func AddUISoundsSingletonEntityWithoutContext(scene *coldBrew.Scene) *donburi.En
 
 	sounds := make(map[string]*components.Sound)
 
-	sounds[UIGlobals.CHAT_BOX_NEW_SOUND_NAME] = components.NewSound(30, 1)
+	sounds[UIGlobals.CHAT_BOX_NEW_SOUND_NAME] = components.NewSound(-1, 1)
 
 	components.SoundsMapComponent.SetValue(singletonSoundEntity, sounds)
 

@@ -20,16 +20,15 @@ type Sound struct {
 }
 
 type SoundState struct {
-	StartTick int
-	Player    *audio.Player
+	Player *audio.Player
 }
 
 type SoundConfig struct {
-	TickLength  int
+	Duration    float64 // Seconds.
 	VolumeScale float64
 }
 
-func NewSound(tickDuration int, volumeScale float64) *Sound {
+func NewSound(duration float64, volumeScale float64) *Sound {
 
 	if volumeScale > 1 {
 		log.Fatalf("VolumeScale must be less than to 1.0. VolumeScale: %f", volumeScale)
@@ -41,11 +40,9 @@ func NewSound(tickDuration int, volumeScale float64) *Sound {
 
 	return &Sound{
 		AssetData: &AssetData{},
-		State: &SoundState{
-			StartTick: -1,
-		},
+		State:     &SoundState{},
 		Config: &SoundConfig{
-			TickLength:  tickDuration,
+			Duration:    duration,
 			VolumeScale: volumeScale,
 		},
 	}

@@ -2,41 +2,34 @@ package soundUtil
 
 import (
 	"github.com/hajimehoshi/ebiten/v2/audio"
-	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	clientGlobals "github.com/kainn9/demo/globalConfig/client"
 )
 
-func PlaySound(audContext *audio.Context, sound *components.Sound, tickHandler *coldBrew.TickHandler) {
+func PlaySound(audContext *audio.Context, sound *components.Sound) {
 
-	if sound.State.StartTick == -1 || tickHandler.CurrentTick() >= sound.State.StartTick+sound.Config.TickLength {
-		sound.State.StartTick = tickHandler.CurrentTick()
+	if sound.State.Player == nil {
 		sound.State.Player = audContext.NewPlayerFromBytes(sound.Bytes)
-
-		volume := clientGlobals.SOUND_MAX_VOLUME * sound.Config.VolumeScale
-		sound.State.Player.SetVolume(volume)
-		sound.State.Player.Play()
 	}
+
+	if sound.State.Player.IsPlaying() && sound.Config.Duration != -1 {
+		return
+	}
+
+	if sound.State.Player.Position().Seconds() >= sound.Config.Duration {
+		sound.State.Player.Rewind()
+	}
+
+	volume := clientGlobals.SOUND_MAX_VOLUME * sound.Config.VolumeScale
+	sound.State.Player.SetVolume(volume)
+	sound.State.Player.Play()
 
 }
 
 func PauseSound(sound *components.Sound) {
-
-	if sound.State.Player != nil {
-		sound.State.Player.Pause()
+	if sound.State.Player == nil {
 		return
 	}
 
-	//log.Println("sound.State.Player is nil")
-}
-
-func ResetSound(sound *components.Sound) {
-
-	if sound.State.Player != nil {
-		sound.State.Player.Rewind()
-		return
-	}
-
-	//log.Println("sound.State.Player is nil")
-
+	sound.State.Player.Pause()
 }

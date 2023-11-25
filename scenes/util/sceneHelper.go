@@ -39,9 +39,9 @@ func ChangeScene(
 
 	// Get old scene.
 	prevScene := manager.ActiveScene()
-	prevPlayerEntity := systemsUtil.GetPlayerEntity(prevScene.World)
-	prevUISpriteSingletonEntity := systemsUtil.GetUISpritesSingletonEntity(prevScene.World)
-	prevUISoundsSingletonEntity := systemsUtil.GetUISoundsSingletonEntity(prevScene.World)
+	prevPlayerEntity := systemsUtil.PlayerEntity(prevScene.World)
+	prevUISpriteSingletonEntity := systemsUtil.UISpritesSingletonEntity(prevScene.World)
+	prevUISoundsSingletonEntity := systemsUtil.UISoundsSingletonEntity(prevScene.World)
 
 	// Get new scene.
 	err := manager.LoadScene(newScene)
@@ -65,7 +65,7 @@ func transferPlayer(
 ) {
 
 	PlayerEntityFactory.AddPlayerEntity(newScene, playerX, playerY)
-	newPlayerEntity := systemsUtil.GetPlayerEntity(newScene.World)
+	newPlayerEntity := systemsUtil.PlayerEntity(newScene.World)
 
 	// Transfer sprites to avoid asset reloading.
 	oldPlayerSpriteMap := components.SpritesCharStateMapComponent.Get(prevPlayerEntity)
@@ -102,10 +102,10 @@ func transferPlayer(
 	prevScene.World.Remove(prevPlayerEntity.Entity())
 
 	// Set Camera Position.
-	currCameraEntity := systemsUtil.GetCameraEntity(newScene.World)
+	currCameraEntity := systemsUtil.CameraEntity(newScene.World)
 	currCamera := components.CameraComponent.Get(currCameraEntity)
 
-	cameraSimUtil.SetPosition(currCamera, camX, camY, false)
+	cameraSimUtil.SetPosition(currCamera, camX, camY)
 }
 
 func transferUISpriteSingleton(
@@ -118,10 +118,10 @@ func transferUISpriteSingleton(
 	prevSoundsMap := components.SoundsMapComponent.Get(prevUISoundsSingletonEntity)
 
 	AddUISpritesSingletonEntity(newScene)
-	newUISingletonEntity := systemsUtil.GetUISpritesSingletonEntity(newScene.World)
+	newUISingletonEntity := systemsUtil.UISpritesSingletonEntity(newScene.World)
 
 	AddUISoundsSingletonEntityWithoutContext(newScene)
-	newUISoundsSingletonEntity := systemsUtil.GetUISoundsSingletonEntity(newScene.World)
+	newUISoundsSingletonEntity := systemsUtil.UISoundsSingletonEntity(newScene.World)
 
 	newSpritesMap := components.SpritesMapComponent.Get(newUISingletonEntity)
 	newSoundsMap := components.SoundsMapComponent.Get(newUISoundsSingletonEntity)

@@ -26,17 +26,21 @@ type PlayerTransformState struct {
 	Up                      bool
 	Down                    bool
 	PhaseThroughPlatforms   bool
+
+	DodgeTriggered    bool
+	Dodging           bool
+	DodgeFinishedTick int
 }
 
 type PlayerCombatState struct {
-	Attacking, Hit, Defeated, Invincible bool
-	CurrentAttack                        CharState
-	Hits                                 map[int]int
+	Attacking, IsHit, Defeated, IsInRecoveryIframe bool
+	CurrentAttack                                  CharState
+	Hits                                           map[int]bool
 
 	Health,
 	AttackStartTick,
 	LastHitTick,
-	InvincibleStartTick,
+	RecoveryIframeStartTick,
 	DefeatedStartTick int
 }
 
@@ -47,12 +51,14 @@ func NewPlayerState() *PlayerState {
 		Transform: &PlayerTransformState{
 			direction: 1,
 		},
+
 		Combat: &PlayerCombatState{
-			AttackStartTick:     -1,
-			LastHitTick:         -1,
-			InvincibleStartTick: 1,
-			Health:              10,
-			Hits:                make(map[int]int),
+			AttackStartTick:         -1,
+			LastHitTick:             -1,
+			RecoveryIframeStartTick: -1,
+			DefeatedStartTick:       -1,
+			Health:                  10,
+			Hits:                    make(map[int]bool),
 		},
 	}
 }
@@ -67,4 +73,10 @@ func (ps *PlayerState) SetDirectionLeft() {
 
 func (ps *PlayerState) SetDirectionRight() {
 	ps.Transform.direction = 1
+}
+
+func (cs *PlayerCombatState) ClearAttackState() {
+	cs.Attacking = false
+	cs.AttackStartTick = -1
+	cs.CurrentAttack = ""
 }

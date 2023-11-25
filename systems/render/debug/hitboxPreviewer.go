@@ -62,7 +62,7 @@ func (sys *HitBoxPreviewerSystem) Draw(screen *ebiten.Image, playerEntity *donbu
 	}
 
 	world := sys.scene.World
-	cameraEntity := systemsUtil.GetCameraEntity(world)
+	cameraEntity := systemsUtil.CameraEntity(world)
 	camera := components.CameraComponent.Get(cameraEntity)
 
 	playerBody := components.RigidBodyComponent.Get(playerEntity)

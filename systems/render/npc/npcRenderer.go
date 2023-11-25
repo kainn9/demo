@@ -6,10 +6,9 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/donburi"
 
-	sharedAnimationGlobals "github.com/kainn9/demo/globalConfig/sharedAnimation"
-
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
+	sharedStateGlobals "github.com/kainn9/demo/globalConfig/sharedState"
 	"github.com/kainn9/demo/queries"
 	animUtil "github.com/kainn9/demo/systems/render/util/anim"
 	cameraUtil "github.com/kainn9/demo/systems/render/util/camera"
@@ -40,7 +39,7 @@ func (sys NpcRendererSystem) Draw(screen *ebiten.Image, npcEntity *donburi.Entry
 	state := components.NpcStateComponent.Get(npcEntity)
 	body := components.RigidBodyComponent.Get(npcEntity)
 
-	cameraEntity := systemsUtil.GetCameraEntity(world)
+	cameraEntity := systemsUtil.CameraEntity(world)
 	camera := components.CameraComponent.Get(cameraEntity)
 
 	sys.updateAnimationState(state, sprites)
@@ -75,22 +74,22 @@ func (sys NpcRendererSystem) updateAnimationState(
 func (sys NpcRendererSystem) determineNpcAnimationState(npcState *components.NpcState) components.CharState {
 
 	if npcState.Combat.Defeated {
-		return sharedAnimationGlobals.CHAR_STATE_DEFEATED
+		return sharedStateGlobals.CHAR_STATE_DEFEATED
 	}
 
-	if npcState.Combat.CurrentAttack == sharedAnimationGlobals.CHAR_STATE_ATTACK_PRIMARY {
-		return sharedAnimationGlobals.CHAR_STATE_ATTACK_PRIMARY
+	if npcState.Combat.CurrentAttack == sharedStateGlobals.CHAR_STATE_ATTACK_PRIMARY {
+		return sharedStateGlobals.CHAR_STATE_ATTACK_PRIMARY
 	}
 
 	if npcState.Combat.IsHit {
-		return sharedAnimationGlobals.CHAR_STATE_HURT
+		return sharedStateGlobals.CHAR_STATE_HURT
 	}
 
 	if npcState.Transform.BasicHorizontalMovement {
-		return sharedAnimationGlobals.CHAR_STATE_RUN
+		return sharedStateGlobals.CHAR_STATE_RUN
 	}
 
-	return sharedAnimationGlobals.CHAR_STATE_IDLE
+	return sharedStateGlobals.CHAR_STATE_IDLE
 }
 
 func (sys NpcRendererSystem) currentSpriteSheet(
@@ -106,7 +105,7 @@ func (sys NpcRendererSystem) currentSpriteSheet(
 	if currentSpriteSheet == nil {
 		log.Println("Player sprite sheet is nil, defaulting to idle.")
 
-		currentSpriteSheet = (*sprites)[sharedAnimationGlobals.CHAR_STATE_IDLE]
+		currentSpriteSheet = (*sprites)[sharedStateGlobals.CHAR_STATE_IDLE]
 	}
 
 	return currentSpriteSheet

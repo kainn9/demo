@@ -4,7 +4,7 @@ import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	playerGlobals "github.com/kainn9/demo/globalConfig/player"
-	sharedAnimationGlobals "github.com/kainn9/demo/globalConfig/sharedAnimation"
+	sharedStateGlobals "github.com/kainn9/demo/globalConfig/sharedState"
 	clientUISystems "github.com/kainn9/demo/systems/client/UI"
 	systemsUtil "github.com/kainn9/demo/systems/util"
 )
@@ -40,7 +40,7 @@ func (cb SitCallBackStart) SlideIndex() int {
 }
 
 func (cb SitCallBackStart) Callback(scene *coldBrew.Scene) {
-	playerEntity := systemsUtil.GetPlayerEntity(scene.World)
+	playerEntity := systemsUtil.PlayerEntity(scene.World)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 	playerState.Animation = playerGlobals.PLAYER_CHAR_STATE_SIT
 }
@@ -54,9 +54,9 @@ func (cb SitCallBackEnd) SlideIndex() int {
 }
 
 func (cb SitCallBackEnd) Callback(scene *coldBrew.Scene) {
-	playerEntity := systemsUtil.GetPlayerEntity(scene.World)
+	playerEntity := systemsUtil.PlayerEntity(scene.World)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
-	playerState.Animation = sharedAnimationGlobals.CHAR_STATE_IDLE
+	playerState.Animation = sharedStateGlobals.CHAR_STATE_IDLE
 }
 
 func AttachSitCallbackToChat(scene *coldBrew.Scene, chatName string, slideCount int) {

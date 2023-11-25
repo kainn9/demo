@@ -1,6 +1,8 @@
 package simSystems
 
 import (
+	"math"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
@@ -22,14 +24,13 @@ func NewCameraPositionHandler(scene *coldBrew.Scene) *CameraPositionHandlerSyste
 }
 
 func (sys *CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
+
 	world := sys.scene.World
 	mapWidth, mapHeight := sys.scene.Width, sys.scene.Height
-	cameraEntity := systemsUtil.GetCameraEntity(world)
+	cameraEntity := systemsUtil.CameraEntity(world)
 	camera := components.CameraComponent.Get(cameraEntity)
-	playerEntity := systemsUtil.GetPlayerEntity(world)
+	playerEntity := systemsUtil.PlayerEntity(world)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
-
-	useSmoothCam := true
 
 	xBoundaryLeft := (float64(clientGlobals.SCREEN_WIDTH) / 2) / camera.Zoom
 	xBoundaryRight := float64(mapWidth) - xBoundaryLeft
@@ -53,24 +54,34 @@ func (sys *CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 
 	playerInsideYBoundsBottom := playerBody.Pos.Y > yBoundaryBottom
 
+	epsilon := 5.0
+
+	if math.Abs(xOffsetCenter-camera.X) < epsilon {
+		return
+	}
+
 	// Handle X-axis
 	switch {
 	case playerInsideXBoundsLeft:
-		cameraSimUtil.SetPosition(camera, xOffsetLeft, camera.Y, useSmoothCam)
+		cameraSimUtil.SetPositionLerp(camera, xOffsetLeft, camera.Y)
 	case playerInsideXBoundsRight:
-		cameraSimUtil.SetPosition(camera, xOffsetRight, camera.Y, useSmoothCam)
+		cameraSimUtil.SetPositionLerp(camera, xOffsetRight, camera.Y)
 	default:
-		cameraSimUtil.SetPosition(camera, xOffsetCenter, camera.Y, useSmoothCam)
+		cameraSimUtil.SetPositionLerp(camera, xOffsetCenter, camera.Y)
+	}
+
+	if math.Abs(yOffsetCenter-camera.Y) < epsilon {
+		return
 	}
 
 	// Handle Y-axis
 	switch {
 	case playerInsideYBoundsTop:
-		cameraSimUtil.SetPosition(camera, camera.X, yOffsetTop, useSmoothCam)
+		cameraSimUtil.SetPositionLerp(camera, camera.X, yOffsetTop)
 	case playerInsideYBoundsBottom:
-		cameraSimUtil.SetPosition(camera, camera.X, yOffsetBottom, useSmoothCam)
+		cameraSimUtil.SetPositionLerp(camera, camera.X, yOffsetBottom)
 	default:
-		cameraSimUtil.SetPosition(camera, camera.X, yOffsetCenter, useSmoothCam)
+		cameraSimUtil.SetPositionLerp(camera, camera.X, yOffsetCenter)
 	}
 
 	if ebiten.IsKeyPressed(ebiten.KeyF) {

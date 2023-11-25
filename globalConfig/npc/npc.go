@@ -2,160 +2,42 @@ package npcGlobals
 
 import (
 	"github.com/kainn9/demo/components"
-	sharedAnimationGlobals "github.com/kainn9/demo/globalConfig/sharedAnimation"
+	sharedCombatGlobals "github.com/kainn9/demo/globalConfig/sharedCombat"
 	"github.com/kainn9/demo/tags"
 	tBokiVec "github.com/kainn9/tteokbokki/math/vec"
 	"github.com/yohamta/donburi"
 )
 
-const (
-	NPC_NAME_BIG_BOI components.NpcName = "bigBoi"
+type AttackDataMap = map[components.CharState]*sharedCombatGlobals.AttackData
+type AttackHitboxesData = map[components.CharState]sharedCombatGlobals.AttackHitboxesData
 
-	BIG_BOI_ATTACK_RANGE = 40
-	BIG_BOI_PATROL_RANGE = 200
-	BIG_BOI_SPEED        = 80
-
-	BIG_BOI_WIDTH  = 30
-	BIG_BOI_HEIGHT = 75
-
-	BIG_BOI_SPRITE_OFFSET_X = -60
-	BIG_BOI_SPRITE_OFFSET_Y = -93
-
-	BIG_BOI_ANIMATIONS_SPRITE_WIDTH  = 128
-	BIG_BOI_ANIMATIONS_SPRITE_HEIGHT = 128
-
-	BIG_BOI_IDLE_FRAME_COUNT = 4
-	BIG_BOI_IDLE_ANIM_SPEED  = 20
-
-	BIG_BOI_RUN_FRAME_COUNT = 4
-	BIG_BOI_RUN_ANIM_SPEED  = 20
-
-	BIG_BOI_HURT_FRAME_COUNT = 1
-	BIG_BOI_HURT_ANIM_SPEED  = 60
-
-	BIG_BOI_DEFEATED_FRAME_COUNT = 4
-	BIG_BOI_DEFEATED_ANIM_SPEED  = 12
-
-	BIG_BOI_DEFEATED_DURATION = 240
-
-	BIG_BOI_ATTACK_PRIMARY_FRAME_COUNT = 5
-	BIG_BOI_ATTACK_PRIMARY_ANIM_SPEED  = 12
-)
-
-const (
-	NPC_PORTRAIT_NAME_THERAPIST_ONE  = "Dr. Relapse"
-	NPC_PORTRAIT_INDEX_THERAPIST_ONE = "therapistOne"
-)
-
-const (
-	NPC_NAME_THERAPIST_TWO           = "therapistTwo"
-	NPC_PORTRAIT_NAME_THERAPIST_TWO  = "Dr. Refeed"
-	NPC_PORTRAIT_INDEX_THERAPIST_TWO = "therapistTwo"
-
-	THERAPIST_TWO_WIDTH  = 25
-	THERAPIST_TWO_HEIGHT = 55
-
-	THERAPIST_TWO_SPRITE_OFFSET_X = -35
-	THERAPIST_TWO_SPRITE_OFFSET_Y = -45
-
-	THERAPIST_TWO_ANIMATIONS_SPRITE_WIDTH  = 96
-	THERAPIST_TWO_ANIMATIONS_SPRITE_HEIGHT = 96
-
-	THERAPIST_TWO_IDLE_FRAME_COUNT = 1
-	THERAPIST_TWO_IDLE_ANIM_SPEED  = 1
-)
-
-const (
-	NPC_PORTRAIT_NAME_THERAPIST_THREE  = "Dr. Release"
-	NPC_PORTRAIT_INDEX_THERAPIST_THREE = "therapistThree"
-)
+var NPCAttackDataMaps = map[components.NpcName]AttackDataMap{}
+var NPCAttackHitboxesDataMaps = map[components.NpcName]AttackHitboxesData{}
 
 // RigidBody dimensions
 var NPC_DIMENSIONS = map[components.NpcName]tBokiVec.Vec2{
-	NPC_NAME_BIG_BOI:       {X: BIG_BOI_WIDTH, Y: BIG_BOI_HEIGHT},
+	NPC_NAME_THUG:          {X: THUG_WIDTH, Y: THUG_HEIGHT},
 	NPC_NAME_THERAPIST_TWO: {X: THERAPIST_TWO_WIDTH, Y: THERAPIST_TWO_HEIGHT},
 }
 
 // Sprite offsets
 var NPC_SPRITE_OFFSETS = map[components.NpcName]tBokiVec.Vec2{
-	NPC_NAME_BIG_BOI:       {X: BIG_BOI_SPRITE_OFFSET_X, Y: BIG_BOI_SPRITE_OFFSET_Y},
+	NPC_NAME_THUG:          {X: THUG_SPRITE_OFFSET_X, Y: THUG_SPRITE_OFFSET_Y},
 	NPC_NAME_THERAPIST_TWO: {X: THERAPIST_TWO_SPRITE_OFFSET_X, Y: THERAPIST_TWO_SPRITE_OFFSET_Y},
 }
 
-// Anim Configs
-var BIG_BOI_ANIMATION_CONFIGS = map[components.CharState]components.AnimationConfig{
-	sharedAnimationGlobals.CHAR_STATE_IDLE: *components.NewAnimationConfig(
-		BIG_BOI_ANIMATIONS_SPRITE_WIDTH,
-		BIG_BOI_ANIMATIONS_SPRITE_HEIGHT,
-		BIG_BOI_IDLE_FRAME_COUNT,
-		BIG_BOI_IDLE_ANIM_SPEED,
-		false,
-	),
-
-	sharedAnimationGlobals.CHAR_STATE_RUN: *components.NewAnimationConfig(
-		BIG_BOI_ANIMATIONS_SPRITE_WIDTH,
-		BIG_BOI_ANIMATIONS_SPRITE_HEIGHT,
-		BIG_BOI_RUN_FRAME_COUNT,
-		BIG_BOI_RUN_ANIM_SPEED,
-		false,
-	),
-
-	sharedAnimationGlobals.CHAR_STATE_HURT: *components.NewAnimationConfig(
-		BIG_BOI_ANIMATIONS_SPRITE_WIDTH,
-		BIG_BOI_ANIMATIONS_SPRITE_HEIGHT,
-		BIG_BOI_HURT_FRAME_COUNT,
-		BIG_BOI_HURT_ANIM_SPEED,
-		false,
-	),
-
-	sharedAnimationGlobals.CHAR_STATE_DEFEATED: *components.NewAnimationConfig(
-		BIG_BOI_ANIMATIONS_SPRITE_WIDTH,
-		BIG_BOI_ANIMATIONS_SPRITE_HEIGHT,
-		BIG_BOI_DEFEATED_FRAME_COUNT,
-		BIG_BOI_DEFEATED_ANIM_SPEED,
-		true,
-	),
-
-	sharedAnimationGlobals.CHAR_STATE_ATTACK_PRIMARY: *components.NewAnimationConfig(
-		BIG_BOI_ANIMATIONS_SPRITE_WIDTH,
-		BIG_BOI_ANIMATIONS_SPRITE_HEIGHT,
-		BIG_BOI_ATTACK_PRIMARY_FRAME_COUNT,
-		BIG_BOI_ATTACK_PRIMARY_ANIM_SPEED,
-		false,
-	),
-}
-
-var THERAPIST_TWO_ANIMATION_CONFIGS = map[components.CharState]components.AnimationConfig{
-	sharedAnimationGlobals.CHAR_STATE_IDLE: *components.NewAnimationConfig(
-		THERAPIST_TWO_ANIMATIONS_SPRITE_WIDTH,
-		THERAPIST_TWO_ANIMATIONS_SPRITE_HEIGHT,
-		THERAPIST_TWO_IDLE_FRAME_COUNT,
-		THERAPIST_TWO_IDLE_ANIM_SPEED,
-		false,
-	),
-}
-
+// Animation configs
 var NPC_ANIMATION_CONFIGS = map[components.NpcName]map[components.CharState]components.AnimationConfig{
-	NPC_NAME_BIG_BOI:       BIG_BOI_ANIMATION_CONFIGS,
+	NPC_NAME_THUG:          THUG_ANIMATION_CONFIGS,
 	NPC_NAME_THERAPIST_TWO: THERAPIST_TWO_ANIMATION_CONFIGS,
 }
 
+// Defeated durations.
 var NPC_DEFEATED_DURATIONS = map[components.NpcName]int{
-	NPC_NAME_BIG_BOI: BIG_BOI_DEFEATED_DURATION,
+	NPC_NAME_THUG: THUG_DEFEATED_DURATION,
 }
 
+// Tags.
 var TAG_MAP = map[components.NpcName]*donburi.ComponentType[struct{}]{
-	NPC_NAME_BIG_BOI: tags.NpcBigBoiTag,
-}
-
-type NpcAttackData struct {
-	TotalTickLength int
-	TicksPerFrame   int
-}
-
-var NpcAttackDataMap = map[components.NpcName]*NpcAttackData{
-	NPC_NAME_BIG_BOI: {
-		TotalTickLength: BIG_BOI_ATTACK_PRIMARY_FRAME_COUNT * BIG_BOI_ATTACK_PRIMARY_ANIM_SPEED,
-		TicksPerFrame:   BIG_BOI_ATTACK_PRIMARY_ANIM_SPEED,
-	},
+	NPC_NAME_THUG: tags.NpcThugTag,
 }

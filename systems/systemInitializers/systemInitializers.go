@@ -29,39 +29,52 @@ func InitStandardSystems(scene *coldBrew.Scene, title string, indoor bool) {
 	scene.AddSystem(loaderSystems.NewUIGlobalLoader(scene))
 
 	// Client Systems.
-	scene.AddSystem(clientSystems.NewInputTracker(scene))
 	scene.AddSystem(clientDebugSystems.NewDebugClickCoordsTracker(scene))
+	scene.AddSystem(clientSystems.NewInputTracker(scene))
 	scene.AddSystem(clientUISystems.NewChatHandler(scene))
 	scene.AddSystem(clientPlayerSystems.NewPlayerSoundPlayer(scene))
 	scene.AddSystem(clientSystems.NewBackgroundSoundPlayer(scene))
 	scene.AddSystem(clientNpcSystems.NewNpcHitSoundPlayer(scene))
 
 	// Sim Systems.
-	scene.AddSystem(simPlayerSystems.NewPlayerPhysicsInputProcessor(scene))
 
+	// Collision.
 	scene.AddSystem(simChatSystems.NewChatCollisionHandler(scene))
 	scene.AddSystem(simChatSystems.NewChatInteractableHandler(scene))
-
-	scene.AddSystem(simPlayerSystems.NewPlayerMovementHandler(scene, indoor))
-
-	scene.AddSystem(simSystems.NewGravityAndIntegrationHandler(scene))
+	scene.AddSystem(simPlayerSystems.NewIndicatorCollisionHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewClearOnGroundHandler(scene))
+
 	scene.AddSystem(simPlayerSystems.NewPlayerBlockCollisionHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewPlayerPlatformCollisionHandler(scene))
+
 	scene.AddSystem(simNpcSystems.NewNpcGroundCollisionHandler(scene))
+
+	// Movement.
+	scene.AddSystem(simPlayerSystems.NewPlayerPhysicsInputProcessor(scene))
+	scene.AddSystem(simPlayerSystems.NewPlayerMovementHandler(scene, indoor))
 	scene.AddSystem(simPlayerSystems.NewLadderHandler(scene))
-	scene.AddSystem(simSystems.NewCameraPositionHandler(scene))
-	scene.AddSystem(simPlayerSystems.NewIndicatorCollisionHandler(scene))
-	scene.AddSystem(simPlayerSystems.NewPlayerMeleeAttackHandler(scene))
-	scene.AddSystem(simPlayerSystems.NewPlayerNpcHitHandler(scene))
-	scene.AddSystem(simPlayerSystems.NewPlayerNpcAttackHitHandler(scene))
+	scene.AddSystem(simSystems.NewGravityAndIntegrationHandler(scene))
+
+	// Combat.
+	scene.AddSystem(simPlayerSystems.NewPlayerContactHitDetector(scene))
+	scene.AddSystem(simPlayerSystems.NewPlayerAttackHitDetector(scene))
+	scene.AddSystem(simPlayerSystems.NewPlayerHitHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewPlayerIframeHandler(scene))
+	scene.AddSystem(simPlayerSystems.NewPlayerClearHitStateHandler(scene))
 	scene.AddSystem(simPlayerSystems.NewPlayerDefeatedHandler(scene))
+	scene.AddSystem(simPlayerSystems.NewPlayerMeleeAttackHandler(scene))
+
+	scene.AddSystem(simNpcSystems.NewNpcHitDetector(scene))
 	scene.AddSystem(simNpcSystems.NewNpcHitHandler(scene))
+	scene.AddSystem(simNpcSystems.NewNpcClearHitStateHandler(scene))
 	scene.AddSystem(simNpcSystems.NewNpcDefeatedHandler(scene))
 	scene.AddSystem(simNpcSystems.NewNpcSimpleAiHandler(scene))
 	scene.AddSystem(simNpcSystems.NewNpcMeleeAttackHandler(scene))
 
+	// Camera Position.
+	scene.AddSystem(simSystems.NewCameraPositionHandler(scene))
+
+	// Scene Transition.
 	scene.AddSystem(simSystems.NewSceneTransitionHandler(scene)) // Keep last.
 
 	// Render Systems.

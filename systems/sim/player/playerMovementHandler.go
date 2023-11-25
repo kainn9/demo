@@ -3,6 +3,7 @@ package simPlayerSystems
 import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
+	playerGlobals "github.com/kainn9/demo/globalConfig/player"
 
 	tBokiComponents "github.com/kainn9/tteokbokki/components"
 	tBokiMath "github.com/kainn9/tteokbokki/math"
@@ -17,25 +18,28 @@ type PlayerMovementHandlerSystem struct {
 
 	// May eventually lift these out into a more shared scope,
 	// but for now it seems this is the only system that needs them.
-	minVelocity float64
 	maxVelY     float64
-	maxVelX     float64
+	maxRunVel   float64
+	maxDodgeVel float64
 	xVelUnit    float64
 	yVelUnit    float64
+	indoor      bool
 }
 
 func NewPlayerMovementHandler(scene *coldBrew.Scene, indoor bool) *PlayerMovementHandlerSystem {
 	sys := &PlayerMovementHandlerSystem{
-		scene: scene,
+		scene:  scene,
+		indoor: indoor,
 	}
-	sys.minVelocity = 3.0 // The minimum velocity to consider the player moving.
-	sys.maxVelY = 750.0   // Max speed up or down.
-	sys.maxVelX = 200.0   // Max speed left or right.
+	sys.maxVelY = 750.0
+	sys.maxRunVel = 170.0
+	sys.maxDodgeVel = sys.maxRunVel * 2
+
 	sys.xVelUnit = 18.0   // Left or right.
-	sys.yVelUnit = -340.0 // Jump.
+	sys.yVelUnit = -310.0 // Jump.
 
 	if indoor {
-		sys.maxVelX = 120.0
+		sys.maxRunVel = 120.0
 		sys.xVelUnit = 15.0
 		sys.yVelUnit = -240.0
 
@@ -58,27 +62,19 @@ func (sys PlayerMovementHandlerSystem) Run(dt float64, playerEntity *donburi.Ent
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 
-	if playerState.Combat.Hit {
+	if playerState.Combat.IsHit {
 		return
 	}
 
-	sys.clampToMinVelocity(playerBody)
+	sys.dodgeHandler(playerBody, playerState)
+
+	if playerState.Transform.Dodging {
+		return
+	}
+
 	sys.horizontalMovementHandler(playerState, playerBody)
 	sys.jumpHandler(playerBody, playerState)
-	sys.clampToMaxVelocity(playerBody)
 
-}
-
-func (sys PlayerMovementHandlerSystem) clampToMinVelocity(playerBody *tBokiComponents.RigidBody) {
-	epsilon := sys.minVelocity
-
-	if playerBody.Vel.X > -epsilon && playerBody.Vel.X < epsilon {
-		playerBody.Vel.X = 0
-	}
-
-	if playerBody.Vel.Y > -epsilon && playerBody.Vel.Y < epsilon {
-		playerBody.Vel.Y = 0
-	}
 }
 
 func (sys PlayerMovementHandlerSystem) horizontalMovementHandler(playerState *components.PlayerState, playerBody *tBokiComponents.RigidBody) {
@@ -102,8 +98,8 @@ func (sys PlayerMovementHandlerSystem) handlePlayerBasicHorizontalMovement(
 	playerBody *tBokiComponents.RigidBody,
 	playerState *components.PlayerState,
 ) {
-	direction := playerState.Direction()
 
+	direction := playerState.Direction()
 	// If the player is switching directions, halt velocity first(for more responsive movement).
 	// Since direction is either 1(right) or -1(left), we can multiply it by players velocity to
 	// check if the direction matches the velocity/movement.
@@ -120,6 +116,9 @@ func (sys PlayerMovementHandlerSystem) handlePlayerBasicHorizontalMovement(
 	}
 
 	tBokiPhysics.Transformer.ApplyImpulseLinear(playerBody, tBokiVec.Vec2{X: sys.xVelUnit * direction, Y: 0})
+
+	// Clamp the player's horizontal velocity.
+	playerBody.Vel.X = tBokiMath.Clamp(playerBody.Vel.X, -sys.maxRunVel, sys.maxRunVel)
 }
 
 func (sys PlayerMovementHandlerSystem) haltPlayerMovement(playerBody *tBokiComponents.RigidBody, playerState *components.PlayerState) {
@@ -131,7 +130,7 @@ func (sys PlayerMovementHandlerSystem) jumpHandler(playerBody *tBokiComponents.R
 
 	playerJumpTriggeredAndGrounded := playerState.Transform.JumpTriggered && (playerState.Collision.OnGround || playerState.Collision.Climbing)
 
-	if playerJumpTriggeredAndGrounded {
+	if playerJumpTriggeredAndGrounded && !playerState.Transform.Jumping {
 		tBokiPhysics.Transformer.ApplyImpulseLinear(playerBody, tBokiVec.Vec2{X: 0, Y: sys.yVelUnit})
 		playerState.Transform.Jumping = true
 		playerState.Transform.JumpTriggered = false
@@ -141,9 +140,34 @@ func (sys PlayerMovementHandlerSystem) jumpHandler(playerBody *tBokiComponents.R
 		playerState.Transform.Jumping = false
 	}
 
+	// Clamp the player's vertical velocity.
+	playerBody.Vel.Y = tBokiMath.Clamp(playerBody.Vel.Y, -sys.maxVelY, sys.maxVelY)
+
 }
 
-func (sys PlayerMovementHandlerSystem) clampToMaxVelocity(playerBody *tBokiComponents.RigidBody) {
-	playerBody.Vel.X = tBokiMath.Clamp(playerBody.Vel.X, -sys.maxVelX, sys.maxVelX)
-	playerBody.Vel.Y = tBokiMath.Clamp(playerBody.Vel.Y, -sys.maxVelY, sys.maxVelY)
+func (sys PlayerMovementHandlerSystem) dodgeHandler(playerBody *tBokiComponents.RigidBody, playerState *components.PlayerState) {
+
+	if sys.indoor {
+		return
+	}
+
+	th := sys.scene.Manager.TickHandler
+
+	if playerState.Transform.DodgeTriggered && !playerState.Transform.Dodging {
+		playerState.Transform.DodgeTriggered = false
+		playerState.Transform.Dodging = true
+		playerState.Transform.DodgeFinishedTick = th.CurrentTick() + playerGlobals.PLAYER_DODGE_DURATION_TICKS
+	}
+
+	if playerState.Transform.Dodging {
+		tBokiPhysics.Transformer.ApplyImpulseLinear(playerBody, tBokiVec.Vec2{X: sys.maxDodgeVel * playerState.Direction(), Y: 0})
+	}
+
+	// Clamp the player's horizontal velocity.
+	playerBody.Vel.X = tBokiMath.Clamp(playerBody.Vel.X, -sys.maxDodgeVel, sys.maxDodgeVel)
+
+	if th.CurrentTick() > playerState.Transform.DodgeFinishedTick && playerState.Transform.Dodging {
+		playerState.Transform.Dodging = false
+		playerBody.Vel.X = 0
+	}
 }

@@ -25,7 +25,7 @@ func NewParallaxBackgroundRenderer(scene *coldBrew.Scene) *ParallaxBackgroundRen
 func (sys ParallaxBackgroundRendererSystem) Draw(screen *ebiten.Image, _ *donburi.Entry) {
 
 	world := sys.scene.World
-	cameraEntity := systemsUtil.GetCameraEntity(world)
+	cameraEntity := systemsUtil.CameraEntity(world)
 	camera := components.CameraComponent.Get(cameraEntity)
 
 	// Since this is the first Render System, we clear the camera here.

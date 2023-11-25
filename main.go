@@ -76,10 +76,10 @@ func (g *game) Update() error {
 
 	if inpututil.IsKeyJustPressed(ebiten.Key5) {
 		world := g.manager.ActiveScene().World
-		playerEntity := systemsUtil.GetPlayerEntity(world)
+		playerEntity := systemsUtil.PlayerEntity(world)
 		playerBody := components.RigidBodyComponent.Get(playerEntity)
 
-		cameraEntity := systemsUtil.GetCameraEntity(world)
+		cameraEntity := systemsUtil.CameraEntity(world)
 		camera := components.CameraComponent.Get(cameraEntity)
 
 		log.Println("cameraPos", camera.X, camera.Y)

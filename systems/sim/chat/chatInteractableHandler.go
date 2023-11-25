@@ -38,7 +38,7 @@ func (sys ChatInteractableHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 		return
 	}
 
-	playerEntity := systemsUtil.GetPlayerEntity(world)
+	playerEntity := systemsUtil.PlayerEntity(world)
 	playerBody := components.RigidBodyComponent.Get(playerEntity)
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 

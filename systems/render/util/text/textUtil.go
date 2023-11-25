@@ -190,7 +190,7 @@ func RenderTextDefault(
 	screen *ebiten.Image,
 ) {
 
-	lower, upper, numbers, special := systemsUtil.GetDefaultFontSpriteMap(*world)
+	lower, upper, numbers, special := systemsUtil.DefaultFontSpriteMap(*world)
 
 	RenderText(
 		text,

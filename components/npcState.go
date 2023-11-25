@@ -18,16 +18,17 @@ type NpcTransformState struct {
 }
 
 type NpcCombatState struct {
-	Hits                                                    map[int]int
-	LatestHitAttackName                                     string
+	Hits                                                    map[int]bool
+	LatestHitAttackName                                     CharState
 	Health, LastHitTick, DefeatedStartTick, AttackStartTick int
 	Hittable, IsHit, Defeated                               bool
 	AttackRange                                             float64
 	PatrolRange                                             float64
+	MaxLeft, MaxRight                                       float64
 	CurrentAttack                                           CharState
 }
 
-func NewNpcState(hittable bool, attackRange, patrolRange, speed float64) *NpcState {
+func NewNpcState(hittable bool, attackRange, patrolRange, maxLeft, maxRight, speed float64) *NpcState {
 
 	return &NpcState{
 		Transform: &NpcTransformState{
@@ -36,10 +37,12 @@ func NewNpcState(hittable bool, attackRange, patrolRange, speed float64) *NpcSta
 		},
 		Combat: &NpcCombatState{
 			Health:      3,
-			Hits:        make(map[int]int),
+			Hits:        make(map[int]bool),
 			Hittable:    hittable,
 			AttackRange: attackRange,
 			PatrolRange: patrolRange,
+			MaxLeft:     maxLeft,
+			MaxRight:    maxRight,
 		},
 	}
 
@@ -55,4 +58,12 @@ func (ns *NpcState) SetDirectionLeft() {
 
 func (ns *NpcState) SetDirectionRight() {
 	ns.Transform.direction = 1
+}
+
+func (ns *NpcState) IsLeft() bool {
+	return ns.Transform.direction == -1
+}
+
+func (ns *NpcState) IsRight() bool {
+	return ns.Transform.direction == 1
 }

@@ -1,4 +1,4 @@
-package sharedAnimationGlobals
+package sharedStateGlobals
 
 import "github.com/kainn9/demo/components"
 
@@ -10,5 +10,6 @@ const (
 	CHAR_STATE_FALL           components.CharState = "fall"
 	CHAR_STATE_HURT           components.CharState = "hurt"
 	CHAR_STATE_DEFEATED       components.CharState = "defeated"
+	CHAR_STATE_CONTACT_ATTACK components.CharState = "contactAttack"
 	CHAR_STATE_ATTACK_PRIMARY components.CharState = "atkPrimary"
 )

@@ -27,29 +27,29 @@ func (sys PlayerIframeHandlerSystem) Run(dt float64, playerEntity *donburi.Entry
 	playerState := components.PlayerStateComponent.Get(playerEntity)
 	tickHandler := sys.scene.Manager.TickHandler
 
-	if sys.iframeJustStarted(playerState) {
-		playerState.Combat.InvincibleStartTick = tickHandler.CurrentTick()
+	if sys.iframeStartTickMustBeSet(playerState) {
+		playerState.Combat.RecoveryIframeStartTick = tickHandler.CurrentTick()
 	}
 
 	if sys.iframeJustEnded(playerState, tickHandler) {
-		playerState.Combat.Invincible = false
-		playerState.Combat.InvincibleStartTick = -1
+		playerState.Combat.IsInRecoveryIframe = false
+		playerState.Combat.RecoveryIframeStartTick = -1
 	}
 
 }
 
-func (sys PlayerIframeHandlerSystem) iframeJustStarted(playerState *components.PlayerState) bool {
+func (sys PlayerIframeHandlerSystem) iframeStartTickMustBeSet(playerState *components.PlayerState) bool {
 
-	return playerState.Combat.InvincibleStartTick == -1 && playerState.Combat.Invincible
+	return playerState.Combat.RecoveryIframeStartTick == -1 && playerState.Combat.IsInRecoveryIframe
 
 }
 
 func (sys PlayerIframeHandlerSystem) iframeJustEnded(playerState *components.PlayerState, tickHandler *coldBrew.TickHandler) bool {
 
-	if playerState.Combat.InvincibleStartTick == -1 {
+	if playerState.Combat.RecoveryIframeStartTick == -1 {
 		return false
 	}
 
-	return tickHandler.TicksSinceNTicks(playerState.Combat.InvincibleStartTick) >= playerGlobals.PLAYER_IFRAME_DURATION_TICKS
+	return tickHandler.TicksSinceNTicks(playerState.Combat.RecoveryIframeStartTick) >= playerGlobals.PLAYER_RECOVERY_IFRAME_DURATION_TICKS
 
 }
