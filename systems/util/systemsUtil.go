@@ -10,6 +10,10 @@ import (
 	"github.com/yohamta/donburi"
 )
 
+func Valid(world donburi.World, entry *donburi.Entry) bool {
+	return world.Valid(entry.Entity())
+}
+
 func ID(entry *donburi.Entry) int {
 	return int(entry.Entity().Id())
 }

@@ -75,6 +75,11 @@ func (sys PlayerHitHandlerSystem) ApplyHitEffects(hitEntity *donburi.Entry, hitS
 
 func (sys PlayerHitHandlerSystem) handlePlayerHitDisplacement(hitState *components.HitState) {
 
+	targetOrInitiatorIsInvalid := !systemsUtil.Valid(sys.scene.World, hitState.Target) || !systemsUtil.Valid(sys.scene.World, hitState.Initiator)
+	if targetOrInitiatorIsInvalid {
+		return
+	}
+
 	playerBody := components.RigidBodyComponent.Get(hitState.Target)
 	npcBody := components.RigidBodyComponent.Get(hitState.Initiator)
 

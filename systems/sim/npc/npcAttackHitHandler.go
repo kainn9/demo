@@ -60,6 +60,11 @@ func (sys NpcHitHandlerSystem) clearExpiredHits(hitEntity *donburi.Entry, hitSta
 
 func (sys NpcHitHandlerSystem) ApplyHitEffects(hitState *components.HitState) {
 
+	targetIsInvalid := !systemsUtil.Valid(sys.scene.World, hitState.Target)
+	if targetIsInvalid {
+		return
+	}
+
 	npcEntity := hitState.Target
 	npcState := components.NpcStateComponent.Get(npcEntity)
 

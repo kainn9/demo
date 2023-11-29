@@ -62,12 +62,21 @@ func (sys PlayerAttackHitDetectorSystem) handleAttackHit(
 	tickHandler *coldBrew.TickHandler,
 ) {
 
+	world := sys.scene.World
+
 	if attackData.Initiator == playerEntity {
 		return
 	}
 
 	npcEntity := attackData.Initiator
+
+	initiatorIsInvalid := !systemsUtil.Valid(world, npcEntity)
+	if initiatorIsInvalid {
+		return
+	}
+
 	npcConfig := components.NpcConfigComponent.Get(npcEntity)
+
 	npcName := npcConfig.Name
 
 	id := systemsUtil.ID(npcEntity)
