@@ -141,7 +141,7 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	// Thugs.
 	groupX := 3052.0
 	thugs := []*donburi.Entry{
-		scenesUtil.NpcEntityFactory.AddNpcThug(scene, 1071, 188, 861, 1125),
+		scenesUtil.NpcEntityFactory.AddNpcThug(scene, 1071, 188, 930, 1125),
 		scenesUtil.NpcEntityFactory.AddNpcThug(scene, 1636, 45, 1350, 1637),
 		scenesUtil.NpcEntityFactory.AddNpcThug(scene, 2095, 149, 1897, 2835),
 		scenesUtil.NpcEntityFactory.AddNpcThug(scene, 2606, 159, 1897, 2835),

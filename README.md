@@ -19,7 +19,7 @@ A Metroidvania-lite/Platformer game written in Go.
 
 
 ### Random List of TODOs:
-- Dodge/roll cooldown
+- Scene transitions(fade in/out + sound)
 - Better simple AI system
 - Movement system cleanup
 - Sound system cleanup
