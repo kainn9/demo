@@ -42,7 +42,7 @@ func (sys PlayerPhysicsInputProcessorSystem) Run(dt float64, playerEntity *donbu
 		playerState.Transform.BasicHorizontalMovement = false
 	}
 
-	if playerState.Combat.IsHit || playerState.Transform.Dodging {
+	if playerState.Combat.IsHit {
 		return
 	}
 
