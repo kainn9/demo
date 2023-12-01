@@ -1,9 +1,11 @@
 # demo(WIP)
 A Metroidvania-lite/Platformer game written in Go.
 
+https://github.com/kainn9/demo/assets/85503587/89cff509-868b-4473-aba9-5b8b70efa198
+
 
 # To Run:
-- When using mac: 
+- When using mac consider: 
     ```bash
         EBITENGINE_GRAPHICS_LIBRARY="opengl" go run .
     ```
