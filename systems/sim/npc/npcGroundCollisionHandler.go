@@ -4,6 +4,7 @@ import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	"github.com/kainn9/demo/queries"
+	tBokiComponents "github.com/kainn9/tteokbokki/components"
 	tBokiPhysics "github.com/kainn9/tteokbokki/physics"
 	"github.com/yohamta/donburi"
 )
@@ -30,16 +31,16 @@ func (sys NpcGroundCollisionHandlerSystem) Run(dt float64, npcEntity *donburi.En
 	queries.BlockQuery.Each(world, func(blockEntity *donburi.Entry) {
 		blockBody := components.RigidBodyComponent.Get(blockEntity)
 
-		if isColliding, contacts := tBokiPhysics.Detector.Detect(npcBody, blockBody, true); isColliding {
-			tBokiPhysics.Resolver.Resolve(npcBody, blockBody, contacts[0])
+		if isColliding, contacts := tBokiPhysics.Detector.Detect(npcBody, blockBody, tBokiComponents.ResolverType); isColliding {
+			tBokiPhysics.Resolver.Resolve(npcBody, blockBody, contacts)
 		}
 	})
 
 	queries.PlatformQuery.Each(world, func(platformEntity *donburi.Entry) {
 		platformBody := components.RigidBodyComponent.Get(platformEntity)
 
-		if isColliding, contacts := tBokiPhysics.Detector.Detect(npcBody, platformBody, true); isColliding {
-			tBokiPhysics.Resolver.Resolve(npcBody, platformBody, contacts[0])
+		if isColliding, contacts := tBokiPhysics.Detector.Detect(npcBody, platformBody, tBokiComponents.ResolverType); isColliding {
+			tBokiPhysics.Resolver.Resolve(npcBody, platformBody, contacts)
 		}
 
 	})

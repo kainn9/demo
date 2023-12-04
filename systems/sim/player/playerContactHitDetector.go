@@ -48,7 +48,7 @@ func (sys PlayerContactHitDetectorSystem) Run(dt float64, npcEntity *donburi.Ent
 
 	npcId := systemsUtil.ID(npcEntity)
 
-	playerIsCollidingWithNpc, _ := tBokiPhysics.Detector.Detect(playerBody, npcBody, true)
+	playerIsCollidingWithNpc, _ := tBokiPhysics.Detector.Detect(playerBody, npcBody, tBokiComponents.ResolverType)
 	playerIsNotAlreadyHit := !playerState.Combat.Hits[npcId]
 
 	if playerIsCollidingWithNpc && playerIsNotAlreadyHit {

@@ -43,7 +43,7 @@ func (sys NpcHitDetectorSystem) Run(dt float64, npcEntity *donburi.Entry) {
 
 		for _, attackHitbox := range *attackHitboxes {
 
-			if isColliding, _ := tBokiPhysics.Detector.Detect(npcBody, attackHitbox, true); isColliding {
+			if isColliding, _ := tBokiPhysics.Detector.Detect(npcBody, attackHitbox, tBokiComponents.ResolverType); isColliding {
 				sys.handleHit(npcEntity, npcState, attackHitbox, attackData)
 			}
 		}

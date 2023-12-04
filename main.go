@@ -28,7 +28,9 @@ func main() {
 	ebiten.SetWindowTitle("Demo!")
 	windowResizingMode := ebiten.WindowResizingModeEnabled
 	ebiten.SetWindowResizingMode(windowResizingMode)
-	//ebiten.SetFullscreen(true)
+
+	ebiten.SetTPS(60)
+	ebiten.SetVsyncEnabled(false) // Experimenting.
 
 	ebiten.RunGame(game)
 }
@@ -55,6 +57,7 @@ func NewGame() *game {
 }
 
 func (g *game) Update() error {
+
 	toggleDebugMode()
 
 	// Temp hack/test. ------------------------
@@ -97,6 +100,8 @@ func (g *game) Update() error {
 	deltaTime := (0.017)
 	activeScene.Sim(deltaTime)
 
+	g.manager.TickHandler.IncrementTick()
+
 	return nil
 }
 
@@ -104,8 +109,6 @@ func (g *game) Draw(screen *ebiten.Image) {
 
 	activeScene := g.manager.ActiveScene()
 	activeScene.Draw(screen)
-	g.manager.TickHandler.IncrementTick()
-
 	renderDebugInfo(screen)
 
 }
@@ -122,6 +125,7 @@ func renderDebugInfo(screen *ebiten.Image) {
 
 	tps := math.Round(ebiten.ActualTPS())
 	fps := math.Round(ebiten.ActualFPS())
+
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("TPS: %v", tps))
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("\nFPS: %v\nDebug Mode Currently On.\nPress 0 to toggle on/off.", fps))
 

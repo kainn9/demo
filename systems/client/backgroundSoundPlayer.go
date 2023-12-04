@@ -33,6 +33,7 @@ func (sys *BackgroundSoundPlayerSystem) Sync(soundEntity *donburi.Entry) {
 	sound := components.SoundComponent.Get(soundEntity)
 	globalSounds := systemsUtil.UISoundsSingletonEntity(sys.scene.World)
 	context := components.AudioContextComponent.Get(globalSounds)
+	th := sys.scene.Manager.TickHandler
 
-	soundUtil.PlaySound(context.Context, sound)
+	soundUtil.PlaySound(context.Context, sound, th)
 }

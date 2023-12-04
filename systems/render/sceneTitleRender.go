@@ -73,5 +73,5 @@ func (sys *sceneTitleRendererSystem) Draw(screen *ebiten.Image, _ *donburi.Entry
 	sx := float64((clientGlobals.SCREEN_WIDTH / 2) - (width / 2))
 	sy := float64(60)
 
-	textUtil.RenderTextDefault(text, sx, sy, 420, sys.startTick+buffer, 30, 3, &sys.scene.World, sys.scene.Manager.TickHandler, screen)
+	textUtil.RenderTextDefault(text, sx, sy, 420, sys.startTick+buffer, 15, 3, &sys.scene.World, sys.scene.Manager.TickHandler, screen)
 }

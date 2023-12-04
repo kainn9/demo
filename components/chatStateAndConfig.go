@@ -34,7 +34,7 @@ func NewChatStateAndConfig(chatName string, content []SlidesContent) *ChatStateA
 
 		Config: &ChatConfig{
 			ChatName:     chatName,
-			TicksPerWord: 15,
+			TicksPerWord: 8,
 		},
 
 		State: &ChatState{

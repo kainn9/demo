@@ -4,6 +4,7 @@ import (
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	systemsUtil "github.com/kainn9/demo/systems/util"
+	tBokiComponents "github.com/kainn9/tteokbokki/components"
 	tBokiPhysics "github.com/kainn9/tteokbokki/physics"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/filter"
@@ -46,7 +47,7 @@ func (sys ChatInteractableHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 		chatBody := components.RigidBodyComponent.Get(chatEntity)
 		chatStateAndConfig := components.ChatStateAndConfigComponent.Get(chatEntity)
 
-		if isColliding, _ := tBokiPhysics.Detector.Detect(playerBody, chatBody, true); isColliding {
+		if isColliding, _ := tBokiPhysics.Detector.Detect(playerBody, chatBody, tBokiComponents.ResolverType); isColliding {
 			sys.handleInteraction(playerState, chatStateAndConfig)
 		}
 

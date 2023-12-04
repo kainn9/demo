@@ -105,15 +105,20 @@ func (sys PlayerRendererSystem) configureDrawOptions(
 	// Scaling player sprite to face correct direction.
 	opts.GeoM.Scale(playerState.Direction(), 1)
 
-	flashRed := sys.scene.Manager.TickHandler.CurrentTick()%20 > 15
+	flashBlue := sys.scene.Manager.TickHandler.CurrentTick()%20 > 15
+	flashRed := sys.scene.Manager.TickHandler.CurrentTick()%10 > 0
 
-	playerIsHitOrInRecoveryIframe := playerState.Combat.IsHit || playerState.Combat.IsInRecoveryIframe
-
-	if playerIsHitOrInRecoveryIframe && flashRed {
+	if playerState.Combat.IsHit && flashRed {
 		red := color.RGBA{255, 0, 0, 255}
+
 		opts.ColorScale.ScaleWithColor(red)
-	} else {
-		opts.ColorScale.Reset()
+
+	} else if playerState.Combat.IsInRecoveryIframe && flashBlue {
+
+		blue := color.RGBA{0, 0, 255, 255}
+
+		opts.ColorScale.ScaleWithColor(blue)
+
 	}
 
 	// Translating player sprite to correct position on camera/screen.

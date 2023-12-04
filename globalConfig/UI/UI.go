@@ -22,7 +22,7 @@ const CurrentLayout = LAYOUT_DEFAULT
 const (
 	CHAT_BOX_POP_UP_SPRITE_NAME   = "chatPopUp"
 	CHAT_BOX_POP_DOWN_SPRITE_NAME = "chatPopDown"
-	CHAT_BOX_ANIM_SPEED           = 12
+	CHAT_BOX_ANIM_SPEED           = 6
 
 	CHAT_BOX_NEW_SOUND_NAME = "new"
 )
@@ -43,11 +43,11 @@ type IndicatorAnimationMap = map[components.IndicatorType]*components.AnimationC
 
 var IndicatorAnimationConfigs = map[Layout]IndicatorAnimationMap{
 	LAYOUT_DEFAULT: {
-		INDICATOR_JUMP:     components.NewAnimationConfig(33, 16, 4, 24, false),
-		INDICATOR_LADDER:   components.NewAnimationConfig(16, 34, 7, 24, false),
-		INDICATOR_MOVEMENT: components.NewAnimationConfig(50, 33, 4, 24, false),
-		INDICATOR_INTERACT: components.NewAnimationConfig(24, 16, 4, 24, false),
-		INDICATOR_DESCEND:  components.NewAnimationConfig(62, 16, 4, 24, false),
+		INDICATOR_JUMP:     components.NewAnimationConfig(33, 16, 4, 12, false),
+		INDICATOR_LADDER:   components.NewAnimationConfig(16, 34, 7, 12, false),
+		INDICATOR_MOVEMENT: components.NewAnimationConfig(50, 33, 4, 12, false),
+		INDICATOR_INTERACT: components.NewAnimationConfig(24, 16, 4, 12, false),
+		INDICATOR_DESCEND:  components.NewAnimationConfig(62, 16, 4, 12, false),
 	},
 }
 

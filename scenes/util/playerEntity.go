@@ -169,9 +169,9 @@ func (playerEntityFactoryStruct) setupSpritesAndAnimComponents(playerEntity *don
 func (playerEntityFactoryStruct) setupSoundComponents(playerEntity *donburi.Entry) {
 	playerSounds := make(map[components.CharState]*components.Sound, 0)
 
-	playerSounds[sharedStateGlobals.CHAR_STATE_HURT] = components.NewSound(-1, 1)
-	playerSounds[sharedStateGlobals.CHAR_STATE_RUN] = components.NewSound(0.432, 0.5)
-	playerSounds[sharedStateGlobals.CHAR_STATE_ATTACK_PRIMARY] = components.NewSound(-1, 1)
+	playerSounds[sharedStateGlobals.CHAR_STATE_HURT] = components.NewSound(0.5, 1)
+	playerSounds[sharedStateGlobals.CHAR_STATE_RUN] = components.NewSound(-1, 0.5)
+	playerSounds[sharedStateGlobals.CHAR_STATE_ATTACK_PRIMARY] = components.NewSound(1, 1)
 	components.SoundCharStateMapComponent.SetValue(playerEntity, playerSounds)
 }
 

@@ -5,6 +5,7 @@ import (
 	"github.com/kainn9/demo/components"
 	"github.com/kainn9/demo/queries"
 	systemsUtil "github.com/kainn9/demo/systems/util"
+	tBokiComponents "github.com/kainn9/tteokbokki/components"
 	tBokiPhysics "github.com/kainn9/tteokbokki/physics"
 	"github.com/yohamta/donburi"
 )
@@ -35,7 +36,7 @@ func (sys IndicatorCollisionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 		body := components.RigidBodyComponent.Get(indicatorEntity)
 		indicatorState := components.IndicatorStateAndConfigComponent.Get(indicatorEntity)
 
-		if isColliding, _ := tBokiPhysics.Detector.Detect(playerBody, body, true); isColliding {
+		if isColliding, _ := tBokiPhysics.Detector.Detect(playerBody, body, tBokiComponents.ResolverType); isColliding {
 			indicatorState.State.Active = true
 
 		} else {

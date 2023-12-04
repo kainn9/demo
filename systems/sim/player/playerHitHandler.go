@@ -91,7 +91,7 @@ func (sys PlayerHitHandlerSystem) handlePlayerHitDisplacement(hitState *componen
 	playerBody.Vel.X = 0
 	playerBody.Vel.Y = 0
 
-	tBokiPhysics.Transformer.ApplyImpulseLinear(playerBody, tBokiVec.Vec2{X: 140 * direction, Y: -70})
+	tBokiPhysics.Transformer.ApplyImpulseLinear(playerBody, tBokiVec.Vec2{X: 70 * direction, Y: -35})
 
 }
 

@@ -38,7 +38,7 @@ func (sys LadderHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 
 		ladderBody := components.RigidBodyComponent.Get(ladderEntity)
 
-		if isColliding, _ := tBokiPhysics.Detector.Detect(playerBody, ladderBody, true); isColliding {
+		if isColliding, _ := tBokiPhysics.Detector.Detect(playerBody, ladderBody, tBokiComponents.ResolverType); isColliding {
 			noLadderCollisions = false
 			sys.handleClimb(playerBody, ladderBody, playerState)
 		}

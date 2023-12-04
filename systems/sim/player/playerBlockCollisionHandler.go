@@ -1,11 +1,13 @@
 package simPlayerSystems
 
 import (
+	"math"
+
 	"github.com/kainn9/coldBrew"
 	"github.com/kainn9/demo/components"
 	"github.com/kainn9/demo/queries"
 	systemsUtil "github.com/kainn9/demo/systems/util"
-	tBokiVec "github.com/kainn9/tteokbokki/math/vec"
+	tBokiComponents "github.com/kainn9/tteokbokki/components"
 	tBokiPhysics "github.com/kainn9/tteokbokki/physics"
 	"github.com/yohamta/donburi"
 )
@@ -38,30 +40,54 @@ func (sys PlayerBlockCollisionHandlerSystem) Run(dt float64, blockEntity *donbur
 		return
 	}
 
-	if isColliding, contacts := tBokiPhysics.Detector.Detect(playerBody, blockBody, true); isColliding {
+	if isColliding, contacts := tBokiPhysics.Detector.Detect(playerBody, blockBody, tBokiComponents.ResolverType); isColliding {
+		sys.verticalCollisionHandler(playerBody, blockBody, contacts)
+		sys.groundedHandler(playerBody, blockBody, playerState)
+	}
 
-		p1Left := tBokiVec.Vec2{
-			X: playerBody.Polygon.WorldVertices[3].X,
-			Y: playerBody.Polygon.WorldVertices[3].Y - 1,
+}
+
+func (PlayerBlockCollisionHandlerSystem) verticalCollisionHandler(playerBody, blockBody *tBokiComponents.RigidBody, contacts tBokiComponents.Contacts) {
+
+	pBottomLeftVert := playerBody.Polygon.WorldVertices[2]
+	pBottomRightVert := playerBody.Polygon.WorldVertices[3]
+
+	bTopLeftVert := blockBody.Polygon.WorldVertices[0]
+	bTopRightVert := blockBody.Polygon.WorldVertices[1]
+
+	pBottomIntersectionBTop, _ := tBokiPhysics.Resolver.LineIntersection(pBottomLeftVert, pBottomRightVert, bTopLeftVert, bTopRightVert)
+
+	pBottomBelowBTopWithNoRotation := blockBody.Rotation == 0 && pBottomLeftVert.Y <= bTopLeftVert.Y
+
+	if pBottomIntersectionBTop || pBottomBelowBTopWithNoRotation {
+		ox := playerBody.Pos.X
+		ovx := playerBody.Vel.X
+
+		tBokiPhysics.Resolver.Resolve(playerBody, blockBody, contacts)
+
+		playerBody.Pos.X = ox
+		playerBody.Vel.X = ovx
+
+		if playerBody.Vel.X > 0 {
+			playerBody.Vel.Y = 0
 		}
+	} else {
+		tBokiPhysics.Resolver.Resolve(playerBody, blockBody, contacts)
+	}
+}
 
-		p1Right := tBokiVec.Vec2{
-			X: playerBody.Polygon.WorldVertices[2].X,
-			Y: playerBody.Polygon.WorldVertices[2].Y - 1,
-		}
+func (PlayerBlockCollisionHandlerSystem) groundedHandler(playerBody, blockBody *tBokiComponents.RigidBody, playerState *components.PlayerState) {
+	pBottomLeftVert := playerBody.Polygon.WorldVertices[2]
+	pBottomRightVert := playerBody.Polygon.WorldVertices[3]
+	pLowestY := math.Min(pBottomLeftVert.Y, pBottomRightVert.Y)
 
-		isIntersectingLeft, _ := tBokiPhysics.Resolver.LineIntersection(p1Left, playerBody.Polygon.WorldVertices[3], blockBody.Polygon.WorldVertices[0], blockBody.Polygon.WorldVertices[1])
-		isIntersectingRight, _ := tBokiPhysics.Resolver.LineIntersection(p1Right, playerBody.Polygon.WorldVertices[2], blockBody.Polygon.WorldVertices[0], blockBody.Polygon.WorldVertices[1])
+	bTopLeftVert := blockBody.Polygon.WorldVertices[0]
+	bTopRightVert := blockBody.Polygon.WorldVertices[1]
 
-		// Note: This is not the same as:
-		// playerState.Collision.OnGround = isIntersectingLeft || isIntersectingRight
-		// as we don't want to set it to false if it's already true from a previous block.
-		if isIntersectingLeft || isIntersectingRight {
-			playerState.Collision.OnGround = true
-		}
+	bHighestY := math.Max(bTopLeftVert.Y, bTopRightVert.Y)
 
-		tBokiPhysics.Resolver.Resolve(playerBody, blockBody, contacts[0])
-
+	if pLowestY <= bHighestY {
+		playerState.Collision.OnGround = true
 	}
 
 }

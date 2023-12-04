@@ -48,7 +48,7 @@ func (sys PlayerAttackHitDetectorSystem) checkForHit(world donburi.World, player
 
 		for _, attackHitbox := range *attackHitboxes {
 
-			if isColliding, _ := tBokiPhysics.Detector.Detect(playerBody, attackHitbox, true); isColliding {
+			if isColliding, _ := tBokiPhysics.Detector.Detect(playerBody, attackHitbox, tBokiComponents.ResolverType); isColliding {
 				sys.handleAttackHit(playerEntity, playerState, attackData, sys.scene.Manager.TickHandler)
 			}
 		}

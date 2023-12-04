@@ -20,6 +20,8 @@ https://github.com/kainn9/demo/assets/85503587/89cff509-868b-4473-aba9-5b8b70efa
 
 
 
+- Disable XVel Impulse && vertical project!
+
 ### Random List of TODOs:
 - Scene transitions(fade in/out + sound)
 - Better simple AI system

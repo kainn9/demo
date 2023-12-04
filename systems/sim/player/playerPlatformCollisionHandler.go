@@ -47,7 +47,7 @@ func (sys PlayerPlatformCollisionHandlerSystem) Run(dt float64, _ *donburi.Entry
 			return
 		}
 
-		if isColliding, contacts := tBokiPhysics.Detector.Detect(playerBody, platform, true); isColliding {
+		if isColliding, contacts := tBokiPhysics.Detector.Detect(playerBody, platform, tBokiComponents.ResolverType); isColliding {
 			sys.handleCollision(playerBody, platform, playerState, contacts)
 			noPlatformCollisions = false
 		}
@@ -64,13 +64,13 @@ func (PlayerPlatformCollisionHandlerSystem) handleCollision(
 	playerBody *tBokiComponents.RigidBody,
 	platform *tBokiComponents.RigidBody,
 	playerState *components.PlayerState,
-	contacts []tBokiComponents.Contact,
+	contacts tBokiComponents.Contacts,
 ) {
 
 	if playerState.Transform.PhaseThroughPlatforms {
 		return
 	}
 
-	tBokiPhysics.Resolver.Resolve(playerBody, platform, contacts[0])
+	tBokiPhysics.Resolver.Resolve(playerBody, platform, contacts)
 	playerState.Collision.OnGround = true
 }

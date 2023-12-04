@@ -54,7 +54,7 @@ func (sys *CameraPositionHandlerSystem) Run(dt float64, _ *donburi.Entry) {
 
 	playerInsideYBoundsBottom := playerBody.Pos.Y > yBoundaryBottom
 
-	epsilon := 5.0
+	epsilon := 15.0
 
 	if math.Abs(xOffsetCenter-camera.X) < epsilon {
 		return

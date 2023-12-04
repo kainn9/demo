@@ -53,8 +53,10 @@ func (sys ChatHandlerSystem) Run(dt float64, chatEntity *donburi.Entry) {
 
 	chatNewSound := (*globalSounds)[UIGlobals.CHAT_BOX_NEW_SOUND_NAME]
 
+	th := sys.scene.Manager.TickHandler
+
 	if configAndState.State.JustOpened {
-		soundUtil.PlaySound(audContext, chatNewSound)
+		soundUtil.PlaySound(audContext, chatNewSound, th)
 	}
 
 	if configAndState.State.Active {
@@ -65,7 +67,7 @@ func (sys ChatHandlerSystem) Run(dt float64, chatEntity *donburi.Entry) {
 	if playerState.IsInteracting && configAndState.State.Active {
 		playerState.IsInteracting = false
 		sys.handleNextSlide(configAndState, popDownSprite, popUpSprite)
-		soundUtil.PlaySound(audContext, chatNewSound)
+		soundUtil.PlaySound(audContext, chatNewSound, th)
 	}
 
 	sys.handleTransitionState(configAndState, popDownSprite)

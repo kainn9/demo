@@ -33,15 +33,17 @@ func (sys *PlayerSoundPlayerSystem) Sync(playerEntity *donburi.Entry) {
 	globalSoundsSingleton := systemsUtil.UISoundsSingletonEntity(sys.scene.World)
 	audContext := components.AudioContextComponent.Get(globalSoundsSingleton)
 
-	if playerState.Combat.IsHit {
-		sound := (*soundMap)[sharedStateGlobals.CHAR_STATE_HURT]
-		soundUtil.PlaySound(audContext.Context, sound)
+	th := sys.scene.Manager.TickHandler
 
+	if playerState.Combat.IsHit {
+
+		sound := (*soundMap)[sharedStateGlobals.CHAR_STATE_HURT]
+		soundUtil.PlaySound(audContext.Context, sound, th)
 	}
 
 	if playerState.Collision.OnGround && playerState.Transform.BasicHorizontalMovement {
 		sound := (*soundMap)[sharedStateGlobals.CHAR_STATE_RUN]
-		soundUtil.PlaySound(audContext.Context, sound)
+		soundUtil.PlaySound(audContext.Context, sound, th)
 	} else {
 		sound := (*soundMap)[sharedStateGlobals.CHAR_STATE_RUN]
 		soundUtil.PauseSound(sound)

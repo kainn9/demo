@@ -5,6 +5,7 @@ import (
 	"github.com/kainn9/demo/components"
 	scenesUtil "github.com/kainn9/demo/scenes/util"
 	systemsUtil "github.com/kainn9/demo/systems/util"
+	tBokiComponents "github.com/kainn9/tteokbokki/components"
 	tBokiPhysics "github.com/kainn9/tteokbokki/physics"
 	"github.com/yohamta/donburi"
 	"github.com/yohamta/donburi/filter"
@@ -54,7 +55,7 @@ func (sys SceneTransitionHandlerSystem) Run(dt float64, transitionEntity *donbur
 
 		transitionBody := components.RigidBodyComponent.Get(transitionEntity)
 
-		if isColliding, _ := tBokiPhysics.Detector.Detect(playerBody, transitionBody, true); isColliding {
+		if isColliding, _ := tBokiPhysics.Detector.Detect(playerBody, transitionBody, tBokiComponents.ResolverType); isColliding {
 			sys.handleTransition(transitionEntity, playerState)
 		}
 

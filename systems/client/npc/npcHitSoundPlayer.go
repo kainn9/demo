@@ -56,5 +56,5 @@ func (sys *NpcHitSoundPlayerSystem) handleHitSounds(npcEntity *donburi.Entry) {
 		return
 	}
 
-	soundUtil.PlaySound(audContext.Context, sound)
+	soundUtil.PlaySound(audContext.Context, sound, sys.scene.Manager.TickHandler)
 }
