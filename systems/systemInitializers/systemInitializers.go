@@ -4,12 +4,13 @@ import (
 	"github.com/kainn9/coldBrew"
 	clientSystems "github.com/kainn9/demo/systems/client"
 	clientUISystems "github.com/kainn9/demo/systems/client/UI"
-	clientDebugSystems "github.com/kainn9/demo/systems/client/debug"
 	clientNpcSystems "github.com/kainn9/demo/systems/client/npc"
 	clientPlayerSystems "github.com/kainn9/demo/systems/client/player"
+	clientSceneBuilderSystems "github.com/kainn9/demo/systems/client/sceneBuilder"
 	loaderSystems "github.com/kainn9/demo/systems/loader"
 	loaderNpcSystems "github.com/kainn9/demo/systems/loader/npc"
 	loaderPlayerSystems "github.com/kainn9/demo/systems/loader/player"
+	loaderSceneLoaderSystems "github.com/kainn9/demo/systems/loader/sceneLoader"
 	renderSystems "github.com/kainn9/demo/systems/render"
 	renderDebugSystems "github.com/kainn9/demo/systems/render/debug"
 	renderNpcSystems "github.com/kainn9/demo/systems/render/npc"
@@ -22,6 +23,8 @@ import (
 
 func InitStandardSystems(scene *coldBrew.Scene, title string, indoor bool) {
 	// Loader Systems.
+	scene.AddSystem(loaderSceneLoaderSystems.NewSceneLoader(scene)) // Keep first.
+
 	scene.AddSystem(loaderPlayerSystems.NewPlayerAssetsLoader(scene))
 	scene.AddSystem(loaderNpcSystems.NewNpcAssetLoader(scene))
 	scene.AddSystem(loaderSystems.NewBackgroundLoader(scene))
@@ -29,7 +32,7 @@ func InitStandardSystems(scene *coldBrew.Scene, title string, indoor bool) {
 	scene.AddSystem(loaderSystems.NewUIGlobalLoader(scene))
 
 	// Client Systems.
-	scene.AddSystem(clientDebugSystems.NewDebugClickCoordsTracker(scene))
+	scene.AddSystem(clientSceneBuilderSystems.NewSceneBuilder(scene))
 	scene.AddSystem(clientSystems.NewInputTracker(scene))
 	scene.AddSystem(clientUISystems.NewChatHandler(scene))
 	scene.AddSystem(clientPlayerSystems.NewPlayerSoundPlayer(scene))

@@ -57,6 +57,13 @@ var PlatformQuery = donburi.NewQuery(
 	filter.Contains(tags.PlatformTag),
 )
 
+var PlatformAndBlockQuery = donburi.NewQuery(
+	filter.Or(
+		filter.Contains(tags.BlockTag),
+		filter.Contains(tags.PlatformTag),
+	),
+)
+
 var LadderQuery = donburi.NewQuery(
 	filter.Contains(tags.LadderTag),
 )

@@ -44,7 +44,8 @@ func NewGame() *game {
 
 	manager := coldBrew.NewManager(clientGlobals.SCENE_CACHE_LIMIT, clientGlobals.MAX_TICKS, loaderSprite.Image)
 
-	firstScene := UIScenes.TitleScene{}
+	// firstScene := UIScenes.TitleScene{}
+	firstScene := introScenes.CemeteryScene{}
 
 	scenesUtil.InitFirstScene(manager, firstScene, 0, 0)
 

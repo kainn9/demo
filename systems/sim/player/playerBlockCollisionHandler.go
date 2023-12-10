@@ -41,39 +41,44 @@ func (sys PlayerBlockCollisionHandlerSystem) Run(dt float64, blockEntity *donbur
 	}
 
 	if isColliding, contacts := tBokiPhysics.Detector.Detect(playerBody, blockBody, tBokiComponents.ResolverType); isColliding {
-		sys.verticalCollisionHandler(playerBody, blockBody, contacts)
+		sys.collisionHandler(playerBody, blockBody, contacts)
 		sys.groundedHandler(playerBody, blockBody, playerState)
 	}
 
 }
 
-func (PlayerBlockCollisionHandlerSystem) verticalCollisionHandler(playerBody, blockBody *tBokiComponents.RigidBody, contacts tBokiComponents.Contacts) {
+func (sys *PlayerBlockCollisionHandlerSystem) collisionHandler(playerBody, blockBody *tBokiComponents.RigidBody, contacts tBokiComponents.Contacts) {
 
-	pBottomLeftVert := playerBody.Polygon.WorldVertices[2]
-	pBottomRightVert := playerBody.Polygon.WorldVertices[3]
+	playerTopLeftVert := playerBody.Polygon.WorldVertices[0]
+	playerBottomLeftVert := playerBody.Polygon.WorldVertices[3]
+	playerTopRightVert := playerBody.Polygon.WorldVertices[1]
+	playerBottomRightVert := playerBody.Polygon.WorldVertices[2]
 
-	bTopLeftVert := blockBody.Polygon.WorldVertices[0]
-	bTopRightVert := blockBody.Polygon.WorldVertices[1]
+	blockTopLeftVert := blockBody.Polygon.WorldVertices[0]
+	blockTopRightVert := blockBody.Polygon.WorldVertices[1]
 
-	pBottomIntersectionBTop, _ := tBokiPhysics.Resolver.LineIntersection(pBottomLeftVert, pBottomRightVert, bTopLeftVert, bTopRightVert)
+	flatBlock := blockTopLeftVert.Y == blockTopRightVert.Y
 
-	pBottomBelowBTopWithNoRotation := blockBody.Rotation == 0 && pBottomLeftVert.Y <= bTopLeftVert.Y
-
-	if pBottomIntersectionBTop || pBottomBelowBTopWithNoRotation {
-		ox := playerBody.Pos.X
-		ovx := playerBody.Vel.X
-
+	if flatBlock {
 		tBokiPhysics.Resolver.Resolve(playerBody, blockBody, contacts)
-
-		playerBody.Pos.X = ox
-		playerBody.Vel.X = ovx
-
-		if playerBody.Vel.X > 0 {
-			playerBody.Vel.Y = 0
-		}
-	} else {
-		tBokiPhysics.Resolver.Resolve(playerBody, blockBody, contacts)
+		return
 	}
+
+	contactVertTop := playerTopLeftVert
+	contactVertBottom := playerBottomLeftVert
+	if blockTopLeftVert.Y < blockTopRightVert.Y {
+		contactVertTop = playerTopRightVert
+		contactVertBottom = playerBottomRightVert
+	}
+
+	isIntersectingSide, sideIntersection := tBokiPhysics.Resolver.LineIntersection(contactVertTop, contactVertBottom, blockTopLeftVert, blockTopRightVert)
+	if !isIntersectingSide {
+		return
+	}
+
+	playerBody.Pos.Y = sideIntersection.Y - playerBody.Polygon.Height/2
+	playerBody.Vel.Y = 0
+
 }
 
 func (PlayerBlockCollisionHandlerSystem) groundedHandler(playerBody, blockBody *tBokiComponents.RigidBody, playerState *components.PlayerState) {

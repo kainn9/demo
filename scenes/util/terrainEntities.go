@@ -5,9 +5,10 @@ import (
 	"github.com/kainn9/demo/components"
 	"github.com/kainn9/demo/tags"
 	tBokiComponents "github.com/kainn9/tteokbokki/components"
+	"github.com/yohamta/donburi"
 )
 
-func AddBlockEntity(scene *coldBrew.Scene, x, y, w, h, rotation float64) {
+func AddBlockEntity(scene *coldBrew.Scene, x, y, w, h, rotation float64) *donburi.Entry {
 
 	blockEntity := scene.AddEntity(
 		components.RigidBodyComponent,
@@ -23,6 +24,9 @@ func AddBlockEntity(scene *coldBrew.Scene, x, y, w, h, rotation float64) {
 		blockEntity,
 		*blockBody,
 	)
+
+	return blockEntity
+
 }
 
 // Note: Platforms do not support rotation yet.
@@ -58,6 +62,7 @@ func AddLadderEntity(scene *coldBrew.Scene, x, y, w, h float64) {
 		ladderEntity,
 		*ladderBody,
 	)
+
 }
 
 func AddWalls(scene *coldBrew.Scene, sceneWidth, sceneHeight float64) {

@@ -27,6 +27,8 @@
     "opengl",
     "pharma",
     "Platformer",
+    "protobuf",
+    "protoreflect",
     "Refeed",
     "shampooy",
     "Todos",

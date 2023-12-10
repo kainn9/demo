@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/hajimehoshi/ebiten/v2 v2.6.2
 	github.com/kainn9/coldBrew v0.0.0-20231117033936-29b1ef05934f
-	github.com/kainn9/tteokbokki v0.0.0-20231204184216-e3839197cea6
+	github.com/kainn9/tteokbokki v0.0.0-20231211201347-15ca5566e701
 	github.com/yohamta/donburi v1.3.9
 )
 
@@ -19,4 +19,5 @@ require (
 	golang.org/x/mobile v0.0.0-20231006135142-2b44d11868fe // indirect
 	golang.org/x/sync v0.4.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
+	google.golang.org/protobuf v1.31.0
 )

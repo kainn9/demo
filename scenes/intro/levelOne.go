@@ -22,7 +22,7 @@ const (
 	LEVEL_ONE_SCENE_WIDTH      = 4030
 	LEVEL_ONE_SCENE_HEIGHT     = 360
 	LEVEL_ONE_SCENE_NAME       = "levelOne"
-	LEVEL_ONE_SCENE_SECTION    = "intro"
+	LEVEL_ONE_SCENE_SECTION    = "eastCity"
 	LEVEL_ONE_SCENE_ASSET_PATH = LEVEL_ONE_SCENE_SECTION + "/" + LEVEL_ONE_SCENE_NAME + "/"
 )
 
@@ -40,7 +40,7 @@ func (LevelOneScene) New(m *coldBrew.Manager) *coldBrew.Scene {
 	scene := coldBrew.NewScene(m, LEVEL_ONE_SCENE_WIDTH, LEVEL_ONE_SCENE_HEIGHT)
 
 	// Systems ----------------------------------------------------------------------------------
-	systemInitializers.InitStandardSystems(scene, "The Outskirts.", false)
+	systemInitializers.InitStandardSystems(scene, "East City - The Outskirts.", false)
 
 	// Entities ----------------------------------------------------------------------------------
 	scenesUtil.AddCameraEntity(scene, 0, 0, 1)

@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package sceneProto;
+
+option go_package = "github.com/kainn9/demo/proto";
+
+
+message TerrainBlock {
+  float type = 1;
+  float x = 2;
+  float y = 3;
+  float width = 4;
+  float height = 5;
+  float rotation = 6;
+}
+
+
+
+message TerrainBlocks {
+  repeated TerrainBlock terrainBlocks = 1;
+}

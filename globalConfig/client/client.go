@@ -35,6 +35,7 @@ const (
 	CHAT_SCENE_ASSETS_SUB_PATH = "chats/" // ./assets/scenes/SCENE_SECTION/SCENE_NAME/chat/
 
 	DEBUG_HITBOX_PREVIEW_JSON_PATH = "./debugConfigs/hitboxPreview.json"
+	SCENE_BUILDER_CLICKER_RADIUS   = 10
 )
 
 var DEBUG_MODE = true
