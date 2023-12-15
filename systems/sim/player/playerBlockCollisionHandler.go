@@ -1,6 +1,7 @@
 package simPlayerSystems
 
 import (
+	"log"
 	"math"
 
 	"github.com/kainn9/coldBrew"
@@ -49,23 +50,22 @@ func (sys PlayerBlockCollisionHandlerSystem) Run(dt float64, blockEntity *donbur
 
 func (sys *PlayerBlockCollisionHandlerSystem) collisionHandler(playerBody, blockBody *tBokiComponents.RigidBody, contacts tBokiComponents.Contacts) {
 
+	incidentEdge := contacts.Data[0].IncidentEdge[blockBody]
+
+	log.Println(incidentEdge)
+
 	playerTopLeftVert := playerBody.Polygon.WorldVertices[0]
 	playerBottomLeftVert := playerBody.Polygon.WorldVertices[3]
+
 	playerTopRightVert := playerBody.Polygon.WorldVertices[1]
 	playerBottomRightVert := playerBody.Polygon.WorldVertices[2]
 
 	blockTopLeftVert := blockBody.Polygon.WorldVertices[0]
 	blockTopRightVert := blockBody.Polygon.WorldVertices[1]
 
-	flatBlock := blockTopLeftVert.Y == blockTopRightVert.Y
-
-	if flatBlock {
-		tBokiPhysics.Resolver.Resolve(playerBody, blockBody, contacts)
-		return
-	}
-
 	contactVertTop := playerTopLeftVert
 	contactVertBottom := playerBottomLeftVert
+
 	if blockTopLeftVert.Y < blockTopRightVert.Y {
 		contactVertTop = playerTopRightVert
 		contactVertBottom = playerBottomRightVert
@@ -76,7 +76,7 @@ func (sys *PlayerBlockCollisionHandlerSystem) collisionHandler(playerBody, block
 		return
 	}
 
-	playerBody.Pos.Y = sideIntersection.Y - playerBody.Polygon.Height/2
+	playerBody.Pos.Y = sideIntersection.Y - playerBody.Polygon.Height/2 + 0.01
 	playerBody.Vel.Y = 0
 
 }
