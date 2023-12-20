@@ -103,14 +103,6 @@ func (sys *SceneBuilderSystem) popEventFromStack() sceneBuilderEvent {
 	return event
 }
 
-func (sys *SceneBuilderSystem) createBlock(x, y float64) {
-	blockEntity := scenesUtil.AddBlockEntity(sys.scene, x, y, 100, 100, 0)
-
-	sys.addEventToStack(blockCreationEvent{
-		entity: blockEntity,
-	})
-}
-
 func (sys *SceneBuilderSystem) undoEvent() {
 	event := sys.popEventFromStack()
 	if event == nil {
@@ -280,6 +272,14 @@ func (sys *SceneBuilderSystem) applyDrag(blockEntity *donburi.Entry) {
 		sys.resizeBlock(block, 2, 1)
 	}
 
+}
+
+func (sys *SceneBuilderSystem) createBlock(x, y float64) {
+	blockEntity := scenesUtil.AddBlockEntity(sys.scene, x, y, 100, 100, 0)
+
+	sys.addEventToStack(blockCreationEvent{
+		entity: blockEntity,
+	})
 }
 
 func (sys *SceneBuilderSystem) moveBlock(block *tBokiComponents.RigidBody) {

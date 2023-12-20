@@ -19,6 +19,8 @@
     "inpututil",
     "Interactable",
     "Interactables",
+    "LDTK",
+    "ldtkl",
     "Lerp",
     "lerping",
     "Metroidvania",
@@ -32,6 +34,7 @@
     "Refeed",
     "shampooy",
     "Todos",
+    "unmarshalling",
     "Vsync",
     "Yekshemesh",
     "yohamta"
