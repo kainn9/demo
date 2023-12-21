@@ -42,7 +42,9 @@ func (sys PlayerBlockCollisionHandlerSystem) Run(dt float64, blockEntity *donbur
 
 	if isColliding, contacts := tBokiPhysics.Detector.Detect(playerBody, blockBody, tBokiComponents.ResolverType); isColliding {
 		// sys.collisionHandler(playerBody, blockBody, contacts)
+
 		tBokiPhysics.Resolver.Resolve(playerBody, blockBody, contacts)
+
 		sys.groundedHandler(playerBody, blockBody, playerState)
 	}
 
